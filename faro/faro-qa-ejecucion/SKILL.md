@@ -22,7 +22,7 @@ Diseña y ejecuta pruebas de aplicación para un incremento construido, con evid
 - Se conocen terminal, HTTP, navegador u otras limitaciones reales.
 
 ## Procedimiento
-1. Leer RM, CA, plan, tareas, arquitectura, evidencia y workflow. Si Jira está `REQUIRED`, sincronizar el inicio de QA con comentario y enlaces a casos/evidencia, manteniendo `Haciendo`; si falla, bloquear antes de ejecutar. **Completo:** cada escenario tiene origen funcional y trazabilidad Jira.
+1. Leer RM, CA, plan, tareas, arquitectura, evidencia y workflow. Si seguimiento está `REQUIRED`, sincronizar el inicio de QA con comentario y enlaces a casos/evidencia, manteniendo el estado remoto de trabajo; si falla, bloquear antes de ejecutar. **Completo:** cada escenario tiene origen funcional y trazabilidad remota.
 2. Definir casos antes de ejecutar: API, UI o ambos; precondiciones, datos, pasos, esperado, efectos y limpieza. **Completo:** ningún esperado deriva del comportamiento actual.
 3. Registrar la autorización de datos/efectos faltante. No usar datos reales sin autorización. **Completo:** escenario ejecutable o BLOCKED con causa.
 4. Ejecutar por CA y registrar evidencia. Estados permitidos: `PENDING`, `PASSED`, `FAILED`, `BLOCKED`. **Completo:** UI no se acredita con API.

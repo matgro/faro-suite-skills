@@ -10,7 +10,7 @@ Do not commit or publish:
 - Production database exports, client documents, personal data, clinical data, or logs containing them.
 - Configuration values copied from a user application when they contain secrets.
 
-The FARO skills intentionally describe metadata-only integrations. For example, a Jira URL and project key can be documented when appropriate; credentials must remain outside this repository and outside FARO artifacts.
+The FARO skills intentionally describe metadata-only integrations. For example, a Jira URL/project key or Azure DevOps organization/project/area can be documented when appropriate; credentials, including Azure DevOps PATs, must remain outside this repository and outside FARO artifacts.
 
 ## Bootstrap safety
 

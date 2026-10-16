@@ -25,7 +25,7 @@ Implementa una unidad autorizada de un RM, BUG o TEC con plan técnico `LISTO_PA
 Si una precondición falla, actualizar `context/workflow.json` con `waitingOn`, no modificar código y devolver la ruta a `faro`, `faro-req-ingenieria` o `faro-req-analisis-tecnico`.
 
 ## Procedimiento
-1. Confirmar la unidad en el plan y marcarla `doing` en workflow. Si Jira está `REQUIRED`, transicionar la issue a `Haciendo` cuando corresponda y registrar un comentario con unidad, versión y enlace a la rama cuando exista; si falla, bloquear antes de editar código. **Completo:** unidad, versión, autorización y Jira trazables.
+1. Confirmar la unidad en el plan y marcarla `doing` en workflow. Si seguimiento está `REQUIRED`, transicionar el item al estado remoto de trabajo y registrar un comentario con unidad, versión y enlace a la rama cuando exista; si falla, bloquear antes de editar código. **Completo:** unidad, versión, autorización y seguimiento trazables.
 2. Inspeccionar implementaciones, consumidores, pruebas y convenciones locales antes de editar. **Completo:** se reutiliza o justifica una ruta nueva.
 3. Si existe interfaz, cargar `faro-ux` antes de modificar pantallas. En Laravel revisar `/template`, `resources/views/template/components` y pantallas del mismo dominio antes de escribir markup. **Completo:** catálogo, dominio y markup único respetados.
 4. Implementar sólo el alcance de la tarea; mantener contratos salvo orden explícita del RM. **Completo:** no hay alcance adicional ni rutas paralelas.

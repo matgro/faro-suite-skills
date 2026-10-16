@@ -29,7 +29,7 @@ No aprobar RMs, autorizar merge/despliegue ni modificar código de producto desd
 2. Comparar RF/RN/RNF/RES/CA con entradas de código relevantes, no sólo la pantalla principal. **Completo:** se registran conductas agregadas sin origen.
 3. Ejecutar únicamente verificaciones pertinentes con comandos comprobados y sin usar producción sin autorización. **Completo:** no se reporta ejecución inexistente.
 4. Completar `assets/validation-report.md` por CA, cobertura, ejecuciones, hallazgos y límites. **Completo:** cada CA tiene estado y evidencia.
-5. Marcar VERIFIED sólo si todos los CA del alcance están CONFORME y no hay divergencias materiales; usar evidencia de `faro-qa-ejecucion` cuando exista y distinguir explícitamente su ausencia. Si Jira está `REQUIRED`, comentar el resultado y mantener `Haciendo` hasta el cierre operativo; si falla, bloquear el flujo. Actualizar workflow con la siguiente ruta. **Completo:** los hallazgos regresan al flujo funcional o de desarrollo adecuado.
+5. Marcar VERIFIED sólo si todos los CA del alcance están CONFORME y no hay divergencias materiales; usar evidencia de `faro-qa-ejecucion` cuando exista y distinguir explícitamente su ausencia. Si seguimiento está `REQUIRED`, comentar el resultado y mantener el estado remoto de trabajo hasta el cierre operativo; si falla, bloquear el flujo. Actualizar workflow con la siguiente ruta. **Completo:** los hallazgos regresan al flujo funcional o de desarrollo adecuado.
 
 ## Verification Checklist
 

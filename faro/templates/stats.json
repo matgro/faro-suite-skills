@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "contractVersion": "1.12.0",
+  "contractVersion": "1.13.0",
   "faro": {
     "name": "ED_INSTANCE",
-    "version": "1.12.0"
+    "version": "1.13.0"
   },
   "project": {
     "name": null,

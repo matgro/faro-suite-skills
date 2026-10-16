@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <strong>15 skills</strong> · Complete lifecycle · Integrity checked · Agent-portable
+  <strong>17 skills</strong> · Complete lifecycle · Integrity checked · Agent-portable
 </p>
 
 ---
@@ -87,7 +87,9 @@ faro/                         Runtime suite
 ├── faro-qa-ejecucion/        QA cases and evidence
 ├── faro-ux/                  Visible-flow and interface design
 ├── faro-entrega/             Explicit commit, PR, release, and deployment handoff
-└── faro-int-jira/            Optional governed Jira integration
+├── faro-int-jira/            Optional governed Jira integration
+├── faro-int-azure-devops/    Optional governed Azure DevOps integration
+└── azure-devops-rest-v7/     Azure DevOps REST v7.1 capability
 
 bootstrap/SKILL.md            Agent-guided installation and safe update
 manifest.json                 Suite contract and complete skill inventory
@@ -109,7 +111,7 @@ Validate an installed copy against the release:
 python3 tests/validate_package.py --installed-at /path/to/your-agent/skills/faro
 ```
 
-The validator checks the 15 runtime skills, package manifest, bootstrap contract, file inventory, SHA-256 checksums, and common secret patterns.
+The validator checks the 17 runtime skills, package manifest, bootstrap contract, file inventory, SHA-256 checksums, and common secret patterns.
 
 ## Hermes Agent location
 
@@ -124,6 +126,8 @@ The runtime may require a new session or a skill-index refresh before it discove
 ## Release and security policy
 
 Use a tagged release or pinned commit. When updating an existing installation, compare first and replace the entire `<skills-root>/faro/` tree only after explicit user approval. This avoids a mixed suite assembled from different releases.
+
+Every release carries `faro/references/suite-provenance.json`, which names the source repository and an immutable release tag. For a full workspace diagnosis, run `faro-doctor` with `--verify-suite-origin`; it resolves that tag, fetches the referenced revision temporarily, and compares the installed tree byte-for-byte with its published `checksums.sha256`.
 
 Do not add API keys, tokens, passwords, private certificates, cookies, `.env` files, client data, or production exports. See [SECURITY.md](SECURITY.md) for the full policy.
 

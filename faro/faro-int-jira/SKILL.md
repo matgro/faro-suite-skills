@@ -14,21 +14,21 @@ metadata:
 
 ## Rol
 
-`faro-int-jira` es el adaptador de gobernanza entre FARO y la capability externa `jira-rest-v3`. Configura Jira sólo por petición humana expresa, importa una issue como fuente `SRC` y, cuando la política es `REQUIRED`, sincroniza el seguimiento operativo de la solicitud.
+`faro-int-jira` es el adaptador de gobernanza entre FARO y la capability externa `jira-rest-v3`. Configura Jira sólo por petición humana expresa, importa una issue como fuente `SRC` y, cuando `work_tracking.mode` es `REQUIRED` y su proveedor es `JIRA`, sincroniza el seguimiento operativo de la solicitud.
 
 No sustituye el RM, la aprobación humana ni el análisis técnico. No implementa cambios de código.
 
 ## Cuándo usar
 
-- Durante inicialización, después de que `faro-inicializacion` registre Jira `REQUIRED` en el perfil.
+- Durante inicialización, después de que `faro-inicializacion` registre seguimiento `REQUIRED` y proveedor `JIRA` en el perfil.
 - En un proyecto `available`, sólo si el usuario pide explícitamente agregar o configurar Jira.
 - Cuando el usuario entrega una URL o clave Jira y el proyecto tiene Jira habilitado.
 
 ## Política y autorización
 
 1. Leer el contrato FARO, `context/stats.json`, el perfil de requerimientos y el estado de integración. Confirmar que el proyecto está `available`, salvo configuración dentro de una inicialización. **Completo:** proyecto y política conocidos.
-2. Durante una inicialización, verificar que `faro-inicializacion` ya registró la decisión `REQUIRED`, URL y clave confirmadas —o su pendiente explícito— en el perfil; no repetir la consulta de bootstrap. Para un proyecto `available`, exigir petición explícita de agregar/configurar la integración y autorización humana antes de registrar o cambiar su política. **Completo:** decisión, URL y clave confirmadas, y fuente de autorización registradas sin secretos.
-3. Registrar proveedor, URL confirmada, modo, clave del proyecto Jira, estado de credenciales y capacidades permitidas en `context/requirements/project-profile.md`. Con política `REQUIRED`, la URL y clave de proyecto son obligatorias antes de crear o importar solicitudes y se usan como fuentes de verdad para cada llamada; un valor de entorno opcional sólo se acepta si coincide. Nunca registrar tokens, contraseñas, cookies, cabeceras Authorization ni contenido de `.env`. **Completo:** la configuración sólo contiene metadatos no sensibles y la URL/clave pertenecen inequívocamente al proyecto.
+2. Durante una inicialización, verificar que `faro-inicializacion` ya registró la decisión `REQUIRED`, proveedor `JIRA`, URL y clave confirmadas —o su pendiente explícito— en el perfil; no repetir la consulta de bootstrap. Para un proyecto `available`, exigir petición explícita de agregar/configurar la integración y autorización humana antes de registrar o cambiar su política. **Completo:** decisión, URL y clave confirmadas, y fuente de autorización registradas sin secretos.
+3. Registrar modo, proveedor, URL confirmada, clave del proyecto Jira, estado de credenciales y capacidades permitidas bajo `work_tracking` en `context/requirements/project-profile.md`. Con política `REQUIRED`, la URL y clave de proyecto son obligatorias antes de crear o importar solicitudes y se usan como fuentes de verdad para cada llamada; un valor de entorno opcional sólo se acepta si coincide. Nunca registrar tokens, contraseñas, cookies, cabeceras Authorization ni contenido de `.env`. **Completo:** la configuración sólo contiene metadatos no sensibles y la URL/clave pertenecen inequívocamente al proyecto.
 4. Con `REQUIRED`, verificar credenciales Hermes separadas, acceso a la clave del proyecto del perfil y los estados/transiciones disponibles antes de procesar la primera solicitud. Registrar en el perfil el mapeo real del proyecto: una equivalencia de pendiente (`Pendiente`, `Por hacer` u otro nombre confirmado) → `PENDING`; una de trabajo (`Haciendo` u otro nombre confirmado) → `DOING`; una de cierre (`Finalizado`, `Done` u otro nombre confirmado) → `DONE`. La equivalencia `CANCELLED` se registra si existe; si falta, sólo las cancelaciones quedan bloqueadas hasta que el workflow Jira la incorpore. Si falta PENDING, DOING o DONE, registrar el bloqueo y no simular sincronización. **Completo:** el mapeo se basa en el workflow real del proyecto.
 5. Si faltan credenciales Hermes separadas o no están configuradas, no consultar ni modificar Jira. Solicitar configuración segura fuera del repositorio o aceptar URL, exportación o texto aportado por el usuario como fuente manual únicamente si la política no es `REQUIRED`. Nunca reutilizar credenciales de la aplicación. **Completo:** no hubo lectura de secretos ni llamada remota no autenticada.
 

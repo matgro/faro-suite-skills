@@ -29,25 +29,27 @@ No usar para crear ni reparar por iniciativa propia. Si encuentra faltantes, los
 Ejecutar de forma sólo lectura desde cualquier ubicación:
 
 ```bash
-python3 <skills-root>/faro/faro-doctor/scripts/doctor.py --root "$PWD"
+python3 <skills-root>/faro/faro-doctor/scripts/doctor.py --root "$PWD" --verify-suite-origin
 ```
 
-Usar `--strict` para que faltantes o JSON inválidos devuelvan código distinto de cero. El script no repara ni crea archivos; el procedimiento de esta skill interpreta el resultado y define el handoff.
+`--verify-suite-origin` es obligatorio para un diagnóstico completo: resuelve la etiqueta Git inmutable declarada por la suite, obtiene esa revisión temporalmente y compara cada archivo instalado con sus checksums publicados. Requiere `git` y conectividad al remoto; un tag ausente, remoto inaccesible o árbol distinto es un bloqueo real. Usar `--strict` para que faltantes, JSON inválidos o una verificación de origen solicitada que falle devuelvan código distinto de cero. El script no repara ni crea archivos en el workspace; el procedimiento interpreta el resultado y define el handoff.
 
 ## Comprobaciones
 
 1. Fijar el root actual y leer `AGENTS.md`, el manifiesto `context/faro-workspace.json`, `context/stats.json`, `context/README.md`, `context/requirements/project-profile.md` y `context/workflow.json` si existe. Leer `faro/templates/faro-workspace-config.json` como norma central de versión y estructura. El manifiesto local sólo debe declarar versión, origen del contrato y artefactos instalados; no se interpreta como política. **Completo:** cada archivo se clasifica como presente, ausente, inválido o no aplicable.
 2. Confirmar que `AGENTS.md` posee exactamente un bloque FARO delimitado y que corresponde a la plantilla estándar sin evaluar ni alterar contenido externo. Confirmar que las rutas obligatorias declaradas por la configuración existen. **Completo:** el informe separa contrato estándar, contenido ajeno y faltantes.
 3. Validar JSON y coherencia: `schemaVersion`, `contractVersion`, `faro.version`, `project`, `state`, `updatedAt` y rutas. La versión instalada se compara con la versión esperada de la configuración; una versión posterior no se degrada. **Completo:** incompatibilidades y JSON malformados se informan textualmente.
-4. Informar identidad, estado (`new`, `initializing`, `available` o `disabled`), repositorios/fuentes indexados, decisiones Jira/DF, arquitectura registrada, workflow activo y bloqueos. No presentar una ausencia como evidencia de inexistencia en el proyecto; usar “no indexado” o “no encontrado en el contrato”. **Completo:** el reporte contesta qué existe y qué falta sin suposiciones.
-5. Resolver la recomendación sin escribir: `disabled` → detener; incompleto/corrupto → `faro-inicializacion` sólo con autorización; `new`/`initializing` íntegro → ruta de arquitectura evidenciada; `available` → seguir la ruta FARO correspondiente al pedido. **Completo:** se informa una recomendación, no una acción automática.
+4. Verificar el origen Git de la suite con `--verify-suite-origin`: leer `references/suite-provenance.json`, resolver sólo su etiqueta remota inmutable, obtener temporalmente esa revisión y comparar el árbol `faro/` con `checksums.sha256` remoto. No aceptar una rama mutable, un SHA aportado por el ambiente ni un tag no resoluble. **Completo:** se informa repositorio, tag, commit resuelto y coincidencia byte a byte, o el bloqueo concreto.
+5. Informar identidad, estado (`new`, `initializing`, `available` o `disabled`), repositorios/fuentes indexados, decisiones de seguimiento/proveedor/DF, arquitectura registrada, workflow activo y bloqueos. No presentar una ausencia como evidencia de inexistencia en el proyecto; usar “no indexado” o “no encontrado en el contrato”. **Completo:** el reporte contesta qué existe y qué falta sin suposiciones.
+6. Resolver la recomendación sin escribir: `disabled` → detener; incompleto/corrupto/origen no verificable → `faro-inicializacion` sólo con autorización; `new`/`initializing` íntegro → ruta de arquitectura evidenciada; `available` → seguir la ruta FARO correspondiente al pedido. **Completo:** se informa una recomendación, no una acción automática.
 
 ## Formato mínimo del informe
 
 - “Espacio FARO existente: sí/no” y root inspeccionado.
 - Versión esperada / instalada y compatibilidad.
+- Repositorio, tag y commit de origen de la suite, más el resultado de checksums remotos.
 - Lista de archivos requeridos: presente, ausente o inválido.
-- Estado, proyecto, arquitectura, configuraciones Jira/DF y workflow.
+- Estado, proyecto, arquitectura, configuraciones de seguimiento/proveedor/DF y workflow.
 - Faltantes, bloqueos y siguiente ruta recomendada.
 
 ## Invariantes
@@ -55,6 +57,7 @@ Usar `--strict` para que faltantes o JSON inválidos devuelvan código distinto 
 - Diagnosticar no concede permiso para reparar, inicializar, migrar, cambiar estado ni crear workflow.
 - No borrar ni recrear JSON malformado; reportarlo tal como bloqueo.
 - No revelar secretos ni leer archivos de entorno.
+- La procedencia de release usa una etiqueta Git inmutable; una rama, la versión declarativa o el remoto local no prueban el origen del árbol instalado.
 - Un contrato existente pero incompleto sigue siendo existente: nunca se reemplaza silenciosamente.
 
 ## Verificación
@@ -62,5 +65,6 @@ Usar `--strict` para que faltantes o JSON inválidos devuelvan código distinto 
 - [ ] El informe dice expresamente si el espacio ya existe.
 - [ ] Cada requisito de la configuración versionada fue comprobado.
 - [ ] JSON, versiones y estado fueron validados sin modificaciones.
-- [ ] Se informó configuración Jira/DF y arquitectura sin inventar valores.
+- [ ] La suite fue cotejada contra el tag remoto y sus checksums publicados.
+- [ ] Se informó configuración de seguimiento/proveedor/DF y arquitectura sin inventar valores.
 - [ ] La recomendación no ejecuta una reparación ni una ruta posterior.

@@ -11,11 +11,13 @@ REQUIRED = {
     "faro", "faro-inicializacion", "faro-doctor", "faro-arq-laravel", "faro-arq-mobile",
     "faro-arq-generica", "faro-documentacion-funcional", "faro-req-ingenieria",
     "faro-req-analisis-tecnico", "faro-req-implementacion", "faro-qa-ejecucion",
-    "faro-req-validacion", "faro-ux", "faro-entrega", "faro-int-jira",
+    "faro-req-validacion", "faro-ux", "faro-entrega", "faro-int-jira", "faro-int-azure-devops",
+    "azure-devops-rest-v7",
 }
 CONFIG_PATH = ROOT / "templates" / "faro-workspace-config.json"
 MANIFEST_PATH = ROOT / "templates" / "faro-workspace-manifest.json"
-EXPECTED_VERSION = "1.12.0"
+PROVENANCE_PATH = ROOT / "references" / "suite-provenance.json"
+EXPECTED_VERSION = "1.13.0"
 EXPECTED_FILES = {
     "AGENTS.md", "context/faro-workspace.json", "context/stats.json",
     "context/README.md", "context/requirements/project-profile.md",
@@ -97,6 +99,11 @@ def main() -> int:
         failures.append("configuración FARO no declara la autoridad global central")
     if config.get("templateSources", {}).get("manifest") != "faro/templates/faro-workspace-manifest.json":
         failures.append("configuración FARO no declara la plantilla de manifiesto")
+    initialization = config.get("initialization", {})
+    if initialization.get("workTrackingModes") != ["OFF", "REQUIRED"]:
+        failures.append("configuración FARO no declara modos de seguimiento válidos")
+    if initialization.get("workTrackingProviders") != ["JIRA", "AZURE_DEVOPS"]:
+        failures.append("configuración FARO no declara proveedores de seguimiento válidos")
 
     manifest = load_json(MANIFEST_PATH, failures)
     if manifest.get("contractVersion") != EXPECTED_VERSION:
@@ -114,6 +121,12 @@ def main() -> int:
         failures.append("plantilla stats sin campos requeridos")
     if stats.get("contractVersion") != EXPECTED_VERSION:
         failures.append("stats template no coincide con la versión de contrato")
+
+    provenance = load_json(PROVENANCE_PATH, failures)
+    if provenance.get("schemaVersion") != 1 or provenance.get("ref") != "refs/tags/v1.2.0":
+        failures.append("provenance de suite no declara su tag inmutable")
+    if provenance.get("repository") != "https://github.com/matgro/faro-suite-skills" or provenance.get("integrityFile") != "checksums.sha256":
+        failures.append("provenance de suite no declara repositorio/checksums válidos")
 
     workflow = load_json(ROOT / "templates" / "workflow.json", failures)
     workflow_fields = {"schemaVersion", "updatedAt", "active", "phase", "authorization", "currentUnit", "waitingOn", "nextRoute", "notes"}

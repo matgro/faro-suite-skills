@@ -9,7 +9,8 @@ Cada caso valida una única ruta especialista. No prueba la carga automática de
 | faro-doctor | Contrato existente, completo o parcial | «revisa el estado de FARO» | `faro-doctor` | Crear/reparar artefactos durante diagnóstico |
 | Inicialización Laravel | `initializing`, composer Laravel | «continúa preparando este proyecto» | `faro-arq-laravel` | Intake de RM o implementación |
 | Inicialización stack desconocido | `initializing`, manifiesto no Laravel/móvil | «continúa la inicialización» | `faro-arq-generica` | Inferir framework |
-| Jira requerido inicial | `initializing`, perfil Jira `REQUIRED` confirmado | «continúa la inicialización» | `faro-int-jira` | Repetir la consulta de bootstrap o leer credenciales de aplicación |
+| Jira requerido inicial | `initializing`, seguimiento `REQUIRED`, proveedor `JIRA` | «continúa la inicialización» | `faro-int-jira` | Repetir la consulta de bootstrap o leer credenciales de aplicación |
+| Azure DevOps requerido inicial | `initializing`, seguimiento `REQUIRED`, proveedor `AZURE_DEVOPS` | «continúa la inicialización» | `faro-int-azure-devops` | Inventar tipos, actividad, iteración, asignado o leer el PAT desde el repositorio |
 | Solicitud funcional con DF habilitada | `available`; perfil DF `HABILITADA` | «agrega una regla de negocio» | `faro-documentacion-funcional` | Crear RM o código antes de identificar DF/impacto |
 | Solicitud funcional sin DF habilitada | `available`; perfil DF no habilitada | «agrega una regla de negocio» | `faro-req-ingenieria` | Código directo |
 | RM pendiente | RM con PD | «haz RM-003» | `faro-req-ingenieria` | Planificar o implementar |

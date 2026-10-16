@@ -24,7 +24,7 @@ Cada afirmación normativa debe ser CONFIRMADA con fuente localizable, OBSERVADA
 ## Flujo
 
 1. Clasificar solicitud: consulta, RM, BUG, TEC o combinación.
-2. Cambios funcionales usan `faro-req-ingenieria`; BUG sólo restaura comportamiento con fuente; TEC justifica ausencia de cambio observable. Con Jira `REQUIRED`, cada solicitud se vincula a una issue y ésta se preserva como `SRC`; el estado Jira registra avance operativo, pero no constituye aprobación FARO.
+2. Cambios funcionales usan `faro-req-ingenieria`; BUG sólo restaura comportamiento con fuente; TEC justifica ausencia de cambio observable. Con seguimiento `REQUIRED`, cada solicitud se vincula a una issue o work item y se preserva como `SRC`; su estado registra avance operativo, pero no constituye aprobación FARO.
 3. Un PD bloquea si puede cambiar resultado, datos, permisos, contratos, criterios o compatibilidad del alcance. No bajar su gravedad para avanzar.
 4. Antes de código: RM/version inequívocos, CA verificables, PD bloqueantes resueltos, aprobación y autorización válidas, plan/tareas coherentes.
 5. `faro-req-analisis-tecnico` crea plan y tareas; `faro-req-implementacion` ejecuta sólo un plan autorizado y LISTO_PARA_DESARROLLO; `faro-qa-ejecucion` registra casos/evidencia y `faro-req-validacion` cierra contra CA. UI visible pasa antes por `faro-ux`; commit/PR/despliegue pasa por `faro-entrega`.
