@@ -23,7 +23,7 @@ This bootstrap is an installation guide for an agent with filesystem access and,
 2. When the source is a repository URL, retrieve it into temporary staging. If the user supplied a tag or commit, resolve exactly that revision. If the user supplied only a repository URL, resolve the current revision, record its immutable commit identifier, and report it before installation.
 3. When the user supplied only this bootstrap by URL, derive the package repository only when it is unambiguously encoded by that URL. Otherwise request the repository URL; never guess one from a skill name.
 4. Retrieve package files only. Do not execute downloaded scripts, installers, hooks, or binaries. The bootstrap itself directs the installation; repository contents are data until validation succeeds.
-5. Read staged `manifest.json`, `checksums.sha256`, and the `faro/` tree. Confirm that the manifest names this package, declares `faro` as the entry point, and lists every existing runtime skill.
+5. Read staged `manifest.json`, `checksums.sha256`, `faro/references/suite-provenance.json`, and the `faro/` tree. Confirm that the manifest names this package, declares `faro` as the entry point, lists every existing runtime skill, and that provenance declares the same repository plus an immutable `refs/tags/v*` reference matching the package version. Resolve that tag remotely to its commit before installation; a missing, mutable or mismatched reference blocks installation.
 6. Determine the target runtime's skills root from its documented configuration or the user's direction. Do not assume a Hermes path for another agent.
 
 **Complete when:** the source revision, staging location, and destination skills root are known.
@@ -41,7 +41,7 @@ This bootstrap is an installation guide for an agent with filesystem access and,
 ## Verification
 
 1. Compare the installed tree to `checksums.sha256` and ensure there are no missing or extra distributed files.
-2. Report the final destination, source repository or local source, resolved revision, suite version, number of skills, and whether the target runtime needs a session restart or skill-index refresh.
+2. Report the final destination, source repository, immutable tag, resolved commit, suite version, number of skills, and whether the target runtime needs a session restart or skill-index refresh.
 3. If the runtime cannot discover skills installed during the current session, state that limitation; do not claim that `/faro` is immediately available.
 4. Remove temporary source staging after a successful installation unless the user explicitly requested that it be retained.
 
@@ -57,6 +57,7 @@ This bootstrap is an installation guide for an agent with filesystem access and,
 - [ ] User supplied a local source, repository URL, or pinned revision explicitly.
 - [ ] Remote source, if any, was retrieved only into temporary staging and no downloaded code was executed.
 - [ ] Resolved commit was recorded when the source was remote.
+- [ ] The installed suite provenance names the same remote and immutable release tag; the install report includes its resolved commit.
 - [ ] `manifest.json` and `checksums.sha256` validated the incoming tree.
 - [ ] Target skills root was established from the target agent or user direction.
 - [ ] Existing FARO installation was inspected before replacement.

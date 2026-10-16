@@ -35,7 +35,7 @@ No usar para una consulta de estado sin cambio documental, un plan técnico, imp
 - El DF usa estados `DRAFT`, `PENDING_DEFINITION`, `READY_FOR_REVIEW`, `BASELINED` y `SUPERSEDED`.
 - Estados de evidencia: `CONFIRMADA`, `OBSERVADA`, `DERIVADA` o `PROPUESTA`. Código, pruebas o interfaces sólo sustentan `OBSERVADA` salvo una fuente humana o documental que confirme la regla.
 
-Los documentos funcionales no se vinculan a Jira por sí mismos. Jira `REQUIRED` aplica cuando se formaliza un RM; no crear una issue para investigación documental sin solicitud de cambio.
+Los documentos funcionales no se vinculan al seguimiento remoto por sí mismos. Seguimiento `REQUIRED` aplica cuando se formaliza un RM; no crear una issue o work item para investigación documental sin solicitud de cambio.
 
 ## Procedimiento
 

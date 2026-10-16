@@ -3,7 +3,7 @@
 <!-- FARO:START -->
 ## FARO — instancia gestionada
 
-- Contrato instalado: FARO `1.12.0`.
+- Contrato instalado: FARO `1.13.0`.
 - Manifiesto de instancia: `context/faro-workspace.json`.
 - Estado e identidad: `context/stats.json`.
 - Índice de fuentes: `context/README.md`.

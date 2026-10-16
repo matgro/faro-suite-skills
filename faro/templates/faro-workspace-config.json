@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "contractVersion": "1.12.0",
+  "contractVersion": "1.13.0",
   "managedBy": "FARO",
   "authority": {
     "globalPolicy": "faro/SKILL.md y skills faro-*",
@@ -44,9 +44,10 @@
     "requiresProjectIdentity": true,
     "requiresProjectKind": true,
     "requiresRepositoryOrSourceInventory": true,
-    "requiresJiraMode": true,
+    "requiresWorkTrackingMode": true,
     "requiresFunctionalDocumentationMode": true,
-    "jiraModes": ["OFF", "REQUIRED"],
+    "workTrackingModes": ["OFF", "REQUIRED"],
+    "workTrackingProviders": ["JIRA", "AZURE_DEVOPS"],
     "functionalDocumentationModes": ["HABILITADA", "DESHABILITADA"]
   }
 }

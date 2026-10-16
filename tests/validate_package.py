@@ -14,6 +14,7 @@ SKILLS_ROOT = ROOT / "faro"
 BOOTSTRAP = ROOT / "bootstrap" / "SKILL.md"
 MANIFEST = ROOT / "manifest.json"
 CHECKSUMS = ROOT / "checksums.sha256"
+PROVENANCE = SKILLS_ROOT / "references" / "suite-provenance.json"
 SECRET_PATTERNS = {
     "private key": r"-----BEGIN (?:[A-Z ]*PRIVATE KEY|OPENSSH PRIVATE KEY)-----",
     "credential URL": r"https?://[^\s/@:]+:[^\s/@]+@",
@@ -102,6 +103,19 @@ def main() -> None:
         fail("entrypoint must be faro/SKILL.md")
     if bootstrap.get("path") != "bootstrap/SKILL.md" or bootstrap.get("name") != "faro-bootstrap":
         fail("manifest bootstrap declaration is invalid")
+    try:
+        provenance = json.loads(PROVENANCE.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        fail(f"invalid suite provenance: {exc}")
+    expected_ref = f"refs/tags/v{manifest.get('version')}"
+    if (
+        provenance.get("schemaVersion") != 1
+        or provenance.get("repository") != manifest.get("repository")
+        or provenance.get("packageVersion") != manifest.get("version")
+        or provenance.get("ref") != expected_ref
+        or provenance.get("integrityFile") != "checksums.sha256"
+    ):
+        fail("suite provenance must declare the package repository, version tag, and checksum file")
 
     checksums = read_checksums()
     count = validate_checksums(SKILLS_ROOT, checksums)
