@@ -1,0 +1,66 @@
+---
+name: faro-doctor
+description: Use when diagnosing an existing FARO workspace.
+version: 1.0.0
+author: Hermes Agent
+license: MIT
+metadata:
+  hermes:
+    tags: [faro, doctor, diagnosis, workspace, governance]
+    related_skills: [faro, faro-inicializacion, faro-arq-laravel, faro-arq-mobile, faro-arq-generica]
+---
+
+# FARO — Diagnóstico del espacio de trabajo
+
+## Rol
+
+Inspecciona un espacio FARO existente y muestra un estado verificable sin inicializarlo, regenerarlo ni sobrescribir información. Es la respuesta obligatoria a un pedido de inicialización cuando el contrato FARO ya existe: informa que el espacio ya está presente, su estado y la acción de recuperación o continuación aplicable.
+
+## Cuándo usar
+
+- El usuario pide inicializar y existe un bloque `FARO:START`/`FARO:END` o artefactos FARO en el root actual.
+- Se pide revisar salud, existencia, versión, integridad o estado de un espacio FARO.
+- `faro-inicializacion` necesita comprobar su resultado antes de cerrar.
+
+No usar para crear ni reparar por iniciativa propia. Si encuentra faltantes, los informa y propone `faro-inicializacion` sólo cuando el usuario autorice reparación.
+
+## Ejecución
+
+Ejecutar de forma sólo lectura desde cualquier ubicación:
+
+```bash
+python3 <skills-root>/faro/faro-doctor/scripts/doctor.py --root "$PWD"
+```
+
+Usar `--strict` para que faltantes o JSON inválidos devuelvan código distinto de cero. El script no repara ni crea archivos; el procedimiento de esta skill interpreta el resultado y define el handoff.
+
+## Comprobaciones
+
+1. Fijar el root actual y leer `AGENTS.md`, el manifiesto `context/faro-workspace.json`, `context/stats.json`, `context/README.md`, `context/requirements/project-profile.md` y `context/workflow.json` si existe. Leer `faro/templates/faro-workspace-config.json` como norma central de versión y estructura. El manifiesto local sólo debe declarar versión, origen del contrato y artefactos instalados; no se interpreta como política. **Completo:** cada archivo se clasifica como presente, ausente, inválido o no aplicable.
+2. Confirmar que `AGENTS.md` posee exactamente un bloque FARO delimitado y que corresponde a la plantilla estándar sin evaluar ni alterar contenido externo. Confirmar que las rutas obligatorias declaradas por la configuración existen. **Completo:** el informe separa contrato estándar, contenido ajeno y faltantes.
+3. Validar JSON y coherencia: `schemaVersion`, `contractVersion`, `faro.version`, `project`, `state`, `updatedAt` y rutas. La versión instalada se compara con la versión esperada de la configuración; una versión posterior no se degrada. **Completo:** incompatibilidades y JSON malformados se informan textualmente.
+4. Informar identidad, estado (`new`, `initializing`, `available` o `disabled`), repositorios/fuentes indexados, decisiones Jira/DF, arquitectura registrada, workflow activo y bloqueos. No presentar una ausencia como evidencia de inexistencia en el proyecto; usar “no indexado” o “no encontrado en el contrato”. **Completo:** el reporte contesta qué existe y qué falta sin suposiciones.
+5. Resolver la recomendación sin escribir: `disabled` → detener; incompleto/corrupto → `faro-inicializacion` sólo con autorización; `new`/`initializing` íntegro → ruta de arquitectura evidenciada; `available` → seguir la ruta FARO correspondiente al pedido. **Completo:** se informa una recomendación, no una acción automática.
+
+## Formato mínimo del informe
+
+- “Espacio FARO existente: sí/no” y root inspeccionado.
+- Versión esperada / instalada y compatibilidad.
+- Lista de archivos requeridos: presente, ausente o inválido.
+- Estado, proyecto, arquitectura, configuraciones Jira/DF y workflow.
+- Faltantes, bloqueos y siguiente ruta recomendada.
+
+## Invariantes
+
+- Diagnosticar no concede permiso para reparar, inicializar, migrar, cambiar estado ni crear workflow.
+- No borrar ni recrear JSON malformado; reportarlo tal como bloqueo.
+- No revelar secretos ni leer archivos de entorno.
+- Un contrato existente pero incompleto sigue siendo existente: nunca se reemplaza silenciosamente.
+
+## Verificación
+
+- [ ] El informe dice expresamente si el espacio ya existe.
+- [ ] Cada requisito de la configuración versionada fue comprobado.
+- [ ] JSON, versiones y estado fueron validados sin modificaciones.
+- [ ] Se informó configuración Jira/DF y arquitectura sin inventar valores.
+- [ ] La recomendación no ejecuta una reparación ni una ruta posterior.

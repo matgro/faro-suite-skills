@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "updatedAt": "UPDATED_AT",
+  "active": null,
+  "phase": null,
+  "authorization": {
+    "status": "none",
+    "source": null,
+    "artifactVersion": null,
+    "scope": null
+  },
+  "currentUnit": null,
+  "waitingOn": null,
+  "nextRoute": null,
+  "notes": []
+}

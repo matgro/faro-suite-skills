@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "name": "faro-suite-skills",
+  "repository": "https://github.com/matgro/faro-suite-skills",
+  "version": "1.1.0",
+  "description": "Portable FARO governance and delivery skill suite.",
+  "license": "MIT",
+  "skills_root": "faro",
+  "entrypoint": "faro",
+  "install_mode": "all-or-nothing",
+  "bootstrap": {
+    "path": "bootstrap/SKILL.md",
+    "name": "faro-bootstrap",
+    "purpose": "Guided installation and confirmed replacement of an existing FARO suite."
+  },
+  "skills": [
+    "faro",
+    "faro-arq-generica",
+    "faro-arq-laravel",
+    "faro-arq-mobile",
+    "faro-doctor",
+    "faro-documentacion-funcional",
+    "faro-entrega",
+    "faro-inicializacion",
+    "faro-int-jira",
+    "faro-qa-ejecucion",
+    "faro-req-analisis-tecnico",
+    "faro-req-implementacion",
+    "faro-req-ingenieria",
+    "faro-req-validacion",
+    "faro-ux"
+  ],
+  "installation": {
+    "copy_directory": "faro",
+    "destination_layout": "<skills-root>/faro/",
+    "preserve_relative_paths": true,
+    "existing_installation": "inspect, compare, and request explicit user confirmation before replacement"
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "file": "checksums.sha256"
+  }
+}

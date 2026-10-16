@@ -1,0 +1,52 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "1.12.0",
+  "managedBy": "FARO",
+  "authority": {
+    "globalPolicy": "faro/SKILL.md y skills faro-*",
+    "canonicalContract": "faro/templates/faro-workspace-config.json",
+    "localManifest": "context/faro-workspace.json",
+    "projectConfiguration": "context/requirements/project-profile.md",
+    "projectState": "context/stats.json"
+  },
+  "workspace": {
+    "manifestPath": "context/faro-workspace.json",
+    "statePath": "context/stats.json",
+    "indexPath": "context/README.md",
+    "profilePath": "context/requirements/project-profile.md",
+    "workflowPath": "context/workflow.json",
+    "agentsPath": "AGENTS.md"
+  },
+  "requiredDirectories": ["context", "context/requirements"],
+  "requiredFiles": [
+    "AGENTS.md",
+    "context/faro-workspace.json",
+    "context/stats.json",
+    "context/README.md",
+    "context/requirements/project-profile.md"
+  ],
+  "conditionalFiles": [
+    {
+      "path": "context/workflow.json",
+      "when": "Hay una unidad FARO activa que requiere continuidad entre interacciones."
+    }
+  ],
+  "templateSources": {
+    "agents": "faro/templates/AGENTS.md",
+    "manifest": "faro/templates/faro-workspace-manifest.json",
+    "stats": "faro/templates/stats.json",
+    "index": "faro/templates/context-README.md",
+    "projectProfile": "faro/templates/project-profile.md",
+    "workflow": "faro/templates/workflow.json"
+  },
+  "supportedStates": ["new", "initializing", "available", "disabled"],
+  "initialization": {
+    "requiresProjectIdentity": true,
+    "requiresProjectKind": true,
+    "requiresRepositoryOrSourceInventory": true,
+    "requiresJiraMode": true,
+    "requiresFunctionalDocumentationMode": true,
+    "jiraModes": ["OFF", "REQUIRED"],
+    "functionalDocumentationModes": ["HABILITADA", "DESHABILITADA"]
+  }
+}

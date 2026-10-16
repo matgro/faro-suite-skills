@@ -1,0 +1,69 @@
+<svg width="1600" height="760" viewBox="0 0 1600 760" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">FARO — governed delivery for AI agents</title>
+  <desc id="desc">A copper lighthouse projects a beam over a deep blue sea at night.</desc>
+  <defs>
+    <linearGradient id="sky" x1="800" y1="0" x2="800" y2="570" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#071A32"/>
+      <stop offset="0.56" stop-color="#0B3151"/>
+      <stop offset="1" stop-color="#15516A"/>
+    </linearGradient>
+    <linearGradient id="sea" x1="800" y1="500" x2="800" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0D405B"/>
+      <stop offset="1" stop-color="#041D35"/>
+    </linearGradient>
+    <linearGradient id="beam" x1="335" y1="365" x2="1530" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFE7A4" stop-opacity="0.72"/>
+      <stop offset="1" stop-color="#FFE7A4" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="tower" x1="310" y1="316" x2="430" y2="660" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E5A65D"/>
+      <stop offset="1" stop-color="#9C4E2F"/>
+    </linearGradient>
+    <filter id="glow" x="245" y="265" width="180" height="160" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="21"/>
+    </filter>
+    <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="5"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="760" fill="url(#sky)"/>
+  <circle cx="1245" cy="140" r="2" fill="#E2F0F1" opacity="0.75"/>
+  <circle cx="1374" cy="245" r="3" fill="#E2F0F1" opacity="0.44"/>
+  <circle cx="983" cy="110" r="2" fill="#E2F0F1" opacity="0.55"/>
+  <circle cx="840" cy="218" r="2" fill="#E2F0F1" opacity="0.34"/>
+  <circle cx="1095" cy="320" r="2" fill="#E2F0F1" opacity="0.28"/>
+  <circle cx="1470" cy="338" r="2" fill="#E2F0F1" opacity="0.48"/>
+
+  <path d="M0 482C150 428 266 468 414 451C582 432 637 360 812 382C990 404 1038 460 1194 438C1329 419 1470 360 1600 389V760H0V482Z" fill="#104B66" opacity="0.55"/>
+  <path d="M0 535C154 486 295 528 455 510C613 493 754 465 925 500C1090 534 1250 488 1398 500C1480 506 1542 531 1600 551V760H0V535Z" fill="url(#sea)"/>
+
+  <path d="M305 365L1530 396L1530 455L305 405V365Z" fill="url(#beam)"/>
+  <path d="M307 376L1535 409" stroke="#FFE4A0" stroke-width="3" opacity="0.22"/>
+  <ellipse cx="337" cy="374" rx="64" ry="52" fill="#FFDB86" opacity="0.34" filter="url(#glow)"/>
+
+  <path d="M0 616C111 594 188 639 306 624C453 605 486 551 627 573C771 595 833 645 970 626C1136 603 1201 556 1354 579C1440 592 1528 630 1600 621V760H0V616Z" fill="#062943" opacity="0.77"/>
+  <path d="M0 662C117 648 204 683 330 667C484 648 561 614 678 640C797 667 849 702 1006 680C1149 659 1284 619 1417 647C1492 663 1541 686 1600 686" stroke="#4B9AAB" stroke-width="4" opacity="0.45"/>
+  <path d="M0 710C118 694 237 734 365 713C488 693 582 670 704 703C838 739 927 727 1057 704C1194 680 1320 690 1459 717C1512 727 1565 726 1600 723" stroke="#6CB6BA" stroke-width="3" opacity="0.32"/>
+
+  <path d="M255 660H454L416 582H294L255 660Z" fill="#08273A"/>
+  <path d="M294 582L316 398H395L416 582H294Z" fill="url(#tower)"/>
+  <path d="M305 491H406" stroke="#F5C87B" stroke-width="5" opacity="0.76"/>
+  <path d="M311 561H401" stroke="#F5C87B" stroke-width="5" opacity="0.53"/>
+  <path d="M323 421H387V382H323V421Z" fill="#FFC96B"/>
+  <path d="M315 382H395L374 354H336L315 382Z" fill="#153449"/>
+  <path d="M305 354H406L376 325H335L305 354Z" fill="#0A263B"/>
+  <path d="M328 354H384V326H328V354Z" fill="#FFC96B"/>
+  <path d="M323 326H389" stroke="#EFAB53" stroke-width="5"/>
+  <path d="M356 294V325" stroke="#EFC070" stroke-width="4"/>
+  <path d="M356 294L382 309" stroke="#EFC070" stroke-width="4"/>
+  <path d="M356 294L334 309" stroke="#EFC070" stroke-width="4"/>
+  <path d="M364 609H346V660H364V609Z" fill="#102B3C"/>
+
+  <g fill="#D5F0EA">
+    <text x="560" y="281" font-family="Georgia, 'Times New Roman', serif" font-size="145" font-weight="700" letter-spacing="8">FARO</text>
+    <text x="568" y="340" font-family="Arial, Helvetica, sans-serif" font-size="25" letter-spacing="1.2" opacity="0.88">GOVERNED DELIVERY FOR AI AGENTS</text>
+  </g>
+  <path d="M568 377H1005" stroke="#E9B65E" stroke-width="4"/>
+  <text x="568" y="434" fill="#D5F0EA" font-family="Arial, Helvetica, sans-serif" font-size="30" opacity="0.86">A clear path from request to verified delivery.</text>
+</svg>

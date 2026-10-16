@@ -1,0 +1,56 @@
+---
+name: faro-int-jira
+description: Use when FARO configures and syncs required Jira work.
+version: 1.2.0
+author: Hermes Agent
+license: MIT
+metadata:
+  hermes:
+    tags: [faro, jira, integration, intake, synchronization]
+    related_skills: [faro, faro-inicializacion, faro-doctor, faro-req-ingenieria, jira-rest-v3]
+---
+
+# FARO — Integración Jira
+
+## Rol
+
+`faro-int-jira` es el adaptador de gobernanza entre FARO y la capability externa `jira-rest-v3`. Configura Jira sólo por petición humana expresa, importa una issue como fuente `SRC` y, cuando la política es `REQUIRED`, sincroniza el seguimiento operativo de la solicitud.
+
+No sustituye el RM, la aprobación humana ni el análisis técnico. No implementa cambios de código.
+
+## Cuándo usar
+
+- Durante inicialización, después de que `faro-inicializacion` registre Jira `REQUIRED` en el perfil.
+- En un proyecto `available`, sólo si el usuario pide explícitamente agregar o configurar Jira.
+- Cuando el usuario entrega una URL o clave Jira y el proyecto tiene Jira habilitado.
+
+## Política y autorización
+
+1. Leer el contrato FARO, `context/stats.json`, el perfil de requerimientos y el estado de integración. Confirmar que el proyecto está `available`, salvo configuración dentro de una inicialización. **Completo:** proyecto y política conocidos.
+2. Durante una inicialización, verificar que `faro-inicializacion` ya registró la decisión `REQUIRED`, URL y clave confirmadas —o su pendiente explícito— en el perfil; no repetir la consulta de bootstrap. Para un proyecto `available`, exigir petición explícita de agregar/configurar la integración y autorización humana antes de registrar o cambiar su política. **Completo:** decisión, URL y clave confirmadas, y fuente de autorización registradas sin secretos.
+3. Registrar proveedor, URL confirmada, modo, clave del proyecto Jira, estado de credenciales y capacidades permitidas en `context/requirements/project-profile.md`. Con política `REQUIRED`, la URL y clave de proyecto son obligatorias antes de crear o importar solicitudes y se usan como fuentes de verdad para cada llamada; un valor de entorno opcional sólo se acepta si coincide. Nunca registrar tokens, contraseñas, cookies, cabeceras Authorization ni contenido de `.env`. **Completo:** la configuración sólo contiene metadatos no sensibles y la URL/clave pertenecen inequívocamente al proyecto.
+4. Con `REQUIRED`, verificar credenciales Hermes separadas, acceso a la clave del proyecto del perfil y los estados/transiciones disponibles antes de procesar la primera solicitud. Registrar en el perfil el mapeo real del proyecto: una equivalencia de pendiente (`Pendiente`, `Por hacer` u otro nombre confirmado) → `PENDING`; una de trabajo (`Haciendo` u otro nombre confirmado) → `DOING`; una de cierre (`Finalizado`, `Done` u otro nombre confirmado) → `DONE`. La equivalencia `CANCELLED` se registra si existe; si falta, sólo las cancelaciones quedan bloqueadas hasta que el workflow Jira la incorpore. Si falta PENDING, DOING o DONE, registrar el bloqueo y no simular sincronización. **Completo:** el mapeo se basa en el workflow real del proyecto.
+5. Si faltan credenciales Hermes separadas o no están configuradas, no consultar ni modificar Jira. Solicitar configuración segura fuera del repositorio o aceptar URL, exportación o texto aportado por el usuario como fuente manual únicamente si la política no es `REQUIRED`. Nunca reutilizar credenciales de la aplicación. **Completo:** no hubo lectura de secretos ni llamada remota no autenticada.
+
+## Trazabilidad Jira REQUIRED
+
+1. Toda solicitud debe estar vinculada a una issue. Una issue recibida se registra como `SRC-JIRA-<KEY>` y se entrega a `faro-req-ingenieria`. Una solicitud externa crea su issue al crear el RM.
+2. El RM debe registrar clave, URL y proyecto Jira; Jira debe recibir el identificador del RM y los vínculos disponibles al repositorio, plan, rama, PR, evidencia de QA o entrega. No copiar adjuntos ni datos sensibles salvo petición y autorización explícitas.
+3. Al iniciar la solicitud, transicionar a `Pendiente`/`Por hacer` o a `Haciendo`, según el workflow real. Durante definición, análisis técnico, UX, desarrollo, QA, validación y entrega, mantener `Haciendo` y añadir un comentario de hito con fase FARO, versión y vínculos disponibles. Al completar el alcance autorizado, transicionar a `Finalizado`/`Done`. Sólo una cancelación humana explícita permite transicionar a `Cancelado`.
+4. Si una sincronización obligatoria falla, no avanzar a la siguiente fase: registrar `waitingOn` con el error real. No exponer secretos ni ocultar el fallo.
+
+## Límites permanentes
+
+- `REQUIRED` autoriza únicamente crear la issue de un RM, actualizar los vínculos configurados, añadir comentarios de hito y transicionarla conforme a esta regla.
+- Asignar, editar prioridad/campos no configurados, adjuntar, borrar, registrar tiempos y gestionar sprints requieren autorización explícita independiente.
+- Jira no equivale a aprobación funcional, QA ni validación FARO; el RM conserva esas fuentes de verdad.
+- No exponer secretos, identificadores personales innecesarios ni información clínica en fuentes o reportes.
+
+## Verificación
+
+- [ ] Modo, autorización, proyecto y workflow Jira fueron comprobados.
+- [ ] Credenciales Hermes permanecieron fuera de repositorios y artefactos FARO.
+- [ ] Toda solicitud tiene issue, `SRC` y vínculo bidireccional con su RM.
+- [ ] Cada hito relevante dejó estado o comentario Jira verificable.
+- [ ] La issue quedó vinculada como fuente, no como aprobación implícita.
+- [ ] Se indicó el siguiente handoff o el bloqueo real.
