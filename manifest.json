@@ -11,7 +11,7 @@
   "bootstrap": {
     "path": "bootstrap/SKILL.md",
     "name": "faro-bootstrap",
-    "purpose": "Guided installation and confirmed replacement of an existing FARO suite."
+    "purpose": "Agent-guided source retrieval, installation, and confirmed replacement of an existing FARO suite."
   },
   "skills": [
     "faro",
