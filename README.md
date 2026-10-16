@@ -36,27 +36,26 @@ Request → Context → Requirements → Technical plan → Build → QA → Val
 
 FARO does not collapse those stages into paperwork. Each specialist skill exists to make one transition clear, evidence-based, and reversible when the facts do not support moving forward.
 
-## Quick start
+## Ask an agent to install FARO
 
-Clone a reviewed release or commit:
+The user does **not** need to clone this repository first. Give an agent the bootstrap skill and either a FARO repository URL or a local source. The agent obtains the suite into temporary staging, validates it, and installs it.
 
-```bash
-git clone https://github.com/matgro/faro-suite-skills.git
-cd faro-suite-skills
-```
-
-Then give an agent the bootstrap skill and the local checkout, tag, or commit:
+Use a pinned tag or commit whenever possible. If you intentionally provide only a repository URL, the bootstrap resolves the current revision and reports the immutable commit it used.
 
 ```text
-Load this skill and use it to install or update FARO:
-/path/to/faro-suite-skills/bootstrap/SKILL.md
+Load and execute this bootstrap skill:
+https://raw.githubusercontent.com/matgro/faro-suite-skills/<tag-or-commit>/bootstrap/SKILL.md
 
-Install from this reviewed checkout: /path/to/faro-suite-skills
+Install FARO from this repository:
+https://github.com/matgro/faro-suite-skills
+
 Use the target agent's configured skills directory. If FARO is already installed,
 show me the destination and comparison, then ask before replacing it.
 ```
 
-The bootstrap skill installs the complete `faro/` tree. When an existing installation is found, it must inspect it, compare it with the incoming release, and obtain explicit user confirmation before replacement.
+If the bootstrap was supplied as a local file, give the agent the local path instead. If it cannot safely identify the package repository from the bootstrap URL, also provide the repository URL explicitly.
+
+The bootstrap skill installs the complete `faro/` tree. It may retrieve the declared package source, but it must never execute a downloaded script. When an existing installation is found, it must inspect it, compare it with the incoming release, and obtain explicit user confirmation before replacement.
 
 > There is no universal skill directory. FARO intentionally lets the target agent determine its own configured skills root instead of assuming a vendor-specific path.
 

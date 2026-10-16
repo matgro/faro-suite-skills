@@ -14,7 +14,7 @@ The FARO skills intentionally describe metadata-only integrations. For example, 
 
 ## Bootstrap safety
 
-The bootstrap skill may copy a reviewed release into an agent's skills root. It must validate `manifest.json` and `checksums.sha256`; it must inspect and compare an existing FARO installation; and it must get explicit user confirmation before replacing that existing installation. It must not download or execute arbitrary remote scripts.
+The bootstrap skill may retrieve a user-approved FARO repository into temporary staging or copy a reviewed local release into an agent's skills root. It must validate `manifest.json` and `checksums.sha256`; it must inspect and compare an existing FARO installation; and it must get explicit user confirmation before replacing that existing installation. It must not download or execute arbitrary remote scripts.
 
 ## Before publishing
 
