@@ -4,13 +4,17 @@ from __future__ import annotations
 
 import json
 import re
+import sys
 from pathlib import Path
+
+sys.dont_write_bytecode = True
+from suite_validation import validate_suite
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED = {
     "faro", "faro-inicializacion", "faro-doctor", "faro-arq-laravel", "faro-arq-mobile",
     "faro-arq-generica", "faro-documentacion-funcional", "faro-req-ingenieria",
-    "faro-req-analisis-tecnico", "faro-req-implementacion", "faro-qa-ejecucion",
+    "faro-req-analisis-tecnico", "faro-req-desarrollo", "faro-qa-ejecucion",
     "faro-req-validacion", "faro-ux", "faro-entrega", "faro-int-jira", "faro-int-azure-devops",
     "azure-devops-rest-v7",
 }
@@ -46,7 +50,7 @@ def load_json(path: Path, failures: list[str]) -> dict:
 
 
 def main() -> int:
-    failures: list[str] = []
+    failures: list[str] = validate_suite(ROOT)
     discovered: dict[str, Path] = {}
     for skill in [ROOT / "SKILL.md", *sorted(ROOT.glob("*/SKILL.md"))]:
         try:
@@ -123,7 +127,7 @@ def main() -> int:
         failures.append("stats template no coincide con la versión de contrato")
 
     provenance = load_json(PROVENANCE_PATH, failures)
-    if provenance.get("schemaVersion") != 1 or provenance.get("ref") != "refs/tags/v1.2.0":
+    if provenance.get("schemaVersion") != 1 or provenance.get("ref") != f"refs/tags/v{provenance.get('packageVersion')}":
         failures.append("provenance de suite no declara su tag inmutable")
     if provenance.get("repository") != "https://github.com/matgro/faro-suite-skills" or provenance.get("integrityFile") != "checksums.sha256":
         failures.append("provenance de suite no declara repositorio/checksums válidos")

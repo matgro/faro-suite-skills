@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [faro, requirements, technical-analysis, planning, tasks]
-    related_skills: [faro, faro-req-ingenieria, faro-req-implementacion, faro-req-validacion]
+    related_skills: [faro, faro-req-ingenieria, faro-req-desarrollo, faro-req-validacion]
 ---
 
 # FARO — Análisis técnico de requerimientos
@@ -30,7 +30,7 @@ Contrasta un RM, BUG o TEC con el repositorio y crea un plan técnico y tareas t
 4. Crear o actualizar el plan desde `assets/technical-plan.md` y tareas desde `assets/tasks.md`; para BUG/TEC usar `assets/maintenance-record.md`. Usar nombres estables sin versión, por ejemplo `<RM-ID>-plan-tecnico.md` y `<RM-ID>-tareas.md`: versión, baseline e historial pertenecen dentro del documento. No duplicar archivos por cada versión salvo archivado explícitamente solicitado. **Completo:** cada tarea apunta a alcance funcional o justificación técnica y verificación.
 5. Marcar PRELIMINAR, BLOQUEADO o LISTO_PARA_DESARROLLO según contrato, bloqueos y evidencia. **Completo:** la aprobación y la revisión citada concuerdan.
 6. Si seguimiento está `REQUIRED`, sincronizar el hito de análisis con comentario, versión y enlace al plan; mantener el estado de trabajo o transicionar conforme al workflow remoto verificado. Si la sincronización falla, bloquear el flujo.
-7. Actualizar catálogo/handoff y `context/workflow.json` cuando exista: `nextRoute` es `faro-req-implementacion` sólo si la versión y autorización coinciden. **Completo:** plan, tareas, workflow y traspaso apuntan a la misma versión.
+7. Actualizar catálogo/handoff y `context/workflow.json` cuando exista: `nextRoute` es `faro-req-desarrollo` sólo si la versión y autorización coinciden. **Completo:** plan, tareas, workflow y traspaso apuntan a la misma versión.
 
 ## Invariantes
 

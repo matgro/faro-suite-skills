@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [faro, project, routing, governance, requirements]
-    related_skills: [faro-inicializacion, faro-doctor, faro-arq-laravel, faro-arq-mobile, faro-arq-generica, faro-documentacion-funcional, faro-req-ingenieria, faro-req-analisis-tecnico, faro-req-implementacion, faro-qa-ejecucion, faro-req-validacion, faro-ux, faro-entrega, faro-int-jira, faro-int-azure-devops, azure-devops-rest-v7]
+    related_skills: [faro-inicializacion, faro-doctor, faro-arq-laravel, faro-arq-mobile, faro-arq-generica, faro-documentacion-funcional, faro-req-ingenieria, faro-req-analisis-tecnico, faro-req-desarrollo, faro-qa-ejecucion, faro-req-validacion, faro-ux, faro-entrega, faro-int-jira, faro-int-azure-devops, azure-devops-rest-v7]
 ---
 
 # FARO — Orquestador de proyecto
@@ -32,7 +32,7 @@ El root coordinador es siempre el directorio de trabajo actual de la sesión. Se
 
 1. Antes de enrutar, fijar root y comprobar existencia de `AGENTS.md`, bloque `FARO:START`/`FARO:END`, `context/faro-workspace.json`, `context/stats.json`, `context/README.md`, perfil y workflow opcional. Después pueden inspeccionarse fuentes externas aportadas. **Completo:** se conoce si el workspace es ausente, existente completo o existente parcial.
 2. Ante “inicializa/prepara con FARO”: si no hay bloque FARO ni artefacto FARO, cargar `faro-inicializacion`. Si existe cualquiera de ellos —incluso incompleto, en `new` o `initializing`— cargar `faro-doctor`, informar que el espacio ya existe y mostrar su estado; no reinicializar ni reparar sin una autorización posterior explícita. **Completo:** una inicialización repetida nunca sobrescribe información.
-3. Para pedidos no inicializadores con contrato existente, validar JSON y leer configuración, índice, estado, perfil y workflow. Un JSON malformado se informa y se enruta a `faro-doctor`; no se descarta ni se reemplaza. **Completo:** versión/estado/configuración son conocidos antes de cargar otra skill.
+3. Para pedidos no inicializadores con contrato existente, validar JSON y leer configuración, índice, estado, perfil y workflow. Antes de seguir `nextRoute`, ejecutar `python -B <skills-root>/faro/scripts/suite_validation.py --workflow <root>/context/workflow.json`. Una suite incoherente, una ruta retirada/desconocida o un JSON malformado se informa y se enruta a `faro-doctor`; no se descarta, reemplaza ni traduce silenciosamente. Consultar `references/suite-changelog.json`: la versión del paquete no sustituye la del contrato de proyecto. **Completo:** versión/estado/configuración y destinos vigentes son conocidos antes de cargar otra skill.
 4. Si `state` es `disabled`, detener FARO. Si el contrato existe y `state` es `new` o `initializing`, seguir la ruta de arquitectura aplicable o el adaptador de seguimiento confirmado cuando `work_tracking.mode` sea `REQUIRED`; no recibir SOL/RM/BUG/TEC. **Completo:** no hay intake antes de `available`.
 5. Comparar la versión instalada con la configuración canónica. Una configuración anterior puede ser diagnosticada y migrada sólo bajo autorización explícita; una posterior nunca se degrada. **Completo:** el contrato es versionado y no se inventa una migración.
 
@@ -70,7 +70,7 @@ Durante inicialización se formula una sola consulta agrupada para identidad/tip
 | `available`; solicitud funcional/cambio/BUG sin esperado; DF no habilitada | `faro-req-ingenieria` | RM/BUG/TEC trazable, versión y estado de definición. |
 | RM/BUG/TEC requiere aclarar, cambiar alcance o resolver PD | `faro-req-ingenieria` | Artefacto funcional actualizado. |
 | RM/BUG/TEC autorizado; impacto, plan o tareas | `faro-req-analisis-tecnico` | Plan/tareas contra código, estado técnico. |
-| Plan `LISTO_PARA_DESARROLLO`; autorización exacta; implementar | `faro-req-implementacion` | Incremento implementado, tareas/evidencia actualizadas. |
+| Plan `LISTO_PARA_DESARROLLO`; autorización exacta; desarrollar | `faro-req-desarrollo` | Incremento implementado, tareas/evidencia actualizadas. |
 | Incremento construido; QA, casos, reproducción o pruebas | `faro-qa-ejecucion` | Casos, evidencia, BUGs y cobertura ejecutada. |
 | Comparar entrega con RM/BUG/TEC autorizado | `faro-req-validacion` | Informe CONFORME/NO_CONFORME/NO_VERIFICADO. |
 | RF/CA afectan pantalla, flujo, navegación o estados visibles | `faro-ux` | Diseño proporcional y catálogo frontend respetado. |
@@ -98,5 +98,5 @@ Durante inicialización se formula una sola consulta agrupada para identidad/tip
 - [ ] La configuración versionada declara cada archivo creado o comprobado.
 - [ ] El estado permite la ruta elegida.
 - [ ] La única skill cargada corresponde a una fila de la tabla.
-- [ ] La autorización/versiones coinciden antes de análisis técnico, implementación, QA o entrega.
+- [ ] La autorización/versiones coinciden antes de análisis técnico, desarrollo, QA o entrega.
 - [ ] El bloque FARO y JSON conservan información no administrada.

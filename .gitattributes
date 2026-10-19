@@ -1,0 +1,3 @@
+# Published runtime hashes must survive Git checkout on every platform.
+faro/** text eol=lf
+checksums.sha256 text eol=lf

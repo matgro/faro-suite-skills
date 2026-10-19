@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [faro, qa, testing, evidence, bugs]
-    related_skills: [faro, faro-req-implementacion, faro-req-validacion, faro-req-ingenieria]
+    related_skills: [faro, faro-req-desarrollo, faro-req-validacion, faro-req-ingenieria]
 ---
 
 # FARO — Ejecución de QA
@@ -27,7 +27,7 @@ Diseña y ejecuta pruebas de aplicación para un incremento construido, con evid
 3. Registrar la autorización de datos/efectos faltante. No usar datos reales sin autorización. **Completo:** escenario ejecutable o BLOCKED con causa.
 4. Ejecutar por CA y registrar evidencia. Estados permitidos: `PENDING`, `PASSED`, `FAILED`, `BLOCKED`. **Completo:** UI no se acredita con API.
 5. Crear o actualizar BUG para cada fallo reproducible; no corregirlo durante la corrida. **Completo:** reproducción, impacto y evidencia trazables.
-6. Actualizar workflow: fallo → `faro-req-analisis-tecnico` o `faro-req-implementacion`; éxito → `faro-req-validacion`. **Completo:** próxima ruta real.
+6. Actualizar workflow: fallo → `faro-req-analisis-tecnico` o `faro-req-desarrollo`; éxito → `faro-req-validacion`. **Completo:** próxima ruta real.
 
 ## Invariantes
 - Caso no ejecutado nunca es PASSED.

@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [faro, requirements, rm, traceability, analysis]
-    related_skills: [faro, faro-req-analisis-tecnico, faro-req-implementacion, faro-qa-ejecucion, faro-req-validacion, faro-ux]
+    related_skills: [faro, faro-req-analisis-tecnico, faro-req-desarrollo, faro-qa-ejecucion, faro-req-validacion, faro-ux]
 ---
 
 # FARO — Ingeniería de requerimientos

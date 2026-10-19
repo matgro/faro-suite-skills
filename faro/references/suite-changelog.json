@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "releases": [
+    {
+      "version": "1.3.0",
+      "changes": [
+        "Renombra la skill de implementación a faro-req-desarrollo sin cambiar su alcance ni sus autorizaciones.",
+        "Valida nombres, carpetas, referencias y destinos de handoff al instalar, inicializar y diagnosticar.",
+        "Detecta rutas de workflow retiradas y propone su reemplazo con autorización explícita, sin migración automática.",
+        "Distribuye este historial de renombres y estabiliza los checksums con finales de línea LF.",
+        "Separa lineamientos de desarrollo comunes, .NET/C# y Laravel en Markdown editables dentro de la skill; el agente los lee según el componente y las personalizaciones se comparan antes de actualizar.",
+        "Detecta archivos de referencia Markdown ausentes o vacíos sin imponer el texto de los lineamientos."
+      ],
+      "renamedSkills": {
+        "faro-req-implementacion": "faro-req-desarrollo"
+      }
+    }
+  ]
+}
