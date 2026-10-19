@@ -1,0 +1,67 @@
+---
+name: faro-req-desarrollo
+description: Use when FARO develops an approved requirement plan.
+version: 1.1.0
+author: Hermes Agent
+license: MIT
+metadata:
+  hermes:
+    tags: [faro, development, requirements, code, verification]
+    related_skills: [faro, faro-req-analisis-tecnico, faro-qa-ejecucion, faro-req-validacion, faro-ux]
+---
+
+# FARO — Desarrollo de requerimientos
+
+## Rol
+Implementa una unidad autorizada de un RM, BUG o TEC con plan técnico `LISTO_PARA_DESARROLLO`. No redefine comportamiento funcional, no acepta la entrega, no realiza QA de aplicación ni hace commit, PR o despliegue sin la ruta `faro-entrega`.
+
+## Precondiciones
+- FARO está `available`.
+- La entrada identifica ID, versión, alcance y autorización humana vigente.
+- Plan y tareas pertenecen a la misma versión y están `LISTO_PARA_DESARROLLO`.
+- Se leyeron `AGENTS.md`, arquitectura, instrucciones del repositorio, Git y tarea activa.
+- Se identificó la tecnología del componente y se leyeron los archivos de lineamientos aplicables, según la sección siguiente.
+- Antes de editar código, la rama activa debe cumplir `feature/<RM-ID>-<descripcion-kebab-case>`. Si no existe, crearla desde la base autorizada antes de modificar archivos. Si hay cambios no atribuibles a la unidad, bloquear y pedir decisión.
+
+Si una precondición falla, actualizar `context/workflow.json` con `waitingOn`, no modificar código y devolver la ruta a `faro`, `faro-req-ingenieria` o `faro-req-analisis-tecnico`.
+
+## Lineamientos de desarrollo
+
+Las reglas de código viven en archivos Markdown dentro de esta misma skill, no en el workspace ni en una instalación externa:
+
+- Leer siempre [Lineamientos comunes](references/lineamientos-comunes.md).
+- Para .NET/C#, leer además [Lineamientos .NET](references/lineamientos-dotnet.md).
+- Para Laravel, leer además [Lineamientos Laravel](references/lineamientos-laravel.md).
+
+Elegir por evidencia del componente que se va a modificar: arquitectura y archivos de proyecto `.csproj`/configuración de SDK para .NET; `composer.json`, `composer.lock` y uso de Laravel para Laravel. No elegir sólo por extensión ni asumir una tecnología por el nombre del repositorio. En un workspace mixto, aplicar a cada componente sus propias reglas; para otra tecnología, usar los comunes y las instrucciones locales, indicando que no hay guía específica. Si falta evidencia necesaria, aclararla antes de editar.
+
+Leer los archivos aplicables antes de cada unidad de desarrollo; no sustituirlos por una copia resumida en esta skill ni por valores recordados. Si falta o está vacío alguno de los seleccionados, bloquear e informar la ruta, sin inventar sus reglas. Registrar en la evidencia existente de la tarea qué archivos se usaron y las excepciones acordadas; no crear otro contrato ni nuevos estados.
+
+Las instrucciones explícitas del repositorio y la arquitectura aprobada prevalecen sobre estos valores por defecto; las reglas tecnológicas especializan las comunes. Ningún lineamiento modifica el RM, sus autorizaciones o las restricciones de seguridad. Si hay una contradicción no resoluble, volver al análisis técnico o a la definición funcional antes de cambiar código.
+
+El usuario puede editar las reglas directamente en esos archivos sin tocar `SKILL.md`; el agente sólo las cambia por pedido explícito, nunca para eludirlas. Son cambios locales visibles en la comparación de una actualización y en la verificación de hashes: no afirmar integridad de release idéntica ni regenerar checksums de una instalación para ocultarlos. Antes de reemplazar la suite, mostrar las personalizaciones y acordar su conservación o reaplicación; nunca descartarlas silenciosamente.
+
+## Procedimiento
+1. Confirmar la unidad en el plan y marcarla `doing` en workflow. Si seguimiento está `REQUIRED`, transicionar el item al estado remoto de trabajo y registrar un comentario con unidad, versión y enlace a la rama cuando exista; si falla, bloquear antes de editar código. **Completo:** unidad, versión, autorización y seguimiento trazables.
+2. Inspeccionar implementaciones, consumidores, pruebas y convenciones locales; identificar el stack y leer los lineamientos comunes y tecnológicos aplicables antes de editar. **Completo:** fuentes de reglas explícitas y reutilización o ruta nueva justificada.
+3. Si existe interfaz, cargar `faro-ux` antes de modificar pantallas y aplicar la guía tecnológica correspondiente. **Completo:** catálogo, dominio y markup único respetados.
+4. Implementar sólo el alcance de la tarea, siguiendo las reglas de código y la disciplina de pruebas definidas en los archivos leídos. Mantener contratos salvo orden explícita del RM; acordar y registrar las excepciones que esos lineamientos requieran. **Completo:** no hay alcance adicional ni rutas paralelas y la evidencia demuestra la disciplina aplicada o su excepción autorizada.
+5. Ejecutar las pruebas relevantes y los checks existentes, revisando el diff contra los lineamientos seleccionados. **Completo:** resultados reales, excepciones o bloqueo registrados; no se confunden compilación y pruebas.
+6. Actualizar tareas, fuentes técnicas afectadas y workflow: `done`, evidencia y `nextRoute`. **Completo:** reanudable sin chat.
+7. Detenerse y reportar cambios, comprobaciones, límites y siguiente ruta. QA de aplicación se enruta a `faro-qa-ejecucion`.
+
+## Invariantes
+- El plan técnico guía el cómo; el RM autorizado guía el qué.
+- Un fallo derivado del cambio se corrige dentro de la unidad; ambigüedad funcional vuelve a `faro-req-ingenieria`.
+- No declarar conformidad funcional; pertenece a `faro-req-validacion`.
+- No tratar compilación o inspección como prueba ejecutada.
+- No exponer secretos ni usar producción sin autorización.
+
+## Verificación
+- [ ] ID, versión, autorización y tarea coinciden.
+- [ ] Se leyó código vecino, consumidores y pruebas.
+- [ ] Se leyeron los lineamientos comunes y los del stack evidenciado; reglas y excepciones quedaron trazables sin modificar el alcance.
+- [ ] UI revisó catálogo local cuando aplica.
+- [ ] Pruebas ejecutadas o bloqueo evidenciado.
+- [ ] Tarea/workflow registran resultado y siguiente ruta.
+- [ ] No hubo entrega ni aceptación implícitas.

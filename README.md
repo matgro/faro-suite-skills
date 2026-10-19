@@ -94,6 +94,8 @@ faro/                         Runtime suite
 bootstrap/SKILL.md            Agent-guided installation and safe update
 manifest.json                 Suite contract and complete skill inventory
 checksums.sha256              SHA-256 integrity inventory for the runtime tree
+CHANGELOG.md                  Release changes and safe update instructions
+faro/references/suite-changelog.json  Distributed rename history for diagnostics
 tests/validate_package.py     Dependency-free package validator
 ```
 
@@ -111,7 +113,39 @@ Validate an installed copy against the release:
 python3 tests/validate_package.py --installed-at /path/to/your-agent/skills/faro
 ```
 
-The validator checks the 17 runtime skills, package manifest, bootstrap contract, file inventory, SHA-256 checksums, and common secret patterns.
+The validator checks the runtime skills, package manifest, bootstrap contract, file inventory, SHA-256 checksums, common secret patterns, name/folder consistency, internal references, and the distributed changelog. Shared read-only checks live in `faro/scripts/suite_validation.py` and are also used by doctor and the initialization preflight.
+
+### Update compatibility and changelog
+
+Read [CHANGELOG.md](CHANGELOG.md) before replacing a suite. The incoming `faro/references/suite-changelog.json` travels with the installation and records renamed skills for tooling. Bootstrap must report the affected changes, compare the complete trees and obtain explicit replacement confirmation; it must not overlay new files onto the old installation or migrate project files implicitly.
+
+The pending package `1.3.0` renames the development route to `faro-req-desarrollo`. Its workspace contract remains `1.13.0`: package updates do not require reinitializing projects. After refreshing the runtime, run doctor on each workspace you resume. A retired `nextRoute` is reported with the current destination and requires an explicitly authorized, targeted correction that preserves requirement versions, scope, approvals and history.
+
+Before publishing a new release, synchronize package version, provenance tag and changelog, then regenerate the inventory with `python tools/update_checksums.py` and run:
+
+```bash
+python -B -m unittest discover -s tests -p 'test_*.py'
+python tests/validate_package.py
+python -B faro/scripts/verify-routing.py
+```
+
+On Windows, keep the runtime's LF line endings declared by `.gitattributes`. When preparing a new release from an older CRLF checkout, `python tools/update_checksums.py --normalize-line-endings` performs the explicit conversion before calculating hashes. Never normalize an installed or published release to bypass verification. Retrieve releases with `git -c core.autocrlf=false clone ...`.
+
+Changing local files does not publish a release: remote installation and origin verification require the new commit and matching immutable tag to be published. Never reuse the previous tag for a changed tree.
+
+## Editable development guidelines
+
+Development loads its rules from these files inside `faro/faro-req-desarrollo/`:
+
+- `references/lineamientos-comunes.md`: shared rules, including readability, naming, responsibilities, errors, configuration, minimal refactoring and TDD.
+- `references/lineamientos-dotnet.md`: .NET/C# rules adapted from the supplied NZT sources; applied only to an evidenced .NET component.
+- `references/lineamientos-laravel.md`: Laravel rules; applied only to an evidenced Laravel component.
+
+Edit the Markdown rules directly; changing their text does not require editing `SKILL.md`. The agent rereads the common file plus the applicable technology file before each development unit. Mixed workspaces use the appropriate rules per component; other technologies use the common rules and the project's own instructions. Missing or empty selected guides block development instead of being silently ignored.
+
+These are suite-wide defaults, not project-specific approvals. Explicit repository instructions and approved architecture take precedence; they never expand the authorized requirement. The agent may change the guidelines only when requested, not to bypass a rule it failed to follow.
+
+Editing an installed guide is an intentional local customization and changes its release hash. Local coherence checks allow edited wording, while full origin verification still reports that the bytes differ from the published release. Before updating FARO, compare and preserve or explicitly agree how to reapply these edits; never overwrite them silently or regenerate installed hashes to conceal a difference.
 
 ## Hermes Agent location
 

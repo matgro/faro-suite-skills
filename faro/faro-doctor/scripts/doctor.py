@@ -7,12 +7,17 @@ import hashlib
 import json
 import re
 import subprocess
+import sys
 import tempfile
 from pathlib import Path
 
 SKILL_ROOT = Path(__file__).resolve().parents[2]
 CONFIG_PATH = SKILL_ROOT / "templates" / "faro-workspace-config.json"
 PROVENANCE_PATH = SKILL_ROOT / "references" / "suite-provenance.json"
+
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(SKILL_ROOT / "scripts"))
+from suite_validation import validate_suite, validate_workflow
 
 
 def load_json(path: Path) -> tuple[dict | None, str | None]:
@@ -39,12 +44,12 @@ def verify_suite_origin() -> tuple[str, str | None]:
     integrity_file = provenance.get("integrityFile")
     if not isinstance(repository, str) or not isinstance(ref, str) or not isinstance(integrity_file, str):
         return "no verificable", "provenance de suite incompleta"
-    if not ref.startswith("refs/tags/"):
-        return "no verificable", "provenance no declara una etiqueta Git inmutable"
+    if ref != f"refs/tags/v{provenance.get('packageVersion')}":
+        return "no verificable", "provenance no declara la etiqueta Git de su versión de paquete"
 
     try:
         resolved = subprocess.run(
-            ["git", "ls-remote", "--exit-code", "--refs", repository, ref],
+            ["git", "ls-remote", "--exit-code", repository, ref, ref + "^{}"],
             check=False,
             capture_output=True,
             text=True,
@@ -55,9 +60,12 @@ def verify_suite_origin() -> tuple[str, str | None]:
     if resolved.returncode != 0:
         return "no verificable", f"el remoto no resolvió {ref}"
     lines = [line.split() for line in resolved.stdout.splitlines() if line.strip()]
-    if len(lines) != 1 or len(lines[0]) != 2 or not re.fullmatch(r"[0-9a-f]{40}", lines[0][0]):
+    if not lines or any(len(line) != 2 or not re.fullmatch(r"[0-9a-f]{40}", line[0]) or line[1] not in {ref, ref + "^{}"} for line in lines):
         return "no verificable", f"respuesta Git inesperada para {ref}"
-    commit = lines[0][0]
+    revisions = {line[1]: line[0] for line in lines}
+    if len(revisions) != len(lines) or ref not in revisions:
+        return "no verificable", f"respuesta Git inesperada para {ref}"
+    commit = revisions.get(ref + "^{}", revisions[ref])
 
     with tempfile.TemporaryDirectory(prefix="faro-suite-origin-") as temporary:
         checkout = Path(temporary) / "source"
@@ -77,7 +85,7 @@ def verify_suite_origin() -> tuple[str, str | None]:
                 timeout=90,
             )
             checkout_commit = subprocess.run(
-                ["git", "-C", str(checkout), "checkout", "--quiet", "--detach", "FETCH_HEAD"],
+                ["git", "-c", "core.autocrlf=false", "-C", str(checkout), "checkout", "--quiet", "--detach", "FETCH_HEAD"],
                 check=False,
                 capture_output=True,
                 text=True,
@@ -133,7 +141,15 @@ def main() -> int:
     print(f"Root inspeccionado: {root}")
     print(f"Versión canónica esperada: {expected_version}")
 
-    problems: list[str] = []
+    suite_problems = validate_suite(SKILL_ROOT)
+    workflow_problems = validate_workflow(root / "context/workflow.json", SKILL_ROOT)
+    problems: list[str] = suite_problems + workflow_problems
+    provenance, _ = load_json(PROVENANCE_PATH)
+    package_version = provenance.get("packageVersion", "no registrada") if provenance else "no registrada"
+    print(f"Versión del paquete de skills: {package_version} (independiente del contrato {expected_version})")
+    print("Coherencia local de la suite: " + ("inválida" if suite_problems else "válida"))
+    print(f"Historial de actualización: {SKILL_ROOT / 'references/suite-changelog.json'}")
+    origin_error: str | None = None
     if args.verify_suite_origin:
         origin, origin_error = verify_suite_origin()
         print(f"Origen Git de la suite: {origin}")
@@ -200,7 +216,13 @@ def main() -> int:
     workflow = root / "context/workflow.json"
     print("Workflow activo: " + ("sí" if workflow.exists() else "no"))
 
-    if not exists:
+    if stats and stats.get("state") == "disabled":
+        recommendation = "detener FARO"
+    elif suite_problems or origin_error:
+        recommendation = "actualizar la suite completa mediante bootstrap, con comparación y confirmación; no reinicializar el workspace"
+    elif workflow_problems:
+        recommendation = "revisar el workflow y el changelog; autorizar sólo una corrección identificada, sin reinicializar ni modificar aprobaciones"
+    elif not exists:
         recommendation = "faro-inicializacion"
     elif problems:
         recommendation = "faro-inicializacion sólo con autorización explícita de reparación"

@@ -15,6 +15,10 @@ BOOTSTRAP = ROOT / "bootstrap" / "SKILL.md"
 MANIFEST = ROOT / "manifest.json"
 CHECKSUMS = ROOT / "checksums.sha256"
 PROVENANCE = SKILLS_ROOT / "references" / "suite-provenance.json"
+
+sys.dont_write_bytecode = True
+sys.path.insert(0, str(SKILLS_ROOT / "scripts"))
+from suite_validation import validate_suite
 SECRET_PATTERNS = {
     "private key": r"-----BEGIN (?:[A-Z ]*PRIVATE KEY|OPENSSH PRIVATE KEY)-----",
     "credential URL": r"https?://[^\s/@:]+:[^\s/@]+@",
@@ -91,13 +95,21 @@ def main() -> None:
     except (OSError, json.JSONDecodeError) as exc:
         fail(f"invalid manifest.json: {exc}")
 
-    expected_skills = set(manifest.get("skills", []))
+    declared_skills = manifest.get("skills", [])
+    if not isinstance(declared_skills, list) or not all(isinstance(name, str) for name in declared_skills):
+        fail("manifest skills must be a list of names")
+    expected_skills = set(declared_skills)
+    if len(expected_skills) != len(declared_skills):
+        fail("duplicate skill in manifest")
     actual_paths = sorted(SKILLS_ROOT.rglob("SKILL.md"))
     actual_skills = {skill_name(path) for path in actual_paths}
     if None in actual_skills:
         fail("a runtime SKILL.md is missing YAML frontmatter or a name field")
     if actual_skills != expected_skills:
         fail(f"manifest skills mismatch; missing={sorted(expected_skills - actual_skills)}, extra={sorted(actual_skills - expected_skills)}")
+    suite_problems = validate_suite(SKILLS_ROOT)
+    if suite_problems:
+        fail("suite references/changelog: " + "; ".join(suite_problems))
     bootstrap = manifest.get("bootstrap", {})
     if manifest.get("entrypoint") != "faro" or skill_name(SKILLS_ROOT / "SKILL.md") != "faro":
         fail("entrypoint must be faro/SKILL.md")

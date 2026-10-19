@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [faro, delivery, git, release, deployment]
-    related_skills: [faro, faro-req-validacion, faro-qa-ejecucion, faro-req-implementacion]
+    related_skills: [faro, faro-req-validacion, faro-qa-ejecucion, faro-req-desarrollo]
 ---
 
 # FARO — Entrega controlada

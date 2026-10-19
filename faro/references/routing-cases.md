@@ -15,7 +15,7 @@ Cada caso valida una única ruta especialista. No prueba la carga automática de
 | Solicitud funcional sin DF habilitada | `available`; perfil DF no habilitada | «agrega una regla de negocio» | `faro-req-ingenieria` | Código directo |
 | RM pendiente | RM con PD | «haz RM-003» | `faro-req-ingenieria` | Planificar o implementar |
 | Plan técnico | RM autorizado | «analiza impacto» | `faro-req-analisis-tecnico` | Implementar |
-| Desarrollo autorizado | Plan `LISTO_PARA_DESARROLLO`, versión coincide | «implementa RM-003» | `faro-req-implementacion` | Commit/deploy implícito |
+| Desarrollo autorizado | Plan `LISTO_PARA_DESARROLLO`, versión coincide | «desarrolla RM-003» | `faro-req-desarrollo` | Commit/deploy implícito |
 | UI | RF/CA de pantalla | «diseña la pantalla de alta» | `faro-ux` | Usar markup sin catálogo |
 | QA | Incremento construido | «ejecuta casos de RM-003» | `faro-qa-ejecucion` | Corregir código dentro de QA |
 | Validación | Entrega y evidencia | «valida RM-003» | `faro-req-validacion` | Aprobar RM o desplegar |
