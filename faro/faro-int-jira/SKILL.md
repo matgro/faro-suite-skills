@@ -1,7 +1,7 @@
 ---
 name: faro-int-jira
 description: Use when FARO configures and syncs required Jira work.
-version: 1.2.0
+version: 1.3.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -28,9 +28,9 @@ No sustituye el RM, la aprobación humana ni el análisis técnico. No implement
 
 1. Leer el contrato FARO, `context/stats.json`, el perfil de requerimientos y el estado de integración. Confirmar que el proyecto está `available`, salvo configuración dentro de una inicialización. **Completo:** proyecto y política conocidos.
 2. Durante una inicialización, verificar que `faro-inicializacion` ya registró la decisión `REQUIRED`, proveedor `JIRA`, URL y clave confirmadas —o su pendiente explícito— en el perfil; no repetir la consulta de bootstrap. Para un proyecto `available`, exigir petición explícita de agregar/configurar la integración y autorización humana antes de registrar o cambiar su política. **Completo:** decisión, URL y clave confirmadas, y fuente de autorización registradas sin secretos.
-3. Registrar modo, proveedor, URL confirmada, clave del proyecto Jira, estado de credenciales y capacidades permitidas bajo `work_tracking` en `context/requirements/project-profile.md`. Con política `REQUIRED`, la URL y clave de proyecto son obligatorias antes de crear o importar solicitudes y se usan como fuentes de verdad para cada llamada; un valor de entorno opcional sólo se acepta si coincide. Nunca registrar tokens, contraseñas, cookies, cabeceras Authorization ni contenido de `.env`. **Completo:** la configuración sólo contiene metadatos no sensibles y la URL/clave pertenecen inequívocamente al proyecto.
-4. Con `REQUIRED`, verificar credenciales Hermes separadas, acceso a la clave del proyecto del perfil y los estados/transiciones disponibles antes de procesar la primera solicitud. Registrar en el perfil el mapeo real del proyecto: una equivalencia de pendiente (`Pendiente`, `Por hacer` u otro nombre confirmado) → `PENDING`; una de trabajo (`Haciendo` u otro nombre confirmado) → `DOING`; una de cierre (`Finalizado`, `Done` u otro nombre confirmado) → `DONE`. La equivalencia `CANCELLED` se registra si existe; si falta, sólo las cancelaciones quedan bloqueadas hasta que el workflow Jira la incorpore. Si falta PENDING, DOING o DONE, registrar el bloqueo y no simular sincronización. **Completo:** el mapeo se basa en el workflow real del proyecto.
-5. Si faltan credenciales Hermes separadas o no están configuradas, no consultar ni modificar Jira. Solicitar configuración segura fuera del repositorio o aceptar URL, exportación o texto aportado por el usuario como fuente manual únicamente si la política no es `REQUIRED`. Nunca reutilizar credenciales de la aplicación. **Completo:** no hubo lectura de secretos ni llamada remota no autenticada.
+3. Registrar modo, proveedor, URL confirmada, clave del proyecto Jira, estado de credenciales y capacidades permitidas bajo `work_tracking` en `context/requirements/project-profile.md`. Con política `REQUIRED`, la URL y clave de proyecto son obligatorias antes de crear o importar solicitudes y se usan como fuentes de verdad para cada llamada; los valores no sensibles del entorno del agente sólo se aceptan si coinciden. Nunca registrar tokens, contraseñas, cookies, cabeceras Authorization ni contenido de `.env`. **Completo:** la configuración sólo contiene metadatos no sensibles y la URL/clave pertenecen inequívocamente al proyecto.
+4. Con `REQUIRED`, localizar y verificar sin revelar valores las credenciales Jira disponibles para el agente, separadas de las credenciales de la aplicación, el acceso a la clave del proyecto del perfil y los estados/transiciones disponibles antes de procesar la primera solicitud. Las variables necesarias pueden leerse desde el entorno ya inyectado o desde cualquier `.env` global perteneciente a un agente, aunque no sea Hermes; FARO puede buscarlos en directorios de configuración de agentes fuera del workspace. Nunca buscar ni leer `.env` del workspace, de repositorios indexados ni de una aplicación. Usar los valores sólo para ejecutar la llamada autenticada y no imprimirlos, exportarlos ni persistirlos. Registrar en el perfil el mapeo real del proyecto: una equivalencia de pendiente (`Pendiente`, `Por hacer` u otro nombre confirmado) → `PENDING`; una de trabajo (`Haciendo` u otro nombre confirmado) → `DOING`; una de cierre (`Finalizado`, `Done` u otro nombre confirmado) → `DONE`. La equivalencia `CANCELLED` se registra si existe; si falta, sólo las cancelaciones quedan bloqueadas hasta que el workflow Jira la incorpore. Si falta PENDING, DOING o DONE, registrar el bloqueo y no simular sincronización. **Completo:** el mapeo se basa en el workflow real del proyecto.
+5. Si no se encuentran credenciales Jira válidas en el entorno inyectado o en los `.env` globales de agentes, no consultar ni modificar Jira. Solicitar su configuración segura en el entorno de un agente, fuera del repositorio y del workspace, o aceptar URL, exportación o texto aportado por el usuario como fuente manual únicamente si la política no es `REQUIRED`. Nunca reutilizar credenciales de la aplicación. **Completo:** se buscaron sólo fuentes globales de agentes, sin exposición, persistencia ni llamada remota no autenticada.
 
 ## Trazabilidad Jira REQUIRED
 
@@ -49,7 +49,7 @@ No sustituye el RM, la aprobación humana ni el análisis técnico. No implement
 ## Verificación
 
 - [ ] Modo, autorización, proyecto y workflow Jira fueron comprobados.
-- [ ] Credenciales Hermes permanecieron fuera de repositorios y artefactos FARO.
+- [ ] Credenciales globales de agentes permanecieron fuera de repositorios y artefactos FARO.
 - [ ] Toda solicitud tiene issue, `SRC` y vínculo bidireccional con su RM.
 - [ ] Cada hito relevante dejó estado o comentario Jira verificable.
 - [ ] La issue quedó vinculada como fuente, no como aprobación implícita.

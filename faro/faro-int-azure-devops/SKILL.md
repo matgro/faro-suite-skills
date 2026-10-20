@@ -1,7 +1,7 @@
 ---
 name: faro-int-azure-devops
 description: Use when FARO configures Azure DevOps work tracking.
-version: 1.0.0
+version: 1.1.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -28,7 +28,7 @@ La URL hospedada en `*.visualstudio.com` y `dev.azure.com` identifica el mismo p
 
 1. Leer el contrato FARO, `context/stats.json`, el perfil y el workflow. Confirmar `available`, salvo dentro de una inicialización. **Completo:** estado y política conocidos.
 2. Registrar sólo metadatos en `project-profile.md`: proveedor, URL de organización, proyecto, área, equipo, iteración por defecto, tipo de item, campo/valor de actividad, campo/valor de estimación de tarea, asignado por defecto, estado de credenciales y capacidades autorizadas. No registrar PAT, contraseñas, cookies ni cabeceras. **Completo:** los valores específicos del proyecto son verificables y no sensibles.
-3. El PAT permanece fuera del repositorio como `AZDO_PAT`; `AZDO_ORGANIZATION_URL`, `AZDO_DEFAULT_PROJECT`, `AZDO_DEFAULT_AREA_PATH`, `AZDO_DEFAULT_TEAM` y `AZDO_DEFAULT_ASSIGNED_TO` son opcionales, sólo se aceptan si coinciden con el perfil. Si falta PAT, no consultar ni modificar Azure DevOps. **Completo:** no hubo lectura de `.env` ni reutilización de credenciales de la aplicación.
+3. El PAT permanece fuera del repositorio y del workspace como `AZDO_PAT`; puede obtenerse del entorno ya inyectado o de cualquier `.env` global perteneciente a un agente, aunque no sea Hermes. FARO puede buscar estas fuentes únicamente en directorios de configuración de agentes fuera del workspace y de repositorios indexados; nunca busca ni lee `.env` de una aplicación. `AZDO_ORGANIZATION_URL`, `AZDO_DEFAULT_PROJECT`, `AZDO_DEFAULT_AREA_PATH`, `AZDO_DEFAULT_TEAM` y `AZDO_DEFAULT_ASSIGNED_TO` son opcionales, sólo se aceptan si coinciden con el perfil. Si falta PAT, no consultar ni modificar Azure DevOps. **Completo:** no hubo reutilización de credenciales de la aplicación ni exposición o persistencia de secretos.
 4. Con modo `REQUIRED`, ejecutar una lectura autenticada contra la organización y consultar los tipos de work item, áreas, iteraciones del equipo y campos del tipo configurado. Registrar los valores reales elegidos y el mapeo operacional `PENDING`, `DOING`, `DONE` y, si existe, `CANCELLED`. **Completo:** configuración y workflow provienen del proyecto remoto real.
 5. Para crear un `Task`, confirmar que el campo de estimación configurado está disponible. Si no se provee estimación, usar `1`; no crear la tarea si ese campo no es editable o no acepta el valor. **Completo:** toda tarea creada tiene estimación explícita.
 6. Actividad, iteración y asignado son configurables. Si el valor solicitado no coincide con los valores ya validados, consultar Azure DevOps antes de crear o actualizar: actividad en los campos del work item type, iteraciones en el equipo y usuario en las identidades accesibles. No inventar valores ni sustituirlos silenciosamente. **Completo:** cada valor aplicado existe y es compatible con el proyecto.
