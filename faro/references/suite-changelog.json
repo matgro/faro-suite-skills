@@ -2,6 +2,14 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "1.4.0",
+      "changes": [
+        "Añade faro-bootstrap-laravel para crear de forma autorizada un proyecto Laravel nuevo en un root vacío antes de materializar el contrato FARO.",
+        "Enruta el scaffold Laravel a faro-inicializacion y después a faro-arq-laravel, sin mezclar creación técnica, arquitectura ni requisitos."
+      ],
+      "renamedSkills": {}
+    },
+    {
       "version": "1.3.1",
       "changes": [
         "Permite a las integraciones de Jira y Azure DevOps localizar credenciales desde el entorno inyectado o desde archivos .env globales de agentes fuera del workspace y de repositorios indexados.",
