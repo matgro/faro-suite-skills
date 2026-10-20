@@ -14,6 +14,7 @@ from pathlib import Path
 SKILL_ROOT = Path(__file__).resolve().parents[2]
 CONFIG_PATH = SKILL_ROOT / "templates" / "faro-workspace-config.json"
 PROVENANCE_PATH = SKILL_ROOT / "references" / "suite-provenance.json"
+EXTERNAL_SKILLS_PATH = SKILL_ROOT / "references" / "laravel-external-skills.json"
 
 sys.dont_write_bytecode = True
 sys.path.insert(0, str(SKILL_ROOT / "scripts"))
@@ -119,11 +120,43 @@ def verify_suite_origin() -> tuple[str, str | None]:
     return f"verificado: {repository} {ref} ({commit})", None
 
 
+def check_external_skills() -> list[str]:
+    catalog, error = load_json(EXTERNAL_SKILLS_PATH)
+    if error or not catalog:
+        return [f"catálogo de skills externas {error or 'inválido'}"]
+    declared = [name for source in catalog.get("sources", []) for name in source.get("skills", [])]
+    if not declared or not all(isinstance(name, str) for name in declared):
+        return ["catálogo de skills externas no declara nombres válidos"]
+    problems: list[str] = []
+    print("Skills externas Laravel:")
+    for name in declared:
+        try:
+            result = subprocess.run(
+                ["hermes", "skills", "check", name], check=False, capture_output=True,
+                text=True, timeout=60,
+            )
+        except (OSError, subprocess.TimeoutExpired) as exc:
+            problems.append(f"skill externa {name}: no verificable ({exc})")
+            print(f"- {name}: no verificable")
+            continue
+        output = (result.stdout + result.stderr).replace("\n", " ")
+        if result.returncode != 0 or "No hub-installed skills to check" in output:
+            problems.append(f"skill externa {name}: no verificable")
+            print(f"- {name}: no verificable")
+        elif "up_to_date" in output:
+            print(f"- {name}: actual")
+        else:
+            problems.append(f"skill externa {name}: actualización disponible")
+            print(f"- {name}: actualización disponible")
+    return problems
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Diagnostica un workspace FARO sin modificarlo.")
     parser.add_argument("--root", type=Path, default=Path.cwd(), help="Root coordinador a inspeccionar.")
     parser.add_argument("--strict", action="store_true", help="Falla si falta o es inválido un requisito obligatorio.")
     parser.add_argument("--verify-suite-origin", action="store_true", help="Compara la suite instalada con la etiqueta Git remota declarada.")
+    parser.add_argument("--check-external-skills", action="store_true", help="Comprueba actualizaciones externas sin instalar ni actualizar.")
     args = parser.parse_args()
     root = args.root.resolve()
     config, config_error = load_json(CONFIG_PATH)
@@ -157,6 +190,10 @@ def main() -> int:
             problems.append(f"origen Git de la suite: {origin_error}")
     else:
         print("Origen Git de la suite: no comprobado (usar --verify-suite-origin)")
+    if args.check_external_skills:
+        problems.extend(check_external_skills())
+    else:
+        print("Skills externas Laravel: no comprobadas (usar --check-external-skills)")
     print("Archivos requeridos:")
     for relative in required:
         path = root / relative

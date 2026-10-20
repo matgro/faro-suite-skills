@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [faro, doctor, diagnosis, workspace, governance]
-    related_skills: [faro, faro-inicializacion, faro-arq-laravel, faro-arq-mobile, faro-arq-generica]
+    related_skills: [faro, faro-inicializacion, faro-arq-laravel, faro-arq-dotnet, faro-arq-mobile, faro-arq-generica, faro-arq-adr, faro-arq-rfc]
 ---
 
 # FARO — Diagnóstico del espacio de trabajo
@@ -44,6 +44,7 @@ El diagnóstico siempre ejecuta las comprobaciones locales compartidas de `scrip
 4. Verificar el origen Git de la suite con `--verify-suite-origin`: leer `references/suite-provenance.json`, resolver sólo su etiqueta remota inmutable, obtener temporalmente esa revisión y comparar el árbol `faro/` con `checksums.sha256` remoto. No aceptar una rama mutable, un SHA aportado por el ambiente ni un tag no resoluble. **Completo:** se informa repositorio, tag, commit resuelto y coincidencia byte a byte, o el bloqueo concreto.
 5. Informar identidad, estado (`new`, `initializing`, `available` o `disabled`), repositorios/fuentes indexados, decisiones de seguimiento/proveedor/DF, arquitectura registrada, workflow activo y bloqueos. No presentar una ausencia como evidencia de inexistencia en el proyecto; usar “no indexado” o “no encontrado en el contrato”. **Completo:** el reporte contesta qué existe y qué falta sin suposiciones.
 6. Resolver la recomendación sin escribir: `disabled` → detener; suite mezclada/incompleta u origen no verificable → revisar publicación/procedencia y actualizar la suite mediante bootstrap con confirmación, sin reinicializar el workspace; ruta de workflow retirada/desconocida → consultar changelog y pedir autorización para la corrección puntual; contrato incompleto/corrupto → reparación autorizada; `new`/`initializing` íntegro → ruta de arquitectura evidenciada; `available` → seguir la ruta FARO correspondiente al pedido. Ante JSON de workflow malformado, no recrearlo ni proponer una sustitución ciega. **Completo:** se informa una recomendación, no una acción automática.
+7. Con `--check-external-skills`, leer `references/laravel-external-skills.json` y ejecutar solamente `hermes skills check <name>` para las capabilities declaradas. Informar instalada/actualizable/no verificable; no ejecutar `update`, `install` ni `--force`. Si hay actualización, recomendar el bootstrap FARO con autorización explícita para que la actualice y la audite. **Completo:** el estado externo se reporta sin modificar skills ni workspace.
 
 ## Formato mínimo del informe
 
@@ -62,6 +63,7 @@ El diagnóstico siempre ejecuta las comprobaciones locales compartidas de `scrip
 - No borrar ni recrear JSON malformado; reportarlo tal como bloqueo.
 - No revelar secretos ni leer archivos de entorno.
 - La procedencia de release usa una etiqueta Git inmutable; una rama, la versión declarativa o el remoto local no prueban el origen del árbol instalado.
+- Doctor es de solo lectura: comprobar actualizaciones no autoriza instalarlas ni aplicarlas.
 - Un contrato existente pero incompleto sigue siendo existente: nunca se reemplaza silenciosamente.
 
 ## Verificación

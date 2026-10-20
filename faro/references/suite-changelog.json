@@ -2,6 +2,18 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "1.5.0",
+      "changes": [
+        "Cataloga capacidades Laravel externas revisadas desde Junaid-PK, Laravel y edulazaro para usarlas como apoyo de las fases FARO, sin convertirlas en rutas ni autorizaciones propias.",
+        "El bootstrap FARO instala y audita las capabilities externas mediante el CLI oficial de Hermes sin forzar hallazgos de seguridad; doctor puede comprobar su estado de actualización sin escribir.",
+        "Permite proponer organización, proyecto, área y equipo de Azure DevOps desde el entorno o .env global de un agente fuera del workspace; exige confirmación humana, coincidencia con el perfil y verificación remota, sin leer .env de aplicaciones.",
+        "Añade bootstrap y arquitectura .NET/C# basados en evidencia: un proyecto nuevo se crea sólo con plantilla dotnet new confirmada en root vacío; un scaffold nuevo o código existente se analiza antes de marcar el workspace available.",
+        "Añade ADR y RFC de arquitectura bajo demanda, con referencia trazable al patrón inspeccionado de NZT: RFC solicita acuerdo externo y bloquea sólo sus dependencias; un RFC aceptado produce un ADR permanente.",
+        "Alinea ADR como memoria para asistentes de IA con el artículo de Miguel Ángel Sánchez: metadata MADR, estado deprecated, índice bajo demanda y revisión de ADRs relevantes antes de desarrollar."
+      ],
+      "renamedSkills": {}
+    },
+    {
       "version": "1.4.0",
       "changes": [
         "Añade faro-bootstrap-laravel para crear de forma autorizada un proyecto Laravel nuevo en un root vacío antes de materializar el contrato FARO.",
