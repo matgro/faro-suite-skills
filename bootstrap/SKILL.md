@@ -1,7 +1,7 @@
 ---
 name: faro-bootstrap
 description: Use when installing or updating the complete FARO skill suite.
-version: 1.3.0
+version: 1.4.0
 author: FARO Agent Skills contributors
 license: MIT
 metadata:
@@ -46,6 +46,8 @@ This bootstrap is an installation guide for an agent with filesystem access and,
 4. After confirmation, stage the incoming `faro/` directory beside the destination, validate the staged tree against `manifest.json` and `checksums.sha256`, then replace the destination. Preserve no partial destination on failure; restore the previous tree when the filesystem operation fails.
 5. Do not copy individual skills, overlay the new tree onto the old one, or flatten the directory tree. Preserve all relative paths under `faro/`. Removed or renamed directories must not remain installed. Retain the recoverable previous tree until verification succeeds; restore it if verification fails too.
 6. Installing skills does not migrate projects. Do not search for or rewrite arbitrary workspaces. Explain that each workspace to be resumed must run doctor after the runtime refresh; old `nextRoute` values require a specific authorized correction, not reinitialization or a blanket text replacement. Preserve requirement IDs, versions, approvals, tasks and historical documents.
+7. After the FARO tree is installed and verified, read `faro/references/laravel-external-skills.json`. For a Hermes runtime, install every configured direct skill with `hermes skills install <url> --yes`. For a `repository_skill_tree`, clone the declared public repository into temporary staging, enumerate only `<path>/**/<entrypoint>`, inspect each file and install each direct raw URL with the same official command. Do not execute repository scripts. Run `hermes skills audit <name>` after each successful install. Never pass `--force`: retain and report a security-blocked skill instead of bypassing the scanner.
+8. Refresh approved external skills only after their status is checked with `hermes skills check <name>` and an update is explicitly authorized. Then run `hermes skills update <name>` followed by `hermes skills audit <name>`. A runtime without Hermes must report external capabilities as unavailable rather than copying repository contents by hand.
 
 **Complete when:** the target contains `<skills-root>/faro/SKILL.md`, every manifest skill, and every checksummed file.
 
@@ -78,3 +80,4 @@ This bootstrap is an installation guide for an agent with filesystem access and,
 - [ ] Installed `faro/` tree matches the incoming release completely.
 - [ ] Any needed restart/index refresh was reported.
 - [ ] Applicable changelog entries and authorized workspace migration steps were explained without editing projects.
+- [ ] The Laravel external-skill catalog was processed after FARO verification; each allowed skill was installed and audited through the target runtime's official installer, while any blocked skill was reported without `--force`.

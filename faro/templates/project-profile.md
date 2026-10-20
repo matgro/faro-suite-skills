@@ -48,7 +48,7 @@ updated_at: UPDATED_AT
 
 - Con seguimiento `REQUIRED`, toda solicitud se vincula a un item remoto y la configuración del proveedor debe incluir sus metadatos confirmados, sin secretos.
 - Para Jira: URL y clave de proyecto. Para Azure DevOps / Visual Studio: URL de organización, proyecto, área, equipo y mapeo de estados; actividad, iteración, estimación y asignado se validan contra el servicio remoto.
-- El PAT de Azure DevOps se conserva fuera del perfil como `AZDO_PAT`; las configuraciones opcionales sólo son válidas si coinciden con este archivo.
+- El PAT de Azure DevOps se conserva fuera del perfil como `AZDO_PAT`. En la configuración global de un agente, fuera del workspace y de repositorios indexados, pueden declararse `AZDO_ORGANIZATION_URL`, `AZDO_DEFAULT_PROJECT`, `AZDO_DEFAULT_AREA_PATH` y `AZDO_DEFAULT_TEAM`; los valores sólo se registran aquí tras confirmación humana y verificación remota, y después deben coincidir con este archivo.
 - Con documentación funcional `HABILITADA`, las solicitudes funcionales pasan primero por `faro-documentacion-funcional`.
 - Con documentación funcional `DESHABILITADA`, las solicitudes funcionales siguen la ruta estándar de FARO.
 - Este archivo no contiene tokens, contraseñas, cookies ni contenido de archivos `.env`.

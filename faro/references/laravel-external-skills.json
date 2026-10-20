@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "purpose": "External Laravel skill sources approved for optional FARO-assisted work. They are not FARO lifecycle routes and never authorize changes by themselves.",
+  "sources": [
+    {
+      "repository": "https://github.com/Junaid-PK/laravel-development-workflow",
+      "branch": "main",
+      "install": {
+        "mode": "direct_skill",
+        "url": "https://raw.githubusercontent.com/Junaid-PK/laravel-development-workflow/main/SKILL.md"
+      },
+      "skills": ["laravel-development-workflow"],
+      "uses": ["reproducir BUG Laravel", "causa raíz", "prueba de regresión", "verificación proporcional"]
+    },
+    {
+      "repository": "https://github.com/laravel/agent-skills",
+      "branch": "main",
+      "install": {
+        "mode": "direct_skills",
+        "urls": [
+          "https://raw.githubusercontent.com/laravel/agent-skills/main/laravel-cloud/skills/deploying-to-cloud/SKILL.md",
+          "https://raw.githubusercontent.com/laravel/agent-skills/main/laravel-nightwatch/skills/configure-nightwatch/SKILL.md",
+          "https://raw.githubusercontent.com/laravel/agent-skills/main/laravel/skills/starter-kit-upgrade/SKILL.md"
+        ]
+      },
+      "skills": ["deploying-to-cloud", "configure-nightwatch", "starter-kit-upgrade"],
+      "uses": ["Laravel Cloud autorizado", "Nightwatch", "actualización selectiva de starter kits"]
+    },
+    {
+      "repository": "https://github.com/edulazaro/laraclaude",
+      "branch": "main",
+      "install": {
+        "mode": "repository_skill_tree",
+        "path": "skills",
+        "entrypoint": "SKILL.md"
+      },
+      "skills": ["analyze-error", "boost-inspect", "generate-test"],
+      "uses": ["análisis de stacktrace", "inspección Laravel verificada en runtime", "pruebas de regresión"]
+    }
+  ],
+  "maintenance": {
+    "check": "hermes skills check <skill>",
+    "update": "hermes skills update <skill>",
+    "audit": "hermes skills audit <skill>",
+    "rule": "Nunca usar --force para eludir un análisis de seguridad; una skill bloqueada permanece bloqueada y se informa."
+  }
+}

@@ -1,7 +1,7 @@
 ---
 name: azure-devops-rest-v7
 description: Use when Azure DevOps REST work tracking needs real calls.
-version: 1.0.0
+version: 1.1.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -20,12 +20,14 @@ No describir solamente endpoints cuando se pide una acción Azure DevOps: compro
 
 ## Configuración segura
 
+Las variables se obtienen del entorno ya inyectado o de un `.env` global de un agente fuera del workspace y de repositorios indexados. Nunca leer `.env` del workspace, de una aplicación ni de un repositorio; no imprimir, exportar ni persistir secretos o el contenido de esos archivos.
+
 Variables requeridas:
 
 - `AZDO_ORGANIZATION_URL`: URL de organización, por ejemplo `https://farmacity.visualstudio.com` o `https://dev.azure.com/farmacity`; sin slash final y sin proyecto.
-- `AZDO_PAT`: Personal Access Token con el mínimo scope necesario. Nunca imprimirlo, persistirlo ni leerlo desde `.env`.
+- `AZDO_PAT`: Personal Access Token con el mínimo scope necesario. Nunca imprimirlo ni persistirlo.
 
-Variables opcionales, aceptadas sólo si coinciden con el perfil FARO:
+Variables opcionales: `AZDO_DEFAULT_PROJECT`, `AZDO_DEFAULT_AREA_PATH` y `AZDO_DEFAULT_TEAM` son la configuración global de proyecto, área y equipo. Si el perfil FARO ya contiene esos metadatos, sólo se aceptan si coinciden; durante inicialización sólo proponen valores hasta su confirmación humana y verificación remota.
 
 - `AZDO_DEFAULT_PROJECT`
 - `AZDO_DEFAULT_AREA_PATH`

@@ -12,8 +12,8 @@ from suite_validation import validate_suite
 
 ROOT = Path(__file__).resolve().parents[1]
 REQUIRED = {
-    "faro", "faro-inicializacion", "faro-doctor", "faro-bootstrap-laravel", "faro-arq-laravel", "faro-arq-mobile",
-    "faro-arq-generica", "faro-documentacion-funcional", "faro-req-ingenieria",
+    "faro", "faro-inicializacion", "faro-doctor", "faro-bootstrap-laravel", "faro-bootstrap-dotnet", "faro-arq-laravel", "faro-arq-dotnet", "faro-arq-mobile",
+    "faro-arq-generica", "faro-arq-adr", "faro-arq-rfc", "faro-documentacion-funcional", "faro-req-ingenieria",
     "faro-req-analisis-tecnico", "faro-req-desarrollo", "faro-qa-ejecucion",
     "faro-req-validacion", "faro-ux", "faro-entrega", "faro-int-jira", "faro-int-azure-devops",
     "azure-devops-rest-v7",

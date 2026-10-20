@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [faro, requirements, validation, evidence, delivery]
-    related_skills: [faro, faro-req-ingenieria, faro-req-analisis-tecnico, faro-qa-ejecucion, faro-entrega]
+    related_skills: [faro, faro-arq-adr, faro-arq-rfc, faro-req-ingenieria, faro-req-analisis-tecnico, faro-qa-ejecucion, faro-entrega]
 ---
 
 # FARO — Validación contra requerimientos
@@ -26,7 +26,7 @@ No aprobar RMs, autorizar merge/despliegue ni modificar código de producto desd
 ## Procedimiento
 
 1. Leer perfil/contrato, entrada autorizada, baseline, plan, tareas, revisión y entorno. **Completo:** versión y alcance están identificados.
-2. Comparar RF/RN/RNF/RES/CA con entradas de código relevantes, no sólo la pantalla principal. **Completo:** se registran conductas agregadas sin origen.
+2. Comparar RF/RN/RNF/RES/CA con entradas de código relevantes, no sólo la pantalla principal. Cuando el alcance cite ADR/RFC, comprobar que el ADR aceptado esté enlazado y que no se haya validado una entrega dependiente de un RFC abierto. **Completo:** se registran conductas agregadas sin origen.
 3. Ejecutar únicamente verificaciones pertinentes con comandos comprobados y sin usar producción sin autorización. **Completo:** no se reporta ejecución inexistente.
 4. Completar `assets/validation-report.md` por CA, cobertura, ejecuciones, hallazgos y límites. **Completo:** cada CA tiene estado y evidencia.
 5. Marcar VERIFIED sólo si todos los CA del alcance están CONFORME y no hay divergencias materiales; usar evidencia de `faro-qa-ejecucion` cuando exista y distinguir explícitamente su ausencia. Si seguimiento está `REQUIRED`, comentar el resultado y mantener el estado remoto de trabajo hasta el cierre operativo; si falla, bloquear el flujo. Actualizar workflow con la siguiente ruta. **Completo:** los hallazgos regresan al flujo funcional o de desarrollo adecuado.
