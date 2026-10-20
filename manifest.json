@@ -2,7 +2,7 @@
   "schema_version": 1,
   "name": "faro-suite-skills",
   "repository": "https://github.com/matgro/faro-suite-skills",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Portable FARO governance and delivery skill suite.",
   "license": "MIT",
   "skills_root": "faro",
@@ -16,6 +16,7 @@
   "skills": [
     "faro",
     "faro-arq-generica",
+    "faro-bootstrap-laravel",
     "faro-arq-laravel",
     "faro-arq-mobile",
     "azure-devops-rest-v7",

@@ -28,7 +28,8 @@ def main() -> int:
                 path.write_bytes(updated)
                 normalized += 1
     lines = [f"{hashlib.sha256(path.read_bytes()).hexdigest()}  {path.relative_to(root).as_posix()}\n" for path in files]
-    (root / "checksums.sha256").write_text("".join(lines), encoding="utf-8", newline="\n")
+    with (root / "checksums.sha256").open("w", encoding="utf-8", newline="\n") as checksum_file:
+        checksum_file.write("".join(lines))
     print(f"OK: {len(files)} checksums generated; {normalized} runtime text files normalized to LF")
     return 0
 

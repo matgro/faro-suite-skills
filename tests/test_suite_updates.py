@@ -36,7 +36,8 @@ class SuiteUpdateTests(unittest.TestCase):
     def write(self, relative, text):
         path = self.suite / relative
         path.parent.mkdir(parents=True, exist_ok=True)
-        path.write_text(text, encoding="utf-8", newline="\n")
+        with path.open("w", encoding="utf-8", newline="\n") as target:
+            target.write(text)
         return path
 
     def validate(self, *arguments):
@@ -239,7 +240,8 @@ class UpdateIntegrationTests(unittest.TestCase):
         git("init", "--quiet")
         git("add", "faro", "checksums.sha256", ".gitattributes")
         git("commit", "--quiet", "-m", "Offline release fixture")
-        git("tag", "-a", "v1.3.0", "-m", "Offline annotated release")
+        tag = provenance["ref"].removeprefix("refs/tags/")
+        git("tag", "-a", tag, "-m", "Offline annotated release")
         commit = git("rev-parse", "HEAD")
         result = self.run_script("faro/faro-doctor/scripts/doctor.py", "--root", self.workspace, "--strict", "--verify-suite-origin")
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)

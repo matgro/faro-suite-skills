@@ -1,20 +1,20 @@
 ---
 name: faro
 description: Use when user invokes FARO project routing.
-version: 1.13.0
+version: 1.14.0
 author: Hermes Agent
 license: MIT
 metadata:
   hermes:
     tags: [faro, project, routing, governance, requirements]
-    related_skills: [faro-inicializacion, faro-doctor, faro-arq-laravel, faro-arq-mobile, faro-arq-generica, faro-documentacion-funcional, faro-req-ingenieria, faro-req-analisis-tecnico, faro-req-desarrollo, faro-qa-ejecucion, faro-req-validacion, faro-ux, faro-entrega, faro-int-jira, faro-int-azure-devops, azure-devops-rest-v7]
+    related_skills: [faro-inicializacion, faro-doctor, faro-bootstrap-laravel, faro-arq-laravel, faro-arq-mobile, faro-arq-generica, faro-documentacion-funcional, faro-req-ingenieria, faro-req-analisis-tecnico, faro-req-desarrollo, faro-qa-ejecucion, faro-req-validacion, faro-ux, faro-entrega, faro-int-jira, faro-int-azure-devops, azure-devops-rest-v7]
 ---
 
 # FARO — Orquestador de proyecto
 
 ## Rol
 
-`faro` es el único punto de entrada y router de FARO. No crea ni repara contratos por sí mismo: `faro-inicializacion` materializa un workspace nuevo y `faro-doctor` diagnostica uno existente. FARO tampoco formaliza requisitos, diseña, implementa, prueba, valida ni despliega; identifica estado y carga exactamente una skill `faro-*` especializada. `azure-devops-rest-v7` es capability técnica del adaptador `faro-int-azure-devops`, no una ruta de ciclo de vida directa.
+`faro` es el único punto de entrada y router de FARO. No crea ni repara contratos por sí mismo: `faro-inicializacion` materializa un workspace nuevo y `faro-doctor` diagnostica uno existente. Con un proyecto Laravel nuevo expresamente autorizado, `faro-bootstrap-laravel` crea el scaffold técnico antes del contrato; ninguna otra ruta crea código. FARO tampoco formaliza requisitos, diseña, implementa, prueba, valida ni despliega; identifica estado y carga exactamente una skill `faro-*` especializada. `azure-devops-rest-v7` es capability técnica del adaptador `faro-int-azure-devops`, no una ruta de ciclo de vida directa.
 
 El contrato persistente del workspace vive en `AGENTS.md`, `context/faro-workspace.json`, `context/stats.json`, `context/README.md`, `context/requirements/project-profile.md` y, sólo para continuidad activa, `context/workflow.json`. `templates/faro-workspace-config.json` es la política estructural canónica y central: declara los archivos/directorios requeridos y las plantillas aprobadas. `context/faro-workspace.json` es únicamente un manifiesto local de versión y artefactos instalados; no puede redefinir la política FARO. La lógica de inicialización, ruteo, Jira, autorización y entrega vive exclusivamente en `faro` y las skills `faro-*`.
 
@@ -31,7 +31,7 @@ El root coordinador es siempre el directorio de trabajo actual de la sesión. Se
 ## Detección de workspace e inicialización
 
 1. Antes de enrutar, fijar root y comprobar existencia de `AGENTS.md`, bloque `FARO:START`/`FARO:END`, `context/faro-workspace.json`, `context/stats.json`, `context/README.md`, perfil y workflow opcional. Después pueden inspeccionarse fuentes externas aportadas. **Completo:** se conoce si el workspace es ausente, existente completo o existente parcial.
-2. Ante “inicializa/prepara con FARO”: si no hay bloque FARO ni artefacto FARO, cargar `faro-inicializacion`. Si existe cualquiera de ellos —incluso incompleto, en `new` o `initializing`— cargar `faro-doctor`, informar que el espacio ya existe y mostrar su estado; no reinicializar ni reparar sin una autorización posterior explícita. **Completo:** una inicialización repetida nunca sobrescribe información.
+2. Ante un pedido explícito de crear un Laravel/API nuevo, sin bloque ni artefacto FARO, con root vacío, stack/destino confirmados y autorización para crear el scaffold, cargar `faro-bootstrap-laravel` antes de inicializar. Para “inicializa/prepara con FARO” sin esas precondiciones: si no hay bloque FARO ni artefacto FARO, cargar `faro-inicializacion`. Si existe cualquiera de ellos —incluso incompleto, en `new` o `initializing`— cargar `faro-doctor`, informar que el espacio ya existe y mostrar su estado; no reinicializar ni reparar sin una autorización posterior explícita. **Completo:** una inicialización repetida nunca sobrescribe información y el scaffold sólo ocurre en un root vacío autorizado.
 3. Para pedidos no inicializadores con contrato existente, validar JSON y leer configuración, índice, estado, perfil y workflow. Antes de seguir `nextRoute`, ejecutar `python -B <skills-root>/faro/scripts/suite_validation.py --workflow <root>/context/workflow.json`. Una suite incoherente, una ruta retirada/desconocida o un JSON malformado se informa y se enruta a `faro-doctor`; no se descarta, reemplaza ni traduce silenciosamente. Consultar `references/suite-changelog.json`: la versión del paquete no sustituye la del contrato de proyecto. **Completo:** versión/estado/configuración y destinos vigentes son conocidos antes de cargar otra skill.
 4. Si `state` es `disabled`, detener FARO. Si el contrato existe y `state` es `new` o `initializing`, seguir la ruta de arquitectura aplicable o el adaptador de seguimiento confirmado cuando `work_tracking.mode` sea `REQUIRED`; no recibir SOL/RM/BUG/TEC. **Completo:** no hay intake antes de `available`.
 5. Comparar la versión instalada con la configuración canónica. Una configuración anterior puede ser diagnosticada y migrada sólo bajo autorización explícita; una posterior nunca se degrada. **Completo:** el contrato es versionado y no se inventa una migración.
@@ -55,7 +55,8 @@ Durante inicialización se formula una sola consulta agrupada para identidad/tip
 
 | Señal y precondición | Cargar | Salida / siguiente ruta |
 | --- | --- | --- |
-| Pedido explícito de inicializar; no hay bloque ni artefactos FARO | `faro-inicializacion` | Contrato versionado en `initializing`, decisiones registradas y handoff único. |
+| Pedido explícito de inicializar; no hay bloque ni artefacto FARO | `faro-inicializacion` | Contrato versionado en `initializing`, decisiones registradas y handoff único. |
+| Laravel/API nuevo autorizado; root vacío, destino y stack confirmados | `faro-bootstrap-laravel` | Scaffold Laravel real; después `faro-inicializacion` y `faro-arq-laravel`. |
 | Pedido explícito de inicializar; existe bloque o cualquier artefacto FARO | `faro-doctor` | “Espacio existente”, estado, integridad y recomendación sin escribir. |
 | Pedido de diagnóstico/estado/salud FARO | `faro-doctor` | Estado verificable, faltantes y recomendación sin crear artefactos. |
 | Contrato existente incompleto, inválido o versiones incompatibles | `faro-doctor` | Bloqueo y propuesta de reparación con autorización explícita. |

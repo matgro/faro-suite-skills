@@ -40,7 +40,7 @@ FARO does not collapse those stages into paperwork. Each specialist skill exists
 
 The user does **not** need to clone this repository first. Give an agent the bootstrap skill and either a FARO repository URL or a local source. The agent obtains the suite into temporary staging, validates it, and installs it.
 
-Use a pinned tag or commit whenever possible. If you intentionally provide only a repository URL, the bootstrap resolves the current revision and reports the immutable commit it used.
+Provide an explicit tag or commit for a reproducible installation. With only a repository URL, the bootstrap selects the newest published stable `vMAJOR.MINOR.PATCH` tag by numeric version and reports its immutable commit. It does not install the default branch or prereleases implicitly. If no stable tag is published, installation stops.
 
 ```text
 Load and execute this bootstrap skill:
@@ -56,6 +56,8 @@ show me the destination and comparison, then ask before replacing it.
 If the bootstrap was supplied as a local file, give the agent the local path instead. If it cannot safely identify the package repository from the bootstrap URL, also provide the repository URL explicitly.
 
 The bootstrap skill installs the complete `faro/` tree. It may retrieve the declared package source, but it must never execute a downloaded script. When an existing installation is found, it must inspect it, compare it with the incoming release, and obtain explicit user confirmation before replacement.
+
+To update, ask the agent to run the bootstrap and update FARO. Without an explicit revision or new source, it uses the installed suite's provenance repository and selects its newest published stable tag. An identical installation is left unchanged; local modifications are reported before replacement, and a newer installed version is never downgraded implicitly. Explicit tags, commits and local sources remain pinned to the requested source.
 
 > There is no universal skill directory. FARO intentionally lets the target agent determine its own configured skills root instead of assuming a vendor-specific path.
 

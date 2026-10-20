@@ -6,6 +6,7 @@ Cada caso valida una única ruta especialista. No prueba la carga automática de
 | --- | --- | --- | --- | --- |
 | Inicialización nueva | No hay bloque FARO ni `context/` FARO | «inicializa este proyecto con FARO» | `faro-inicializacion` | Crear rutas fuera de la configuración versionada o recibir un RM |
 | Inicialización repetida | Existe bloque FARO o cualquier artefacto FARO | «inicializa este proyecto con FARO» | `faro-doctor` | Sobrescribir, reinicializar o reparar automáticamente |
+| Bootstrap Laravel nuevo | Root vacío, sin contrato FARO; Laravel/API, destino y autorización de creación confirmados | «crea un Laravel nuevo con FARO» | `faro-bootstrap-laravel` | Crear sobre archivos existentes, documentar arquitectura antes del scaffold o crear un RM |
 | faro-doctor | Contrato existente, completo o parcial | «revisa el estado de FARO» | `faro-doctor` | Crear/reparar artefactos durante diagnóstico |
 | Inicialización Laravel | `initializing`, composer Laravel | «continúa preparando este proyecto» | `faro-arq-laravel` | Intake de RM o implementación |
 | Inicialización stack desconocido | `initializing`, manifiesto no Laravel/móvil | «continúa la inicialización» | `faro-arq-generica` | Inferir framework |
