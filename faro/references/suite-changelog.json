@@ -2,6 +2,14 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "1.5.1",
+      "changes": [
+        "Estandariza las actualizaciones remotas de Jira y Azure DevOps como bitácoras breves y útiles: sólo hitos, unidades materiales, decisiones, bloqueos y referencias externas durables.",
+        "Añade una plantilla compartida para reportar inicio/cierre de fase, implementación, QA, validación y entrega sin publicar transcripciones de comandos, archivos o pruebas intermedias."
+      ],
+      "renamedSkills": {}
+    },
+    {
       "version": "1.5.0",
       "changes": [
         "Cataloga capacidades Laravel externas revisadas desde Junaid-PK, Laravel y edulazaro para usarlas como apoyo de las fases FARO, sin convertirlas en rutas ni autorizaciones propias.",

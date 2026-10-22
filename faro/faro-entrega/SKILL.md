@@ -27,7 +27,7 @@ Ejecuta acciones que sacan trabajo del directorio local: commit, branch, PR, rel
 2. Para commit/PR, revisar diff por secretos, configuración local, generados y alcance. **Completo:** sólo archivos autorizados.
 3. Para release/deploy, verificar artefacto, ambiente, health checks, observabilidad, rollback y migraciones. **Completo:** no se reconstruye una versión distinta.
 4. Ejecutar sólo la acción autorizada; registrar comando, referencia, resultado y evidencia del ambiente. **Completo:** salida verificable.
-5. Si seguimiento está `REQUIRED`, comentar las referencias resultantes (rama, commit, PR, release o despliegue). Al completar el alcance autorizado, transicionar al estado remoto `DONE`; ante cancelación humana explícita, a `CANCELLED`. Si falla la sincronización, registrar el bloqueo real y no declarar la entrega cerrada.
+5. Si seguimiento está `REQUIRED`, publicar el resultado de cada operación externa autorizada (rama, commit, PR, release, despliegue o rollback) conforme a `../references/comment-format.md`, con la referencia durable resultante. Al completar el alcance autorizado, transicionar al estado remoto `DONE`; ante cancelación humana explícita, a `CANCELLED`. Si falla la sincronización, registrar el bloqueo real y no declarar la entrega cerrada.
 6. Actualizar workflow y documentación operacional afectada. **Completo:** referencia y resultado reanudables.
 
 ## Invariantes
