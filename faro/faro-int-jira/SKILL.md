@@ -36,12 +36,12 @@ No sustituye el RM, la aprobación humana ni el análisis técnico. No implement
 
 1. Toda solicitud debe estar vinculada a una issue. Una issue recibida se registra como `SRC-JIRA-<KEY>` y se entrega a `faro-req-ingenieria`. Una solicitud externa crea su issue al crear el RM.
 2. El RM debe registrar clave, URL y proyecto Jira; Jira debe recibir el identificador del RM y los vínculos disponibles al repositorio, plan, rama, PR, evidencia de QA o entrega. No copiar adjuntos ni datos sensibles salvo petición y autorización explícitas.
-3. Al iniciar la solicitud, transicionar a `Pendiente`/`Por hacer` o a `Haciendo`, según el workflow real. Durante definición, análisis técnico, UX, desarrollo, QA, validación y entrega, mantener `Haciendo` y añadir un comentario de hito con fase FARO, versión y vínculos disponibles. Al completar el alcance autorizado, transicionar a `Finalizado`/`Done`. Sólo una cancelación humana explícita permite transicionar a `Cancelado`.
+3. Al iniciar la solicitud, transicionar a `Pendiente`/`Por hacer` o a `Haciendo`, según el workflow real. Durante definición, análisis técnico, UX, desarrollo, QA, validación y entrega, mantener `Haciendo` y añadir sólo las actualizaciones relevantes conforme a `../references/comment-format.md`: inicio/cierre de fase, unidad material completada o bloqueada, decisión o bloqueo, y referencia externa durable. Al completar el alcance autorizado, transicionar a `Finalizado`/`Done`. Sólo una cancelación humana explícita permite transicionar a `Cancelado`.
 4. Si una sincronización obligatoria falla, no avanzar a la siguiente fase: registrar `waitingOn` con el error real. No exponer secretos ni ocultar el fallo.
 
 ## Límites permanentes
 
-- `REQUIRED` autoriza únicamente crear la issue de un RM, actualizar los vínculos configurados, añadir comentarios de hito y transicionarla conforme a esta regla.
+- `REQUIRED` autoriza únicamente crear la issue de un RM, actualizar los vínculos configurados, añadir las actualizaciones relevantes definidas por la plantilla y transicionarla conforme a esta regla.
 - Asignar, editar prioridad/campos no configurados, adjuntar, borrar, registrar tiempos y gestionar sprints requieren autorización explícita independiente.
 - Jira no equivale a aprobación funcional, QA ni validación FARO; el RM conserva esas fuentes de verdad.
 - No exponer secretos, identificadores personales innecesarios ni información clínica en fuentes o reportes.
@@ -51,6 +51,6 @@ No sustituye el RM, la aprobación humana ni el análisis técnico. No implement
 - [ ] Modo, autorización, proyecto y workflow Jira fueron comprobados.
 - [ ] Credenciales globales de agentes permanecieron fuera de repositorios y artefactos FARO.
 - [ ] Toda solicitud tiene issue, `SRC` y vínculo bidireccional con su RM.
-- [ ] Cada hito relevante dejó estado o comentario Jira verificable.
+- [ ] Cada hito o unidad material relevante dejó un estado o comentario Jira conciso y verificable.
 - [ ] La issue quedó vinculada como fuente, no como aprobación implícita.
 - [ ] Se indicó el siguiente handoff o el bloqueo real.

@@ -2,6 +2,19 @@
 
 Este historial registra cambios de la suite distribuida, no aprobaciones de proyectos. La versión del paquete es independiente de la versión del contrato de workspace.
 
+## 1.5.1 — pendiente de publicación
+
+### Cambios
+
+- Estandariza las actualizaciones remotas de Jira y Azure DevOps como bitácoras breves y útiles: sólo inicio/cierre de fase, unidades materiales, decisiones, bloqueos y referencias externas durables.
+- Añade `faro/references/comment-format.md` con una plantilla común para desarrollo, QA, validación y entrega, sin transcripciones de comandos, archivos o pruebas intermedias.
+
+### Actualización desde 1.5.0
+
+1. Obtener la release publicada y verificar versión, procedencia, inventario y checksums.
+2. Comparar la instalación existente y solicitar confirmación antes de reemplazar el árbol completo `faro/`.
+3. Reiniciar la sesión o refrescar el índice de skills según el agente. No requiere migrar workspaces ni modificar su `contractVersion`.
+
 ## 1.3.0 — pendiente de publicación
 
 ### Cambios

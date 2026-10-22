@@ -37,12 +37,12 @@ La URL hospedada en `*.visualstudio.com` y `dev.azure.com` identifica el mismo p
 
 1. Toda solicitud se vincula a un work item. Un item recibido se registra como `SRC-AZDO-<ID>` y se entrega a `faro-req-ingenieria`; una solicitud externa crea su item al crear el RM.
 2. El RM registra ID, URL, organización, proyecto y área; Azure DevOps recibe el identificador del RM y vínculos disponibles a repositorio, plan, rama, PR, QA o entrega. No copiar adjuntos ni datos sensibles sin autorización explícita.
-3. Al iniciar, mover el item al estado remoto que mapea a `PENDING` o `DOING`. Durante definición, análisis, UX, desarrollo, QA, validación y entrega, mantener el estado de trabajo y añadir un comentario de hito con fase FARO, versión y vínculos. Al completar el alcance autorizado, mover a `DONE`. Sólo una cancelación humana explícita permite `CANCELLED`.
+3. Al iniciar, mover el item al estado remoto que mapea a `PENDING` o `DOING`. Durante definición, análisis, UX, desarrollo, QA, validación y entrega, mantener el estado de trabajo y añadir sólo las actualizaciones relevantes conforme a `../references/comment-format.md`: inicio/cierre de fase, unidad material completada o bloqueada, decisión o bloqueo, y referencia externa durable. Al completar el alcance autorizado, mover a `DONE`. Sólo una cancelación humana explícita permite `CANCELLED`.
 4. Si una sincronización obligatoria falla, registrar `waitingOn` con el error real y no avanzar de fase.
 
 ## Límites permanentes
 
-- `REQUIRED` autoriza crear el item de un RM, actualizar vínculos configurados, añadir comentarios de hito y cambiar su estado conforme al mapeo verificado.
+- `REQUIRED` autoriza crear el item de un RM, actualizar vínculos configurados, añadir las actualizaciones relevantes definidas por la plantilla y cambiar su estado conforme al mapeo verificado.
 - Asignar o cambiar el asignado, área, iteración, actividad, estimación, prioridad, adjuntos, borrado, tiempo o sprints requiere autorización explícita independiente, incluso si existen valores por defecto configurados.
 - Azure DevOps no equivale a aprobación funcional, QA ni validación FARO.
 - No exponer secretos, identificadores personales innecesarios ni datos sensibles.
@@ -54,4 +54,4 @@ La URL hospedada en `*.visualstudio.com` y `dev.azure.com` identifica el mismo p
 - [ ] Tipos, actividades, iteraciones y asignados provienen de consultas remotas verificables.
 - [ ] Cada `Task` creada tiene su estimación explícita; el valor omitido fue `1`.
 - [ ] Toda solicitud tiene work item, `SRC` y vínculo bidireccional con su RM.
-- [ ] Cada hito relevante dejó estado o comentario remoto verificable.
+- [ ] Cada hito o unidad material relevante dejó un estado o comentario remoto conciso y verificable.

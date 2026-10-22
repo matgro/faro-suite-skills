@@ -2,7 +2,7 @@
   "schema_version": 1,
   "name": "faro-suite-skills",
   "repository": "https://github.com/matgro/faro-suite-skills",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Portable FARO governance and delivery skill suite.",
   "license": "MIT",
   "skills_root": "faro",
