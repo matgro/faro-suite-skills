@@ -2,6 +2,14 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "1.5.3",
+      "changes": [
+        "Extiende los lineamientos generales .NET/C# para agregar operaciones en las clases y archivos existentes, reutilizando sus métodos y dependencias.",
+        "Impide introducir archivos parciales por operación como Repository.Queries.cs o Repository.Resend.cs sin convención explícita del componente o autorización humana; exceptúa código generado y parciales exigidos por el framework, sin reorganizar divisiones preexistentes."
+      ],
+      "renamedSkills": {}
+    },
+    {
       "version": "1.5.2",
       "changes": [
         "Actualiza la estructura del template RFC con resumen, contexto, alcance, opciones con pros y contras, estado actual, consecuencias, plan de acción, riesgos, preguntas y referencias.",
