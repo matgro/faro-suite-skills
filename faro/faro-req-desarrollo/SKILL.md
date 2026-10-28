@@ -33,9 +33,10 @@ Las reglas de código viven en archivos Markdown dentro de esta misma skill, no 
 
 - Leer siempre [Lineamientos comunes](references/lineamientos-comunes.md).
 - Para .NET/C#, leer además [Lineamientos .NET](references/lineamientos-dotnet.md).
+- Para componentes Blazor, leer además de los comunes y .NET los [Lineamientos Blazor](references/lineamientos-blazor.md); aplicar sólo las secciones del modo de renderizado y de la tarea evidenciados.
 - Para Laravel, leer además [Lineamientos Laravel](references/lineamientos-laravel.md).
 
-Elegir por evidencia del componente que se va a modificar: arquitectura y archivos de proyecto `.csproj`/configuración de SDK para .NET; `composer.json`, `composer.lock` y uso de Laravel para Laravel. No elegir sólo por extensión ni asumir una tecnología por el nombre del repositorio. En un workspace mixto, aplicar a cada componente sus propias reglas; para otra tecnología, usar los comunes y las instrucciones locales, indicando que no hay guía específica. Si falta evidencia necesaria, aclararla antes de editar.
+Elegir por evidencia del componente que se va a modificar: arquitectura y archivos de proyecto `.csproj`/configuración de SDK para .NET; componentes `.razor`, arranque, servicios y configuración de renderizado para Blazor; `composer.json`, `composer.lock` y uso de Laravel para Laravel. Un backend .NET, Razor Pages o MVC no activa por sí solo la guía Blazor. No elegir sólo por extensión ni asumir una tecnología por el nombre del repositorio. En un workspace mixto, aplicar a cada componente sus propias reglas; para otra tecnología, usar los comunes y las instrucciones locales, indicando que no hay guía específica. Si falta evidencia necesaria, aclararla antes de editar.
 
 Leer los archivos aplicables antes de cada unidad de desarrollo; no sustituirlos por una copia resumida en esta skill ni por valores recordados. Si falta o está vacío alguno de los seleccionados, bloquear e informar la ruta, sin inventar sus reglas. Registrar en la evidencia existente de la tarea qué archivos se usaron y las excepciones acordadas; no crear otro contrato ni nuevos estados.
 

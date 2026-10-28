@@ -10,6 +10,7 @@ Este historial registra cambios de la suite distribuida, no aprobaciones de proy
 - Cada alternativa tiene descripción, pros y contras; el plan de acción y los riesgos usan tablas.
 - Conserva los estados `open|accepted|rejected|withdrawn`, la trazabilidad y el hecho, restricción y evidencia del problema. Mantiene la ventana de comentarios y las posiciones atribuibles dentro de «Decisión / Estado actual».
 - Añade pruebas de contrato para la estructura y la ausencia de contenido específico del ejemplo.
+- Incorpora lineamientos Blazor adaptados de NZT como referencia editable de `faro-req-desarrollo`, complementaria a los comunes y .NET: componentes, formularios, modos de renderizado, prerenderizado, seguridad y rendimiento. No agrega rutas, dependencias ni migraciones; conserva procedencia y licencia MIT de la fuente.
 
 ### Actualización desde 1.5.1
 

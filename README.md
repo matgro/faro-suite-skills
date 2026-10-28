@@ -141,6 +141,7 @@ Development loads its rules from these files inside `faro/faro-req-desarrollo/`:
 
 - `references/lineamientos-comunes.md`: shared rules, including readability, naming, responsibilities, errors, configuration, minimal refactoring and TDD.
 - `references/lineamientos-dotnet.md`: .NET/C# rules adapted from the supplied NZT sources; applied only to an evidenced .NET component.
+- `references/lineamientos-blazor.md`: Blazor guidance adapted from reviewed NZT sources, read alongside common and .NET rules only for evidenced Blazor work. Covers components, forms, rendering modes, prerendered state and measured performance without installing NZT or imposing a new architecture.
 - `references/lineamientos-laravel.md`: Laravel rules; applied only to an evidenced Laravel component.
 
 Edit the Markdown rules directly; changing their text does not require editing `SKILL.md`. The agent rereads the common file plus the applicable technology file before each development unit. Mixed workspaces use the appropriate rules per component; other technologies use the common rules and the project's own instructions. Missing or empty selected guides block development instead of being silently ignored.
