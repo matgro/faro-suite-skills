@@ -39,6 +39,48 @@ class ArchitectureDecisionRecordTests(unittest.TestCase):
         self.assertIn("ADRs relevantes", development)
         self.assertIn("contradice", development)
 
+    def test_rfc_template_preserves_requested_structure_without_example_content(self) -> None:
+        template = (FARO / "faro-arq-rfc" / "assets" / "rfc.md").read_text(encoding="utf-8")
+        sections = [line for line in template.splitlines() if line.startswith("## ")]
+        self.assertEqual(sections, [
+            "## Resumen",
+            "## Problema",
+            "## Contexto y antecedentes",
+            "## Alcance",
+            "## Fuera de alcance",
+            "## Opciones evaluadas",
+            "## Decisión / Estado actual",
+            "## Consecuencias",
+            "## Plan de acción",
+            "## Riesgos y mitigaciones",
+            "## Preguntas abiertas",
+            "## Referencias",
+        ])
+        self.assertIn("- **Estado:** {{open|accepted|rejected|withdrawn}}", template)
+        self.assertIn("- **Trazabilidad:** {{RM/BUG/TEC/plan/arquitectura o Ninguna}}", template)
+        problem = template.split("## Problema\n", 1)[1].split("\n---", 1)[0]
+        self.assertIn("{{Hecho, restricción y evidencia.}}", problem)
+        self.assertIn("consecuencias de no resolverlas", problem)
+        for field in ("Fecha", "Autores", "Responsables", "Tipo"):
+            self.assertIn(f"| **{field}** |", template)
+        for option in ("A", "B", "C"):
+            self.assertIn(f"### Opción {option}:", template)
+        self.assertEqual(template.count("**Pros:**"), 3)
+        self.assertEqual(template.count("**Contras:**"), 3)
+        for field in (
+            "| Acción | Responsable | Estado |",
+            "| Riesgo | Mitigación |",
+            "**Impacto positivo:**",
+            "**Impacto negativo o riesgos asumidos:**",
+            "**Queda pendiente:**",
+            "**Comentarios hasta:**",
+            "**Posiciones:**",
+            "ADR-NNN",
+        ):
+            self.assertIn(field, template)
+        for example in ("GIS", "Foto Stock", "Cygnus", "Nebula", "6 de julio de 2026", "Borrador"):
+            self.assertNotIn(example, template)
+
     def test_templates_and_nzt_reference_keep_rationale_traceable(self) -> None:
         for path in (
             FARO / "faro-arq-adr" / "assets" / "adr.md",

@@ -2,6 +2,21 @@
 
 Este historial registra cambios de la suite distribuida, no aprobaciones de proyectos. La versión del paquete es independiente de la versión del contrato de workspace.
 
+## 1.5.2 — pendiente de publicación
+
+### Cambios
+
+- Actualiza el template RFC con tabla de metadatos y secciones de resumen, problema, contexto, alcance, fuera de alcance, opciones evaluadas, decisión/estado actual, consecuencias, plan de acción, riesgos y mitigaciones, preguntas abiertas y referencias.
+- Cada alternativa tiene descripción, pros y contras; el plan de acción y los riesgos usan tablas.
+- Conserva los estados `open|accepted|rejected|withdrawn`, la trazabilidad y el hecho, restricción y evidencia del problema. Mantiene la ventana de comentarios y las posiciones atribuibles dentro de «Decisión / Estado actual».
+- Añade pruebas de contrato para la estructura y la ausencia de contenido específico del ejemplo.
+
+### Actualización desde 1.5.1
+
+1. Obtener la release publicada y verificar versión, procedencia, inventario y checksums.
+2. Comparar la instalación existente y solicitar confirmación antes de reemplazar el árbol completo `faro/`.
+3. No requiere migrar workspaces, modificar su `contractVersion` ni reescribir RFC existentes.
+
 ## 1.5.1 — pendiente de publicación
 
 ### Cambios
