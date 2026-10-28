@@ -2,6 +2,15 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "1.5.2",
+      "changes": [
+        "Actualiza la estructura del template RFC con resumen, contexto, alcance, opciones con pros y contras, estado actual, consecuencias, plan de acción, riesgos, preguntas y referencias.",
+        "Conserva los estados open/accepted/rejected/withdrawn, la trazabilidad, la evidencia del problema, la ventana de comentarios y las posiciones atribuibles, sin incorporar contenido del ejemplo.",
+        "Incorpora lineamientos Blazor editables adaptados de NZT junto con los comunes y .NET, seleccionados por evidencia del componente y modo de renderizado, sin nuevas rutas, dependencias ni migraciones."
+      ],
+      "renamedSkills": {}
+    },
+    {
       "version": "1.5.1",
       "changes": [
         "Estandariza las actualizaciones remotas de Jira y Azure DevOps como bitácoras breves y útiles: sólo hitos, unidades materiales, decisiones, bloqueos y referencias externas durables.",
