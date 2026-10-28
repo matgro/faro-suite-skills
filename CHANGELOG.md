@@ -2,6 +2,20 @@
 
 Este historial registra cambios de la suite distribuida, no aprobaciones de proyectos. La versión del paquete es independiente de la versión del contrato de workspace.
 
+## 1.5.3 — pendiente de publicación
+
+### Cambios
+
+- Extiende los lineamientos generales .NET/C# para incorporar operaciones en las clases y archivos existentes, reutilizando métodos y dependencias antes de agregar otros.
+- No permite fragmentar clases en archivos como `Repository.Queries.cs`, `Repository.Resend.cs` o `Service.Commands.cs` por preferencia de organización o longitud del archivo: exige convención explícita del componente o autorización humana.
+- Mantiene las excepciones de código generado y parciales exigidos por el framework. No autoriza consolidar archivos preexistentes ni crear repositorios paralelos o auxiliares sólo para ubicar el código nuevo fuera de su responsable.
+
+### Actualización desde 1.5.2
+
+1. Obtener la release publicada y verificar versión, procedencia, inventario y checksums.
+2. Comparar la instalación existente y solicitar confirmación antes de reemplazar el árbol completo `faro/`.
+3. No requiere migrar workspaces, modificar su `contractVersion` ni reorganizar código existente.
+
 ## 1.5.2 — pendiente de publicación
 
 ### Cambios

@@ -26,6 +26,14 @@ Estas reglas adaptan las guías del paquete NZT aportado por el usuario. Son val
 - Para tipos de datos nuevos, preferir propiedades explícitas; usar `record`, clase o `struct` según la semántica y el contrato existentes, sin convertir DTOs públicos sólo por estilo.
 - Evitar reflexión escrita a mano para acceder a propiedades conocidas. Usar contratos tipados; si una integración exige reflexión, justificar la excepción antes de incorporarla.
 
+## Extensión de clases existentes y organización de archivos
+
+- Antes de agregar una operación, revisar la clase responsable, su interfaz, dependencias, métodos y consumidores. Reutilizar las operaciones existentes cuando resuelvan la necesidad; si falta una, incorporarla en esa clase y en su archivo actual, siguiendo sus convenciones.
+- No dividir clases existentes en archivos `partial` por operación o responsabilidad, como `Repository.Queries.cs`, `Repository.Resend.cs` o `Service.Commands.cs`, salvo que esa organización ya sea una convención explícita del componente o el usuario la autorice. Reutilizar el mismo tipo mediante otro archivo parcial no cumple por sí solo la regla de cambio mínimo.
+- Si la responsabilidad pertenece a un repositorio existente, agregar o modificar los métodos dentro de su archivo original y reutilizar sus dependencias. No crear repositorios paralelos, clases auxiliares o métodos de extensión sólo para ubicar el código nuevo fuera de él.
+- La longitud del archivo o una preferencia de organización no justifican fragmentarlo. Si se considera necesaria una separación, proponer el motivo y el alcance antes de implementarla; no convertir una tarea funcional en una reorganización incidental.
+- Esta restricción no aplica a código generado ni a archivos parciales exigidos por el framework. No consolidar divisiones preexistentes como efecto secundario: respetar el alcance autorizado y las convenciones explícitas del proyecto.
+
 ## Async, cancelación y LINQ
 
 - Mantener `async`/`await` de extremo a extremo en operaciones asíncronas. No bloquear con `.Result`, `.Wait()` ni `.GetAwaiter().GetResult()`.
