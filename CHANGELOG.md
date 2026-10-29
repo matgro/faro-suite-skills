@@ -2,6 +2,21 @@
 
 Este historial registra cambios de la suite distribuida, no aprobaciones de proyectos. La versión del paquete es independiente de la versión del contrato de workspace.
 
+## 1.5.4 — pendiente de publicación
+
+### Cambios
+
+- Define mensajes de commit con título en la primera línea, descripción funcional de una o dos oraciones y tareas asociadas al final, separadas por líneas en blanco.
+- La descripción explica qué funcionalidad cambió, se agregó o se quitó, sin repetir el título ni incluir código, nombres de clases o detalles internos.
+- Las tareas verificadas se indican como `#<ID>`, una por línea y fuera del título; si no hay tareas asociadas, se omite el bloque.
+- Aplica la misma separación al título y la descripción de PR e incorpora pruebas de contrato del formato.
+
+### Actualización desde 1.5.3
+
+1. Obtener la release publicada y verificar versión, procedencia, inventario y checksums.
+2. Comparar la instalación existente y solicitar confirmación antes de reemplazar el árbol completo `faro/`.
+3. No requiere migrar workspaces, modificar su `contractVersion` ni reescribir commits o PR existentes.
+
 ## 1.5.3 — pendiente de publicación
 
 ### Cambios

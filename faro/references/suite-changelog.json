@@ -2,6 +2,14 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "1.5.4",
+      "changes": [
+        "Separa los mensajes de commit y PR en título breve, descripción funcional sintetizada y tareas asociadas al final.",
+        "Evita repetir el título en la descripción e incluir código, nombres de clases o detalles internos; exige referencias de tareas verificadas con formato #<ID>, una por línea."
+      ],
+      "renamedSkills": {}
+    },
+    {
       "version": "1.5.3",
       "changes": [
         "Extiende los lineamientos generales .NET/C# para agregar operaciones en las clases y archivos existentes, reutilizando sus métodos y dependencias.",
