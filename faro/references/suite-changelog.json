@@ -2,6 +2,14 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "1.6.1",
+      "changes": [
+        "Publica en el repositorio la guía del cerebro de decisión FARO y sus árboles de instalación, inicialización, doctor, arquitectura, solicitudes, incidentes, integraciones y entrega, enlazada desde el README.",
+        "Documenta los controles, decisiones humanas, handoffs, límites y diferencias entre política y scripts; agrega comprobaciones de cobertura del inventario y enlaces. No modifica el comportamiento de las skills ni el contrato de workspace."
+      ],
+      "renamedSkills": {}
+    },
+    {
       "version": "1.6.0",
       "changes": [
         "Añade faro-incidentes para registrar síntomas, preservar evidencia e hipótesis y concluir la investigación sin asumir un defecto ni autorizar una corrección; permite cierre sin BUG sustentado y resultados no concluyentes.",

@@ -2,6 +2,20 @@
 
 Este historial registra cambios de la suite distribuida, no aprobaciones de proyectos. La versión del paquete es independiente de la versión del contrato de workspace.
 
+## 1.6.1
+
+### Cambios
+
+- Publica `docs/flujo-faro/README.md` como mapa central del router y cinco capítulos con árboles de decisión para instalación/inicio/doctor, arquitectura/ADR/RFC, solicitudes/desarrollo/QA/validación, incidentes e integraciones/entrega.
+- Explica qué observa, qué pregunta, a quién deriva, qué produce y qué bloquea cada ruta, con fuentes y límites de los scripts reales. Incluye 23 diagramas Mermaid y comprobaciones de cobertura del inventario, enlaces y secciones.
+- La guía conserva la revisión fuente de FARO 1.6.0 que describe; esta publicación sólo añade documentación, pruebas y metadatos de release. No cambia el comportamiento, las versiones individuales de skills ni el contrato de workspace.
+
+### Actualización desde 1.6.0
+
+1. Consultar la guía en el repositorio bajo el tag `v1.6.1`; `docs/` no se copia al instalar el árbol runtime `faro/`.
+2. Si se actualiza la instalación, verificar procedencia, inventario y checksums, comparar el destino y confirmar el reemplazo completo como siempre.
+3. No requiere migrar ni reinicializar workspaces, instalar nuevas dependencias externas ni modificar su `contractVersion`.
+
 ## 1.6.0
 
 ### Cambios

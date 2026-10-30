@@ -36,6 +36,10 @@ Request → Context → Requirements → Technical plan → Build → QA → Val
 
 FARO does not collapse those stages into paperwork. Each specialist skill exists to make one transition clear, evidence-based, and reversible when the facts do not support moving forward.
 
+### Decision trees and full workflow guide (Español)
+
+Read [FARO: cerebro de decisión y mapa completo de flujos](docs/flujo-faro/README.md) for the unified router diagram and detailed trees covering installation, workspace initialization, doctor, architecture, change requests, incidents, integrations and delivery. Each branch explains its checks, requested configuration, specialist handoffs, artifacts and authorization gates, with links to the actual skill sources.
+
 ## Ask an agent to install FARO
 
 The user does **not** need to clone this repository first. Give an agent the bootstrap skill and either a FARO repository URL or a local source. The agent obtains the suite into temporary staging, validates it, and installs it.
