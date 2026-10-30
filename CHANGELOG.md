@@ -2,6 +2,23 @@
 
 Este historial registra cambios de la suite distribuida, no aprobaciones de proyectos. La versión del paquete es independiente de la versión del contrato de workspace.
 
+## 1.6.0
+
+### Cambios
+
+- Añade `faro-incidentes` como orquestador de registro INC, evidencia, investigación y conclusión independiente de una corrección BUG/RM/TEC. Admite cierre sin BUG sustentado y resultado no concluyente sin fingir recuperación.
+- Delega investigación y post-mortem en capacidades externas revisadas de `obra/superpowers` y `github/awesome-copilot`, fijadas por commit e integridad; no las instala ni reemplaza skills locales implícitamente.
+- Integra ruteo, plantillas bajo demanda, trazabilidad Jira/Azure DevOps y controles de disponibilidad externa. No exige migración de contratos ni crea incidentes artificiales para cada fallo de QA conocido.
+- Conserva el item recibido aunque su tipo sea Bug sin confirmar el defecto ni duplicarlo; exige un tipo neutral sólo para altas nuevas de incidentes.
+- Establece confirmación previa de versión y tag al entregar, criterio SemVer por impacto, creación de tags anotados y verificación de las referencias remotas autorizadas.
+
+### Actualización desde 1.5.3 o 1.5.4
+
+1. Obtener el tag `v1.6.0` publicado y verificar versión, procedencia, inventario y checksums. Incluye el formato de mensajes documentado en 1.5.4.
+2. Comparar la instalación existente y solicitar confirmación antes de reemplazar el árbol completo `faro/`.
+3. Confirmar por separado la instalación/reemplazo de las capacidades externas de incidentes y auditar revisión, archivos auxiliares y licencia. Un nombre coincidente no autoriza reemplazar una skill local.
+4. No requiere migrar workspaces ni modificar su `contractVersion`; los registros INC se crean bajo demanda. La instalación de dependencias externas no se acredita con la sola publicación del tag de FARO.
+
 ## 1.5.4 — pendiente de publicación
 
 ### Cambios

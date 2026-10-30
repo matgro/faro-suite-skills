@@ -7,7 +7,7 @@ license: MIT
 metadata:
   hermes:
     tags: [faro, project, routing, governance, requirements]
-    related_skills: [faro-inicializacion, faro-doctor, faro-bootstrap-laravel, faro-bootstrap-dotnet, faro-arq-laravel, faro-arq-dotnet, faro-arq-mobile, faro-arq-generica, faro-arq-adr, faro-arq-rfc, faro-documentacion-funcional, faro-req-ingenieria, faro-req-analisis-tecnico, faro-req-desarrollo, faro-qa-ejecucion, faro-req-validacion, faro-ux, faro-entrega, faro-int-jira, faro-int-azure-devops, azure-devops-rest-v7]
+    related_skills: [faro-inicializacion, faro-doctor, faro-bootstrap-laravel, faro-bootstrap-dotnet, faro-arq-laravel, faro-arq-dotnet, faro-arq-mobile, faro-arq-generica, faro-arq-adr, faro-arq-rfc, faro-documentacion-funcional, faro-req-ingenieria, faro-req-analisis-tecnico, faro-req-desarrollo, faro-qa-ejecucion, faro-req-validacion, faro-ux, faro-entrega, faro-incidentes, faro-int-jira, faro-int-azure-devops, azure-devops-rest-v7]
 ---
 
 # FARO — Orquestador de proyecto
@@ -17,6 +17,8 @@ metadata:
 `faro` es el único punto de entrada y router de FARO. No crea ni repara contratos por sí mismo: `faro-inicializacion` materializa un workspace nuevo y `faro-doctor` diagnostica uno existente. Con un proyecto Laravel o .NET/C# nuevo expresamente autorizado, `faro-bootstrap-laravel` o `faro-bootstrap-dotnet` crean el scaffold técnico antes del contrato; ninguna ruta de arquitectura crea código. FARO tampoco formaliza requisitos, diseña, implementa, prueba, valida ni despliega; identifica estado y carga exactamente una skill `faro-*` especializada. `azure-devops-rest-v7` es capability técnica del adaptador `faro-int-azure-devops`, no una ruta de ciclo de vida directa.
 
 Las capacidades Laravel externas aprobadas se catalogan en `references/laravel-external-skills.json`. Son asistentes de una skill FARO ya elegida, no rutas del ciclo de vida, ni sustituyen autorización, evidencia o QA. Una skill bloqueada por el análisis de seguridad no se fuerza ni se usa.
+
+Las capacidades de incidentes se fijan en `references/incident-external-skills.json`. `faro-incidentes` orquesta registro, permisos, conclusión y derivación; `systematic-debugging` e `incident-postmortem` son auxiliares externos, no rutas FARO ni autorización de corrección. Los registros `context/incidents/` son opcionales y bajo demanda, no parte de la inicialización obligatoria; no requieren migrar el contrato de workspace.
 
 El contrato persistente del workspace vive en `AGENTS.md`, `context/faro-workspace.json`, `context/stats.json`, `context/README.md`, `context/requirements/project-profile.md` y, sólo para continuidad activa, `context/workflow.json`. Los registros de decisión son opcionales y bajo demanda: `context/decisions/adr/` y `context/decisions/rfc/`; no forman parte de la inicialización obligatoria. `templates/faro-workspace-config.json` es la política estructural canónica y central: declara los archivos/directorios requeridos y las plantillas aprobadas. `context/faro-workspace.json` es únicamente un manifiesto local de versión y artefactos instalados; no puede redefinir la política FARO. La lógica de inicialización, ruteo, Jira, autorización y entrega vive exclusivamente en `faro` y las skills `faro-*`.
 
@@ -35,7 +37,7 @@ El root coordinador es siempre el directorio de trabajo actual de la sesión. Se
 1. Antes de enrutar, fijar root y comprobar existencia de `AGENTS.md`, bloque `FARO:START`/`FARO:END`, `context/faro-workspace.json`, `context/stats.json`, `context/README.md`, perfil y workflow opcional. Después pueden inspeccionarse fuentes externas aportadas. **Completo:** se conoce si el workspace es ausente, existente completo o existente parcial.
 2. Ante un pedido explícito de crear un Laravel/API o .NET/C# nuevo, sin bloque ni artefacto FARO, con root vacío, stack/destino/plantilla confirmados y autorización para crear el scaffold, cargar respectivamente `faro-bootstrap-laravel` o `faro-bootstrap-dotnet` antes de inicializar. Para “inicializa/prepara con FARO” sin esas precondiciones: si no hay bloque FARO ni artefacto FARO, cargar `faro-inicializacion`. Si existe cualquiera de ellos —incluso incompleto, en `new` o `initializing`— cargar `faro-doctor`, informar que el espacio ya existe y mostrar su estado; no reinicializar ni reparar sin una autorización posterior explícita. **Completo:** una inicialización repetida nunca sobrescribe información y el scaffold sólo ocurre en un root vacío autorizado.
 3. Para pedidos no inicializadores con contrato existente, validar JSON y leer configuración, índice, estado, perfil y workflow. Antes de seguir `nextRoute`, ejecutar `python -B <skills-root>/faro/scripts/suite_validation.py --workflow <root>/context/workflow.json`. Una suite incoherente, una ruta retirada/desconocida o un JSON malformado se informa y se enruta a `faro-doctor`; no se descarta, reemplaza ni traduce silenciosamente. Consultar `references/suite-changelog.json`: la versión del paquete no sustituye la del contrato de proyecto. **Completo:** versión/estado/configuración y destinos vigentes son conocidos antes de cargar otra skill.
-4. Si `state` es `disabled`, detener FARO. Si el contrato existe y `state` es `new` o `initializing`, seguir la ruta de arquitectura aplicable o el adaptador de seguimiento confirmado cuando `work_tracking.mode` sea `REQUIRED`; no recibir SOL/RM/BUG/TEC. **Completo:** no hay intake antes de `available`.
+4. Si `state` es `disabled`, detener FARO. Si el contrato existe y `state` es `new` o `initializing`, seguir la ruta de arquitectura aplicable o el adaptador de seguimiento confirmado cuando `work_tracking.mode` sea `REQUIRED`; no recibir SOL/RM/BUG/TEC/INC. **Completo:** no hay intake antes de `available`.
 5. Comparar la versión instalada con la configuración canónica. Una configuración anterior puede ser diagnosticada y migrada sólo bajo autorización explícita; una posterior nunca se degrada. **Completo:** el contrato es versionado y no se inventa una migración.
 
 ## Contrato inicial administrado
@@ -71,10 +73,12 @@ Durante inicialización se formula una sola consulta agrupada para identidad/tip
 | Estado `new`/`initializing`, stack confirmado distinto | `faro-arq-generica` | Arquitectura mínima basada en evidencia; completar disponibilidad. |
 | `available`; agregar/configurar Jira explícitamente | `faro-int-jira` | Integración autorizada o issue enlazada como `SRC`. |
 | `available`; agregar/configurar Azure DevOps / Visual Studio explícitamente | `faro-int-azure-devops` | Integración autorizada o work item enlazado como `SRC`. |
+| `available`; registrar/investigar error reportado, causa desconocida, problema de proveedor, reanudar o cerrar INC | `faro-incidentes` | INC con evidencia, conclusión y cierre justificado o derivación autorizada; sin fix implícito. Tiene prioridad sobre las filas de BUG sin esperado cuando el pedido es investigar un síntoma. |
 | `available`; perfil DF `HABILITADA`; solicitud funcional/cambio/BUG sin esperado o DF | `faro-documentacion-funcional` | DF identificado/creado; si hay cambio, siguiente ruta `faro-req-ingenieria`. |
 | `available`; solicitud funcional/cambio/BUG sin esperado; DF no habilitada | `faro-req-ingenieria` | RM/BUG/TEC trazable, versión y estado de definición. |
 | RM/BUG/TEC requiere aclarar, cambiar alcance o resolver PD | `faro-req-ingenieria` | Artefacto funcional actualizado. |
 | RM/BUG/TEC autorizado; impacto, plan o tareas | `faro-req-analisis-tecnico` | Plan/tareas contra código, estado técnico. |
+| `available`; BUG confirmado con esperado documentado y corrección autorizada, sin plan | `faro-req-analisis-tecnico` | Registro BUG y plan trazable; referenciar INC si existe, sin exigir uno artificial. |
 | Decisión técnica ya tomada, costosa de revertir, restrictiva o controvertida | `faro-arq-adr` | ADR permanente enlazado desde arquitectura/plan/RM cuando corresponda. |
 | Decisión técnica abierta que requiere acuerdo externo y alternativas reales | `faro-arq-rfc` | RFC con ventana y `waitingOn`; RFC aceptado entrega a `faro-arq-adr`. |
 | Plan `LISTO_PARA_DESARROLLO`; autorización exacta; desarrollar | `faro-req-desarrollo` | Incremento implementado, tareas/evidencia actualizadas. |
@@ -90,7 +94,7 @@ Durante inicialización se formula una sola consulta agrupada para identidad/tip
 
 ## Continuidad e invariantes
 
-- Cargar una sola skill especialista por petición; sólo otra especialista puede ordenar el siguiente handoff o el usuario cambiar de fase.
+- Cargar una sola skill especialista FARO por petición; sólo otra especialista puede ordenar el siguiente handoff o el usuario cambiar de fase. Puede cargar las capacidades externas acotadas que esa especialista declara, sin convertirlas en otra ruta FARO.
 - La configuración canónica central, no los archivos de proyecto, define la política FARO y las rutas permitidas.
 - El manifiesto local sólo acredita versión/origen/artefactos instalados; no puede autorizar ni desautorizar una ruta.
 - Las decisiones específicas del proyecto (seguimiento, proveedor, URL, proyecto, área, clave y mapeos) viven en `project-profile.md`, sin secretos.
@@ -99,6 +103,7 @@ Durante inicialización se formula una sola consulta agrupada para identidad/tip
 - Una unidad tiene `todo`, `doing`, `done` o `dropped`; máximo una `doing`.
 - `authorization.status` señala versión y alcance autorizados; otra versión no habilita trabajo.
 - El código observado no sustituye una decisión funcional.
+- Un reporte de incidente no confirma un BUG; investigar no autoriza corregir. La causa, la recuperación del impacto y la corrección se verifican por separado, y es válido cerrar sin BUG con evidencia.
 - Una skill instalada no autoriza su uso: arquitectura, contrato y artefacto activo deciden.
 - Las skills externas Laravel se usan sólo cuando aparecen instaladas, habilitadas y con escaneo de seguridad permitido; su fuente, mantenimiento y alcance están en `references/laravel-external-skills.json`.
 - No inventar stack, comandos, roles, reglas, endpoints, tablas ni validaciones.

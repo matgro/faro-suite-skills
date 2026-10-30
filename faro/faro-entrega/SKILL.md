@@ -20,13 +20,14 @@ Ejecuta acciones que sacan trabajo del directorio local: commit, branch, PR, rel
 - RM/BUG/TEC, versión y evidencia de validación identificados.
 - Para despliegue, la autorización nombra el ambiente; producción nunca se infiere.
 - Se leyeron reglas de repositorio, CI, despliegue, rollback y estado Git.
+- Antes de commit, push, PR o release, resolver versión y tag conforme a `references/versionado-y-tags.md`: proponer el incremento por impacto y preguntar en una sola confirmación si se actualiza la versión y se crea/publica el tag. No repetir decisiones explícitas ya autorizadas; una entrega sin versión/tag también requiere una decisión explícita.
 - Si la acción crea una rama para un RM, usar `feature/<RM-ID>-<descripcion-kebab-case>` para incrementos funcionales. No usar el prefijo abreviado `feat/`.
 
 ## Procedimiento
-1. Declarar preparación: validación, checks, cambios locales, migraciones, configuración/secretos por clave y riesgos. **Completo:** huecos visibles.
+1. Declarar preparación: validación, checks, cambios locales, migraciones, configuración/secretos por clave y riesgos. Para commit, push, PR o release, leer `references/versionado-y-tags.md`, inspeccionar versión y tags locales/remotos y confirmar las decisiones pendientes antes de modificar la versión o ejecutar la entrega. **Completo:** huecos visibles, versión y tag resueltos sin asumir autorización.
 2. Para commit/PR, revisar diff por secretos, configuración local, generados y alcance; redactar el mensaje conforme a `## Mensajes de commit y PR`. **Completo:** sólo archivos autorizados y mensaje con título, descripción funcional y tareas asociadas.
 3. Para release/deploy, verificar artefacto, ambiente, health checks, observabilidad, rollback y migraciones. **Completo:** no se reconstruye una versión distinta.
-4. Ejecutar sólo la acción autorizada; registrar comando, referencia, resultado y evidencia del ambiente. **Completo:** salida verificable.
+4. Ejecutar sólo la acción autorizada; registrar comando, referencia, resultado y evidencia del ambiente. Si se autorizó versionar y taguear, sincronizar metadatos e integridad, validar, crear el commit y el tag anotado sobre ese commit, publicar sólo las referencias autorizadas y verificar sus SHA remotos conforme a `references/versionado-y-tags.md`. **Completo:** salida verificable; un push de rama no se declara publicación del tag.
 5. Si seguimiento está `REQUIRED`, publicar el resultado de cada operación externa autorizada (rama, commit, PR, release, despliegue o rollback) conforme a `../references/comment-format.md`, con la referencia durable resultante. Al completar el alcance autorizado, transicionar al estado remoto `DONE`; ante cancelación humana explícita, a `CANCELLED`. Si falla la sincronización, registrar el bloqueo real y no declarar la entrega cerrada.
 6. Actualizar workflow y documentación operacional afectada. **Completo:** referencia y resultado reanudables.
 
@@ -57,6 +58,7 @@ Se agrega la identificación de la aplicación en las solicitudes a servicios ex
 
 ## Verificación
 - [ ] Acción y ambiente fueron nombrados.
+- [ ] Se confirmó si se actualiza versión y se crea/publica tag; el incremento responde al impacto y las referencias remotas autorizadas coinciden con el commit validado.
 - [ ] Diff, checks y riesgos fueron revisados.
 - [ ] El commit/PR separa título, descripción funcional breve y tareas asociadas verificadas, sin código ni nombres de clases.
 - [ ] Evidencia posterior fue capturada si aplica.

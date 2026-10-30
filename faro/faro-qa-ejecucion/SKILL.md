@@ -26,8 +26,8 @@ Diseña y ejecuta pruebas de aplicación para un incremento construido, con evid
 2. Definir casos antes de ejecutar: API, UI o ambos; precondiciones, datos, pasos, esperado, efectos y limpieza. **Completo:** ningún esperado deriva del comportamiento actual.
 3. Registrar la autorización de datos/efectos faltante. No usar datos reales sin autorización. **Completo:** escenario ejecutable o BLOCKED con causa.
 4. Ejecutar por CA y registrar evidencia. Estados permitidos: `PENDING`, `PASSED`, `FAILED`, `BLOCKED`. **Completo:** UI no se acredita con API.
-5. Crear o actualizar BUG para cada fallo reproducible; no corregirlo durante la corrida. **Completo:** reproducción, impacto y evidencia trazables.
-6. Actualizar workflow: fallo → `faro-req-analisis-tecnico` o `faro-req-desarrollo`; éxito → `faro-req-validacion`. Si seguimiento está `REQUIRED`, publicar el resultado material de QA o su bloqueo conforme a `../references/comment-format.md`. **Completo:** próxima ruta real.
+5. Crear o actualizar BUG para cada fallo reproducible contra un CA/esperado sustentado; no corregirlo durante la corrida. Si aparece un síntoma sin esperado o causa confirmados fuera de esos CA, conservar la evidencia y derivar a `faro-incidentes`, sin clasificarlo automáticamente como BUG. No exigir INC para fallos conocidos contra CA. **Completo:** reproducción, impacto y evidencia trazables.
+6. Actualizar workflow: fallo contra esperado conocido → `faro-req-analisis-tecnico` o `faro-req-desarrollo`; síntoma no clasificado del paso anterior → `faro-incidentes`; éxito → `faro-req-validacion`. Si seguimiento está `REQUIRED`, publicar el resultado material de QA o su bloqueo conforme a `../references/comment-format.md`. **Completo:** próxima ruta real.
 
 ## Invariantes
 - Caso no ejecutado nunca es PASSED.

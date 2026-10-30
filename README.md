@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <strong>17 skills</strong> · Complete lifecycle · Integrity checked · Agent-portable
+  <strong>23 skills</strong> · Complete lifecycle · Integrity checked · Agent-portable
 </p>
 
 ---
@@ -87,6 +87,7 @@ faro/                         Runtime suite
 ├── faro-arq-*/               Evidence-based architecture routes
 ├── faro-req-*/               Requirements, analysis, implementation, validation
 ├── faro-qa-ejecucion/        QA cases and evidence
+├── faro-incidentes/          Incident intake, governed investigation and disposition
 ├── faro-ux/                  Visible-flow and interface design
 ├── faro-entrega/             Explicit commit, PR, release, and deployment handoff
 ├── faro-int-jira/            Optional governed Jira integration
@@ -134,6 +135,14 @@ python -B faro/scripts/verify-routing.py
 On Windows, keep the runtime's LF line endings declared by `.gitattributes`. When preparing a new release from an older CRLF checkout, `python tools/update_checksums.py --normalize-line-endings` performs the explicit conversion before calculating hashes. Never normalize an installed or published release to bypass verification. Retrieve releases with `git -c core.autocrlf=false clone ...`.
 
 Changing local files does not publish a release: remote installation and origin verification require the new commit and matching immutable tag to be published. Never reuse the previous tag for a changed tree.
+
+## Incidents are not automatically bugs
+
+`faro-incidentes` records a reported symptom as `INC`, preserves evidence and hypotheses, and separates diagnosis, impact recovery and corrective work. A confirmed defect can lead to an explicitly authorized BUG; a changed business expectation leads to RM, while provider issues, valid business rules or operational causes can conclude without a software fix. Inconclusive evidence is not proof that no bug exists.
+
+The incident directory `context/incidents/` and its index are created only when needed in an available workspace; existing workspaces do not require reinitialization or a contract-version migration. Known QA failures against documented acceptance criteria can still create a BUG directly.
+
+FARO orchestrates rather than reimplements debugging: `systematic-debugging` from `obra/superpowers` supports technical investigation, and `incident-postmortem` from `github/awesome-copilot` supports a proportionate incident review. Reviewed commits, required-file/license hashes and scope limits are in `faro/references/incident-external-skills.json` and `faro/faro-incidentes/references/capacidades-externas.md`. These external skills are not bundled or implicitly installed. Bootstrap requests authorization, preserves same-name local customizations, and verifies complete pinned skills and security audit. Missing or blocked skills leave the applicable stage explicitly blocked, not silently replaced. Investigation never authorizes a fix or deployment.
 
 ## Editable development guidelines
 

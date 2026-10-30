@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "1.6.0",
+      "changes": [
+        "Añade faro-incidentes para registrar síntomas, preservar evidencia e hipótesis y concluir la investigación sin asumir un defecto ni autorizar una corrección; permite cierre sin BUG sustentado y resultados no concluyentes.",
+        "Delega investigación y post-mortem en capacidades externas revisadas de obra/superpowers y github/awesome-copilot, fijadas por commit, archivos requeridos e integridad; bootstrap solicita autorización para instalarlas o reemplazarlas sin afectar skills locales implícitamente.",
+        "Integra registros INC bajo demanda, ruteo y seguimiento independiente en Jira/Azure DevOps; conserva items recibidos aunque su tipo sea Bug sin duplicarlos ni confirmar su clasificación. No requiere migrar contratos de workspace.",
+        "Define confirmación previa de versión y publicación de tags en entregas, criterio SemVer por impacto, tags anotados y verificación remota de las referencias publicadas."
+      ],
+      "renamedSkills": {}
+    },
+    {
       "version": "1.5.4",
       "changes": [
         "Separa los mensajes de commit y PR en título breve, descripción funcional sintetizada y tareas asociadas al final.",

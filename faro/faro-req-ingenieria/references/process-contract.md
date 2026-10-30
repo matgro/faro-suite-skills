@@ -6,6 +6,7 @@ Versión: 1.0
 
 - `SOL`: solicitud; `SRC`: fuente; `OBJ`: objetivo; `RF`: requerimiento funcional; `RN`: regla de negocio; `RNF`: requisito no funcional; `RES`: restricción; `ACT`: actor; `DAT`: dato; `INT`: integración; `VAL`: validación; `CA`: criterio; `PD`: pendiente.
 - Documento: `RM-0001`; correcciones documentadas: `BUG-0001`; mantenimiento sin cambio funcional: `TEC-0001`; tareas: `TASK-001`.
+- Investigación de síntoma sin defecto confirmado: `INC-0001`, bajo `context/incidents/` y gobernada por `faro-incidentes`. No es un RM ni una autorización de fix; BUG/RM/TEC derivados enlazan al INC sin duplicar evidencia.
 - Usar referencias completas, por ejemplo `RM-0001#RN-001`. No reutilizar IDs ni calcularlos por máximo+1 sin reserva serializada.
 
 ## Evidencia
@@ -24,6 +25,7 @@ Cada afirmación normativa debe ser CONFIRMADA con fuente localizable, OBSERVADA
 ## Flujo
 
 1. Clasificar solicitud: consulta, RM, BUG, TEC o combinación.
+   Si se solicita registrar o investigar un síntoma con causa desconocida, usar `faro-incidentes` antes de clasificarlo como BUG. Un esperado faltante se investiga como pendiente, no obliga por sí solo a crear un RM. Un BUG conocido con esperado documentado conserva el circuito directo.
 2. Cambios funcionales usan `faro-req-ingenieria`; BUG sólo restaura comportamiento con fuente; TEC justifica ausencia de cambio observable. Con seguimiento `REQUIRED`, cada solicitud se vincula a una issue o work item y se preserva como `SRC`; su estado registra avance operativo, pero no constituye aprobación FARO.
 3. Un PD bloquea si puede cambiar resultado, datos, permisos, contratos, criterios o compatibilidad del alcance. No bajar su gravedad para avanzar.
 4. Antes de código: RM/version inequívocos, CA verificables, PD bloqueantes resueltos, aprobación y autorización válidas, plan/tareas coherentes.

@@ -35,14 +35,15 @@ La URL hospedada en `*.visualstudio.com` y `dev.azure.com` identifica el mismo p
 
 ## Trazabilidad REQUIRED
 
-1. Toda solicitud se vincula a un work item. Un item recibido se registra como `SRC-AZDO-<ID>` y se entrega a `faro-req-ingenieria`; una solicitud externa crea su item al crear el RM.
+1. Toda solicitud se vincula a un work item. Un item recibido se registra como `SRC-AZDO-<ID>` y se entrega a `faro-req-ingenieria`, salvo reportes que requieren investigar un síntoma/causa desconocida, que se entregan a `faro-incidentes` sin confirmar BUG por el tipo remoto; una solicitud externa crea su item al crear el RM.
+   Para INC, exigir tipo neutral sólo para items nuevos y verificar el workflow real. Si falta ese mapeo para el alta, pedir la decisión; no asumir un tipo Incident ni usar Bug por defecto. Conservar el item recibido aunque sea de tipo Bug, con su ID, tipo y workflow verificados: su tipo remoto no confirma un defecto. No exigir otro item neutral ni duplicarlo/reclasificarlo automáticamente; crear un item neutral separado requiere decisión explícita y vínculo con el original. `REQUIRED` autoriza crear/vincular el item del INC solicitado y sincronizar hitos, vínculos y transiciones verificadas; no modificar el proceso Azure DevOps, reclasificar un item recibido ni crear un BUG derivado sin autorización explícita. Si se crea un Task, cumplir su regla de estimación; vincular uno recibido no autoriza cambiarla. INC y corrección conservan IDs y vínculos bidireccionales; cerrar la corrección no cierra automáticamente el incidente. Verificar por lectura toda escritura y aplicar el criterio de cierre de `faro-incidentes` al item del INC.
 2. El RM registra ID, URL, organización, proyecto y área; Azure DevOps recibe el identificador del RM y vínculos disponibles a repositorio, plan, rama, PR, QA o entrega. No copiar adjuntos ni datos sensibles sin autorización explícita.
 3. Al iniciar, mover el item al estado remoto que mapea a `PENDING` o `DOING`. Durante definición, análisis, UX, desarrollo, QA, validación y entrega, mantener el estado de trabajo y añadir sólo las actualizaciones relevantes conforme a `../references/comment-format.md`: inicio/cierre de fase, unidad material completada o bloqueada, decisión o bloqueo, y referencia externa durable. Al completar el alcance autorizado, mover a `DONE`. Sólo una cancelación humana explícita permite `CANCELLED`.
 4. Si una sincronización obligatoria falla, registrar `waitingOn` con el error real y no avanzar de fase.
 
 ## Límites permanentes
 
-- `REQUIRED` autoriza crear el item de un RM, actualizar vínculos configurados, añadir las actualizaciones relevantes definidas por la plantilla y cambiar su estado conforme al mapeo verificado.
+- `REQUIRED` autoriza crear el item de un RM o del INC solicitado con tipo neutral confirmado, actualizar vínculos configurados, añadir las actualizaciones relevantes definidas por la plantilla y cambiar su estado conforme al mapeo verificado. No crear un BUG derivado sin autorización explícita.
 - Asignar o cambiar el asignado, área, iteración, actividad, estimación, prioridad, adjuntos, borrado, tiempo o sprints requiere autorización explícita independiente, incluso si existen valores por defecto configurados.
 - Azure DevOps no equivale a aprobación funcional, QA ni validación FARO.
 - No exponer secretos, identificadores personales innecesarios ni datos sensibles.

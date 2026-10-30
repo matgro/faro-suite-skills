@@ -24,6 +24,8 @@ Convierte una solicitud informal en un RM trazable antes de implementar comporta
 
 No usar para consultas explicativas, bugs con comportamiento esperado documentado ni mantenimiento técnico que preserve el contrato observable; esas rutas se clasifican y documentan conforme al contrato.
 
+Un pedido de investigar un síntoma o causa desconocida se deriva primero a `faro-incidentes`, sin abrir RM/BUG por anticipado. Una conclusión de negocio correcto sólo abre RM si el usuario pide cambiar ese comportamiento; conservar el INC como fuente, sin duplicar su investigación.
+
 ## Procedimiento
 
 1. Leer `context/requirements/project-profile.md`, `references/process-contract.md`, catálogo y fuentes pertinentes. **Completo:** se conocen configuración, ID/rutas y evidencias accesibles.

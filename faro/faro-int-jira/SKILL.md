@@ -34,14 +34,15 @@ No sustituye el RM, la aprobación humana ni el análisis técnico. No implement
 
 ## Trazabilidad Jira REQUIRED
 
-1. Toda solicitud debe estar vinculada a una issue. Una issue recibida se registra como `SRC-JIRA-<KEY>` y se entrega a `faro-req-ingenieria`. Una solicitud externa crea su issue al crear el RM.
+1. Toda solicitud debe estar vinculada a una issue. Una issue recibida se registra como `SRC-JIRA-<KEY>` y se entrega a `faro-req-ingenieria`, salvo reportes que requieren investigar un síntoma/causa desconocida, que se entregan a `faro-incidentes` sin confirmar BUG por el tipo remoto. Una solicitud externa crea su issue al crear el RM; un INC crea o vincula su seguimiento según la regla siguiente.
+   Para INC, exigir tipo neutral sólo para items nuevos y verificar el workflow real del proyecto; si falta ese mapeo para el alta, pedir la decisión, no inventar un tipo Incident ni usar Bug por defecto. Conservar el item recibido aunque sea de tipo Bug, con su ID, tipo y workflow verificados: su tipo remoto no confirma un defecto. No exigir otro item neutral ni duplicarlo/reclasificarlo automáticamente; crear un item neutral separado requiere decisión explícita y vínculo con el original. `REQUIRED` autoriza crear/vincular el item de investigación INC y sincronizar sus hitos, vínculos y transiciones verificadas. No autoriza crear el BUG derivado sin decisión explícita, reclasificar el item recibido ni modificar el esquema Jira. INC y corrección tienen vínculos bidireccionales; cerrar la corrección no cierra automáticamente el incidente. Verificar por lectura toda escritura y aplicar el criterio de cierre de `faro-incidentes` al item del INC.
 2. El RM debe registrar clave, URL y proyecto Jira; Jira debe recibir el identificador del RM y los vínculos disponibles al repositorio, plan, rama, PR, evidencia de QA o entrega. No copiar adjuntos ni datos sensibles salvo petición y autorización explícitas.
 3. Al iniciar la solicitud, transicionar a `Pendiente`/`Por hacer` o a `Haciendo`, según el workflow real. Durante definición, análisis técnico, UX, desarrollo, QA, validación y entrega, mantener `Haciendo` y añadir sólo las actualizaciones relevantes conforme a `../references/comment-format.md`: inicio/cierre de fase, unidad material completada o bloqueada, decisión o bloqueo, y referencia externa durable. Al completar el alcance autorizado, transicionar a `Finalizado`/`Done`. Sólo una cancelación humana explícita permite transicionar a `Cancelado`.
 4. Si una sincronización obligatoria falla, no avanzar a la siguiente fase: registrar `waitingOn` con el error real. No exponer secretos ni ocultar el fallo.
 
 ## Límites permanentes
 
-- `REQUIRED` autoriza únicamente crear la issue de un RM, actualizar los vínculos configurados, añadir las actualizaciones relevantes definidas por la plantilla y transicionarla conforme a esta regla.
+- `REQUIRED` autoriza únicamente crear la issue de un RM o del INC solicitado con tipo neutral confirmado, actualizar los vínculos configurados, añadir las actualizaciones relevantes definidas por la plantilla y transicionarla conforme a esta regla. No crear un BUG derivado sin autorización explícita.
 - Asignar, editar prioridad/campos no configurados, adjuntar, borrar, registrar tiempos y gestionar sprints requieren autorización explícita independiente.
 - Jira no equivale a aprobación funcional, QA ni validación FARO; el RM conserva esas fuentes de verdad.
 - No exponer secretos, identificadores personales innecesarios ni información clínica en fuentes o reportes.
