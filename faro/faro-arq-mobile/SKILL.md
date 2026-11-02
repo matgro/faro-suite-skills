@@ -1,7 +1,7 @@
 ---
 name: faro-arq-mobile
 description: Use when FARO documents an evidenced mobile architecture.
-version: 1.1.0
+version: 1.2.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -35,6 +35,8 @@ No usar para implementar pantallas ni para reemplazar este flujo con una skill g
 6. Validar índice/rutas, actualizar `stats.json.updatedAt` UTC y permitir `available` sólo con arquitectura verificable. **Completo:** estado y documentación consistentes.
 
 ## Registro obligatorio
+
+Leer [Versionado de aplicaciones](../references/application-versioning.md). Identificar versión visible, número de build, manifiestos nativos, generadores y restricciones de distribución reales; registrar fuente/derivados por componente y decisiones confirmadas en el perfil. No inferir campos por plataforma ni modificar fuentes, firmar o construir durante discovery.
 
 Incluir ruta/ref/estado Git, evidencia, framework/runtime/dependencias, comandos, plataformas/mínimos si están definidos, organización, navegación/estado, permisos, API, secretos/configuración, pruebas, distribución/operación y pendientes.
 

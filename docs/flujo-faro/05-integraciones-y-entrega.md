@@ -176,15 +176,46 @@ Respetar primero el esquema explícito del proyecto. Si usa SemVer:
 
 Aplicar el mayor impacto del conjunto y calcular con herramientas, no orden alfabético. `docs`, `test`, `ci` o `chore` no fuerzan incremento; tamaño del diff tampoco lo decide. Para suites también cuentan instrucciones, rutas y formatos públicos. En `0.y.z` o prereleases, seguir la política explícita sin asumir estabilidad ni publicar prerelease como estable.
 
-Proponer versión concreta y justificar; una sola confirmación agrupa pendientes: «Propongo <versión> (<PATCH|MINOR|MAJOR>) por <motivo>. ¿Actualizamos la versión y creamos/publicamos el tag <tag> en <remoto>, junto con la entrega en <rama>?». No repetir decisiones ya autorizadas. Entregar sin incremento o sin tag también requiere decisión explícita; pedir push no autoriza versionar/taguear. Un tag sólo local no se publica; una versión ya preparada no se incrementa otra vez.
+Aplicar primero la política aprobada por componente: `CONFIRMAR_POR_ENTREGA` pide decisión; `AUTOMATICA` permite decidir el incremento sólo dentro de límites expresos de impacto y de una entrega ya autorizada. Fuera de esos límites, o sin política aprobada, consultar. Proponer versión concreta y justificar; una sola confirmación agrupa pendientes: «Propongo <versión> (<PATCH|MINOR|MAJOR>) por <motivo>. ¿Actualizamos la versión y creamos/publicamos el tag <tag> en <remoto>, junto con la entrega en <rama>?». No repetir decisiones ya autorizadas. Entregar sin incremento o sin tag también requiere decisión explícita; pedir push no autoriza versionar/taguear. Un tag sólo local no se publica; una versión ya preparada no se incrementa otra vez.
 
 **Fuentes:** [precondiciones de entrega](../../faro/faro-entrega/SKILL.md), [decisión humana y SemVer](../../faro/faro-entrega/references/versionado-y-tags.md).
+
+### Versión de aplicación: fuente, artefacto y runtime
+
+La sección **Versionado de aplicaciones** de `context/requirements/project-profile.md` identifica componente/root/repositorio, stack, ruta/clave de fuente, lectores/derivados, esquema y tag, decisión, comandos observados y permisos con evidencia. [Arquitectura](02-arquitectura-y-decisiones.md#versionado-de-aplicaciones-por-componente) descubre/proporciona propuesta; desarrollo autorizado instala un mecanismo faltante; entrega actualiza valores del mecanismo existente. Si falta mecanismo o se exige cambiar lectores, volver a desarrollo: la excepción acotada de actualizar la versión no permite implementar código ni auto-fix durante deploy.
+
+**Una versión por entrega versionada, no por commit, push o retry.** Varios commits pueden formar la misma entrega. Reintento o promoción conserva versión y mismo artefacto; rollback usa el artefacto anterior autorizado. Cambiar contenido no es promover el mismo artefacto. Las versiones de aplicación, RM, contrato y suite no se sincronizan por conveniencia.
+
+1. Resolver versión e impacto acumulado bajo `CONFIRMAR_POR_ENTREGA` o `AUTOMATICA` explícitamente autorizada; confirmar sólo decisiones pendientes. Política automática no autoriza nuevas entregas, deploy, ambientes, tags/remotos ni cambios fuera de scope.
+2. Actualizar la fuente única mediante su escritor autorizado y validar valor/lectores/derivados y diff. Si la gobierna CI, verificar su salida sin editar otra fuente en paralelo. No leer ni escribir `.env`; no introducir `VERSION` duplicado ni otro número manual en UI. En Laravel la propuesta nueva es la clave `version` de `config/app.php`, leída como `app.version`; en .NET/Blazor `Version` en `.csproj` o `Directory.Build.props` por conjunto co-versionado, sin cambiar `AssemblyVersion` a ciegas. Mantener mecanismos existentes hasta autorización.
+3. Crear commit y tag anotado sólo si están autorizados, sobre el SHA validado; comprobar colisiones y publicación conforme al subproceso siguiente. Un tag local no es publicación remota.
+4. Construir desde ese mismo SHA con comandos observados y permisos vigentes; registrar identidad del artefacto y su versión. Caché Laravel sólo se regenera en build/deploy autorizado. No inventar comandos para otros stacks ni ejecutar un build no autorizado.
+5. Desplegar sólo al ambiente autorizado y leer de vuelta la versión real mediante el mecanismo runtime observado, comparando versión, SHA/artefacto y ambiente. Si falta acceso o lector, registrar pendiente; no afirmar despliegue por existencia de tag ni validación productiva por un build verde.
+
+```mermaid
+flowchart LR
+    E0["Política por componente y entrega autorizada"] --> E1["Decidir versión dentro de límites"]
+    E1 --> E2["Editar fuente única y validar"]
+    E2 --> E3["Commit y tag anotado autorizados; mismo SHA"]
+    E3 --> E4["Build autorizado; artefacto identificado"]
+    E4 --> E5["Deploy al ambiente autorizado"]
+    E5 --> E6["Readback runtime: versión, artefacto y ambiente"]
+    E4 --> E7["Retry o promoción: misma versión y artefacto"]
+    E7 --> E5
+    E5 --> E8["Rollback autorizado: artefacto anterior"]
+```
+
+Registrar en la tarea/artefacto de entrega existente identificador de entrega, componente, base, versión anterior/objetivo, tag, acciones autorizadas, SHA final, artefacto/digest, ambiente y evidencia; no crear otro archivo obligatorio ni duplicar el valor actual en el perfil. En retry reconciliar registro con Git/CI/remoto y verificar lo ya preparado, sin incrementar de nuevo. Si CI gobierna la versión, mantener un único escritor; sin reserva/serialización suficiente, detener asignaciones concurrentes y resolver colisiones. Si el mecanismo exige builds por ambiente, declarar esa limitación y obtener política explícita, no afirmar promoción del mismo artefacto.
+
+Las flechas conservan puertas de autorización: una entrega limitada a commit/tag se detiene allí. Registrar qué se ejecutó, verificó o quedó pendiente; el esquema no ejecuta un scheduler ni presupone deploy. El glosario ayuda a interpretar nombres de componentes sin sustituir su identidad técnica ni autorización. Un refactor pendiente de integración/revisión no se vuelve completo por versionarlo.
+
+**Fuentes:** [política de aplicaciones](../../faro/references/application-versioning.md), [glosario](../../faro/references/domain-glossary.md), [cierre de refactor](../../faro/references/refactoring-completion.md).
 
 ### Subproceso de publicación
 
 ```mermaid
 flowchart TD
-    V0["Inspeccionar impacto acumulado, versiones y tags"] --> V1["Confirmar sólo decisiones pendientes de versión y publicación"]
+    V0["Inspeccionar impacto acumulado, versiones y tags"] --> V1["Aplicar política aprobada; confirmar sólo pendientes de versión y publicación"]
     V1 --> V2{"Incremento autorizado"}
     V2 -->|"Sí"| V3["Sincronizar metadatos, changelog e integridad"]
     V2 -->|"No, decisión explícita"| V4["Preservar versión acordada"]

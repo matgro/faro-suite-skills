@@ -1,7 +1,7 @@
 ---
 name: faro-entrega
 description: Use when FARO delivers a requested commit, PR, or deploy.
-version: 1.1.0
+version: 1.2.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -18,11 +18,14 @@ En cada interacción, antes de interpretar términos del pedido, leer y aplicar 
 Ejecuta acciones que sacan trabajo del directorio local: commit, branch, PR, release, despliegue o rollback. No implementa código ni convierte desarrollo en autorización implícita de salida.
 
 ## Precondiciones
+
+- Para una aplicación, leer [Versionado de aplicaciones](../references/application-versioning.md) y su política por componente en `context/requirements/project-profile.md`. Resolver fuente, derivados, modo de decisión y permisos. Entrega actualiza valores de mecanismos existentes, no implementa lectores ni pipelines; si faltan, derivar a análisis/desarrollo autorizado. No incrementar por cada commit ni por reintentos/promociones; comprobar artefacto y versión efectiva al desplegar.
 - Acción explícita: commit, PR, release, despliegue o rollback.
 - RM/BUG/TEC, versión y evidencia de validación identificados.
 - Para despliegue, la autorización nombra el ambiente; producción nunca se infiere.
 - Se leyeron reglas de repositorio, CI, despliegue, rollback y estado Git.
 - Antes de commit, push, PR o release, resolver versión y tag conforme a `references/versionado-y-tags.md`: proponer el incremento por impacto y preguntar en una sola confirmación si se actualiza la versión y se crea/publica el tag. No repetir decisiones explícitas ya autorizadas; una entrega sin versión/tag también requiere una decisión explícita.
+  Una política AUTOMATICA previamente aprobada puede cubrir esa decisión dentro de sus límites; no autoriza otras operaciones o ambientes y no sustituye la verificación de versión/artefacto.
 - Si la acción crea una rama para un RM, usar `feature/<RM-ID>-<descripcion-kebab-case>` para incrementos funcionales. No usar el prefijo abreviado `feat/`.
 
 ## Procedimiento
@@ -64,4 +67,5 @@ Se agrega la identificación de la aplicación en las solicitudes a servicios ex
 - [ ] Diff, checks y riesgos fueron revisados.
 - [ ] El commit/PR separa título, descripción funcional breve y tareas asociadas verificadas, sin código ni nombres de clases.
 - [ ] Evidencia posterior fue capturada si aplica.
+- [ ] La versión del producto, su fuente, derivados, SHA y artefacto corresponden a la entrega acordada; reintentos/promociones no incrementaron otra vez. El resultado distingue tag, build, despliegue y versión efectiva comprobada, o su limitación explícita.
 - [ ] Workflow y documentación registran resultado real.

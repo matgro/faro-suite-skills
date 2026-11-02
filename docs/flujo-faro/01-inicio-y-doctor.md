@@ -4,7 +4,7 @@
 
 ## Qué representa este flujo
 
-Son instrucciones que interpreta y ejecuta un agente, no un motor que dispare todas las ramas automáticamente. El router `faro` identifica el contexto y entrega una única ruta especialista; los handoffs siguientes son decisiones guiadas, no una cadena de scripts implícita. Esta página describe las fuentes del repositorio: paquete `1.6.0`, contrato canónico `1.13.0`. Son versiones independientes; tampoco se confunden con el `version` de cada skill.
+Son instrucciones que interpreta y ejecuta un agente, no un motor que dispare todas las ramas automáticamente. El router `faro` identifica el contexto y entrega una única ruta especialista; los handoffs siguientes son decisiones guiadas, no una cadena de scripts implícita. Esta página describe las fuentes del repositorio: paquete `1.8.0`, contrato canónico `1.13.0`. Son versiones independientes; tampoco se confunden con el `version` de cada skill.
 
 Hay tres operaciones distintas:
 
@@ -107,6 +107,18 @@ flowchart TD
 ```
 
 Para reanudar se ejecuta `python -B <skills-root>/faro/scripts/suite_validation.py --workflow <root>/context/workflow.json`. JSON malformado, ruta desconocida/retirada o suite incoherente van a doctor; no descartar, traducir ni recrear el workflow. Una versión de contrato anterior sólo se migra con autorización; una posterior nunca se degrada. En `new`/`initializing` no se reciben SOL/RM/BUG/TEC/INC.
+
+### Glosario condicional y política de aplicaciones existentes
+
+Tras confirmar root y estado, leer el `context/glossary.md` del coordinador antes de interpretar vocabulario, incluso al reanudar o entrar directamente a una especialista. `disabled` detiene FARO; sin contrato no crear `context/` para guardar términos. En bootstrap conservar el destino vacío y pasar definiciones a inicialización.
+
+Crear el glosario desde su plantilla sólo con conocimiento útil `CONFIRMADA` u `OBSERVADA`, fuente y escritura documental permitida; indexarlo una vez en `context/README.md`. Conservar `PENDIENTE`/`NO DEFINIDO` y `CONFLICTO` sin presentar hipótesis como hechos. Preservar grafía, ámbito y correcciones con historial. No inferir siglas ni fusionar significados de módulos distintos. Si nada cambió, no escribir ni refrescar fechas.
+
+Doctor y consultas de sólo lectura no escriben glosario ni índice. Su ausencia no es defecto: no reinicializar ni cambiar `contractVersion`, `managedArtifacts`, estado o aprobaciones para adoptarlo. Una definición no crea RM, BUG, TEC, issue ni workflow ni renombra código.
+
+En aplicaciones existentes, la ausencia de política de versiones es una decisión pendiente, no licencia para aplicar defaults. Arquitectura descubre fuente y lectores sin leer ni escribir `.env`; propone la sección **Versionado de aplicaciones** del perfil, no un archivo obligatorio nuevo. Doctor informa el faltante sin instalar mecanismos, cambiar valores ni reparar por inferencia. Su ausencia no bloquea inicialización ni convierte un workspace válido en incompleto: resolver lo necesario antes de la primera entrega versionada. No hay incremento del contrato por esta política.
+
+**Fuentes:** [glosario de dominio](../../faro/references/domain-glossary.md), [plantilla de glosario](../../faro/templates/glossary.md), [versionado de aplicaciones](../../faro/references/application-versioning.md), [decisión por arquitectura](02-arquitectura-y-decisiones.md#versionado-de-aplicaciones-por-componente).
 
 ## 3. Inicialización: qué observa, qué pregunta y qué escribe
 

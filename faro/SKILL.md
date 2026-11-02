@@ -1,7 +1,7 @@
 ---
 name: faro
 description: Use when user invokes FARO project routing.
-version: 1.19.0
+version: 1.20.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -102,6 +102,8 @@ Durante inicialización se formula una sola consulta agrupada para identidad/tip
 | Consulta, definición o corrección de vocabulario sin cambio funcional en `available` | Aplicar política transversal de glosario | Consultar o mantener `context/glossary.md` según evidencia y permiso de escritura; sin RM, workflow ni seguimiento remoto artificial. |
 
 ## Continuidad e invariantes
+
+El versionado del producto se rige por [Versionado de aplicaciones](references/application-versioning.md): arquitectura identifica el mecanismo y propone la política por componente, desarrollo implementa adaptaciones autorizadas y entrega actualiza una sola versión en la fuente real y verifica sus derivados. La política confirmada vive en el perfil; no se instala un proceso automático, no se incrementa por cada commit ni se presupone autorización de despliegue.
 
 - Cargar una sola skill especialista FARO por petición; sólo otra especialista puede ordenar el siguiente handoff o el usuario cambiar de fase. Puede cargar las capacidades externas acotadas que esa especialista declara, sin convertirlas en otra ruta FARO.
 - La configuración canónica central, no los archivos de proyecto, define la política FARO y las rutas permitidas.

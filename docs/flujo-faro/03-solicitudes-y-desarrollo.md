@@ -221,6 +221,51 @@ Desarrollo no declara conformidad funcional ni realiza commit/PR/despliegue impl
 
 **Fuentes:** [desarrollo](../../faro/faro-req-desarrollo/SKILL.md), [lineamientos comunes](../../faro/faro-req-desarrollo/references/lineamientos-comunes.md), [tareas](../../faro/faro-req-analisis-tecnico/assets/tasks.md), [comentarios de seguimiento](../../faro/references/comment-format.md).
 
+### Refactor completo: integración antes de marcar DONE
+
+Análisis registra origen → destino, responsabilidad, consumidores reales y retiro previsto en plan/tareas existentes. Revisar llamadas directas y dinámicas (contenedor, eventos, jobs, rutas, reflexión y consumidores externos); una búsqueda textual vacía no prueba ausencia de uso. Obtener baseline ejecutable y pruebas de caracterización: en un refactor puro se preserva verde, sin exigir un RED artificial; para BUG o cambio funcional sigue aplicando RED/GREEN.
+
+Desarrollo conecta todos los consumidores del alcance y retira lógica sustituida, imports y dependencias que dejó sin uso esta tarea. Una firma compatible puede delegar a la única lógica nueva; dos implementaciones temporales requieren autorización, alcance y condición de retiro explícitos. No ampliar a limpieza global ni aceptar stubs/TODO como cierre.
+
+| Evidencia por extracción en tareas existentes | Criterio de cierre |
+| --- | --- |
+| Origen → destino y consumidor real actualizado | Incluye registro/inyección y llamadas indirectas verificadas. |
+| Retiro o delegación justificada | No queda copia activa de la regla sustituida. |
+| Entrada pública ejercitada | Ruta, acción, job o servicio real llega al destino; tests directos al método nuevo no bastan. |
+| Diff final y pruebas posteriores al último cambio | Clasificar código sin uso/duplicación como confirmado, falso positivo sustentado o pendiente. |
+| Revisor independiente e identificación de revisión | Otro agente o persona inspecciona fuentes y consumidores, base y dirty diff completo, incluidos archivos nuevos; resolver hallazgos y revisar el delta corregido. |
+
+```mermaid
+flowchart TD
+    R0["Plan: origen, destino, consumidores y baseline"] --> R1["Extraer y conectar consumidores reales"]
+    R1 --> R2["Retirar origen o delegar con compatibilidad probada"]
+    R2 --> R3["Ejercitar entradas públicas y revisar diff final"]
+    R3 --> R4{"Integración, equivalencia y revisión independiente acreditadas"}
+    R4 -->|"No"| R5["Cierre pendiente; NO_VERIFICADO si falta evidencia"]
+    R4 -->|"Fallo demostrado"| R6["NO_CONFORME; corregir dentro del alcance"]
+    R4 -->|"Sí"| R7["Handoff a QA y validación según alcance autorizado"]
+```
+
+Sin revisor independiente, registrar limitación y mantener pendiente; una segunda lectura del autor no lo sustituye. Una excepción humana explícita conserva la limitación y no permite `VERIFIED` si falta integración/equivalencia. No marcar `done`/`DONE` ni presentar handoff a QA como refactor completo con código nuevo sin uso o lógica antigua activa sin justificación. Una transición autorizada sólo acredita su alcance, no retiro total.
+
+Las capabilities externas de revisión, evidencia o código sin uso requieren verificar procedencia, nombre instalado, referencias, herramientas y auditoría. No instalar ni usar limpieza masiva por iniciativa propia. Su ausencia no elimina el control FARO; la falta de revisión independiente deja pendiente ese requisito.
+
+**Fuente:** [cierre verificable de refactorizaciones](../../faro/references/refactoring-completion.md).
+
+### Visuales Mermaid en los artefactos existentes
+
+Consultar `context/glossary.md` antes de interpretar RF/RN/CA y evaluar al cierre conocimiento nuevo sustentado; definiciones no aprueban reglas ni cambian baselines. Si falta significado o hay conflicto, preguntar sólo lo dependiente. [Política transversal del glosario](../../faro/references/domain-glossary.md).
+
+DF, RM o plan pueden incorporar visuales proporcionales cuando aclaran proceso, estados, decisiones, integración o navegación. Usar `flowchart`, `stateDiagram-v2` o `sequenceDiagram` según lo que realmente se necesita explicar. Mantenerlos dentro del artefacto existente, sin imágenes opacas ni archivos paralelos; conservar explicación textual/tablas legibles sin renderizado y trazabilidad a RF/RN/CA/PD existentes. No inventar actores, transiciones, estados o reglas para completar un dibujo. El DF mantiene lenguaje de negocio y la evidencia técnica permanece en investigación interna.
+
+UX completa flujos de navegación o estados visibles en el mismo DF/RM, no crea mockups por defecto. Validar coherencia con texto, IDs y pendientes; comprobar cercos, sintaxis y, cuando haya visor disponible, legibilidad visual, informando qué se verificó realmente. Si no aporta claridad, declarar `No aplica`, sin diagramar por decoración. `sequenceDiagram` se reserva para interacciones necesarias al contrato funcional; el detalle técnico queda en el plan. Un parser no prueba layout ni ejecución de la aplicación. Estas reglas describen instrucciones que interpreta el agente, no generación o ejecución automática de diagramas.
+
+**Fuentes:** [visuales funcionales](../../faro/faro-documentacion-funcional/SKILL.md), [ingeniería](../../faro/faro-req-ingenieria/SKILL.md), [UX](../../faro/faro-ux/SKILL.md).
+
+### Desarrollo del mecanismo de versión, no entrega implícita
+
+Si la [política por componente](02-arquitectura-y-decisiones.md#versionado-de-aplicaciones-por-componente) aprobada requiere instalar o cambiar el mecanismo, hacerlo en desarrollo con plan, tareas y autorización específica. Probar fuente única, lectores/derivados y comportamiento sin introducir otro número manual en UI. No leer ni escribir `.env`; preservar mecanismo existente hasta autorización de cambio. La actualización del valor en un mecanismo existente corresponde a una entrega autorizada, no a cada tarea, commit o push. `AUTOMATICA` no amplía alcance ni autoriza publicar o desplegar. [Referencia de aplicaciones](../../faro/references/application-versioning.md).
+
 ## 7. QA: ejecutar casos por CA, separar fallo de síntoma no clasificado
 
 QA recibe RM/BUG/TEC y versión, incremento y tareas implementadas, más autorización de **entorno, datos y efectos materiales** (mensajes, pagos, borrados, integraciones). Lee CA/plan/tareas/arquitectura/evidencia/workflow y conoce las limitaciones de terminal, HTTP y navegador. No modifica código, aprueba RM ni sustituye pruebas de implementación.

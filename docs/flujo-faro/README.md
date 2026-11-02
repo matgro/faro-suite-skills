@@ -1,8 +1,8 @@
 # FARO: cerebro de decisión y mapa completo de flujos
 
-Guía de lectura del comportamiento de **FARO Suite 1.6.0**, contrato de workspace **1.13.0**. Fuentes revisadas en el commit `475ad83138895731548891de8d3b8db03cc9b3ca`.
+Guía de **FARO Suite 1.8.0**, contrato de workspace **1.13.0**. Incluye la política de versionado de aplicaciones y conserva glosario, cierre de refactorizaciones y visuales Mermaid incorporados en v1.7.0.
 
-Publicada con **FARO Suite 1.6.1**. Esta entrega agrega la documentación sin cambiar el comportamiento descrito; se conserva la revisión fuente anterior para que el mapa sea trazable. Las versiones individuales de skills y la del contrato no se igualan a la del paquete.
+Las versiones del paquete, contrato, skills, artefactos funcionales y aplicaciones son independientes. Publicar o instalar la suite no modifica aplicaciones ni autoriza despliegues en proyectos existentes.
 
 Esta documentación explica lo que existe; no agrega reglas, estados ni permisos. Si cambia una skill, su fuente y el contrato central prevalecen sobre este mapa.
 
@@ -138,6 +138,25 @@ Consulta
 
 Los corchetes indican una condición o autorización adicional, no un paso que pueda omitirse si realmente aplica. UX y decisiones técnicas se ubican antes del trabajo que depende de ellas; no existe una posición universal idéntica para todos los cambios.
 
+## Controles transversales: vocabulario, visuales y cierre
+
+- **Glosario:** después de fijar root y estado, consultar `context/glossary.md` antes de interpretar términos en cada interacción, reanudación o invocación directa. También aplica con DF deshabilitada. No crear trabajo artificial por definir una sigla; conservar ámbitos, fuentes e incertidumbre. [Reglas y límites](../../faro/references/domain-glossary.md).
+- **Visuales Mermaid:** apoyar procesos, estados e interacciones en el DF/RM/plan existente, con texto legible y trazabilidad a RF/RN/CA/PD ya definidos; no inventar comportamiento ni archivos visuales paralelos. [Aplicación en solicitudes](03-solicitudes-y-desarrollo.md#visuales-mermaid-en-los-artefactos-existentes).
+- **Refactor completo:** planificar origen, destino y consumidores; conectar entradas reales, retirar o delegar la lógica anterior y obtener evidencia y revisión independiente antes del cierre. Pruebas verdes aisladas no bastan. [Control de cierre](../../faro/references/refactoring-completion.md).
+- **Versión de aplicación:** arquitectura descubre y propone por componente; el perfil conserva la decisión humana; desarrollo instala el mecanismo faltante sólo con autorización y entrega actualiza el existente. No es un scheduler ni un incremento por commit. [Política de aplicaciones](../../faro/references/application-versioning.md).
+
+```mermaid
+flowchart LR
+    C0["Root y estado confirmados"] --> C1["Leer glosario y fuentes pertinentes"]
+    C1 --> C2["Ruta autorizada: definición, arquitectura o trabajo"]
+    C2 --> C3["Visuales trazables en artefactos existentes"]
+    C2 --> C4["Refactor: integración, retiro y revisión"]
+    C2 --> C5["Aplicación: política por componente y entrega autorizada"]
+    C3 --> C6["Evidencia y pendientes; sin ampliar permisos"]
+    C4 --> C6
+    C5 --> C6
+```
+
 ## 5. Inventario: dónde está cada skill y quién la utiliza
 
 Esta tabla cubre todo el inventario de [manifest.json](../../manifest.json). El bootstrap de instalación se lista aparte porque no es una skill runtime dentro de `faro/`.
@@ -179,7 +198,8 @@ Instalación de la suite: [`faro-bootstrap`](../../bootstrap/SKILL.md) → [árb
 | `context/faro-workspace.json` | Manifiesto de versión/origen/artefactos, no otra política |
 | `context/stats.json` | Estado e identidad del espacio; no es el estado de un BUG |
 | `context/README.md` | Índice de repositorios y fuentes, no copia de su código |
-| `context/requirements/project-profile.md` | Decisiones de seguimiento, proveedor y documentación funcional sin secretos |
+| `context/requirements/project-profile.md` | Seguimiento, proveedor, DF y sección «Versionado de aplicaciones» por componente, sin secretos |
+| `context/glossary.md`, condicional | Vocabulario de dominio con ámbito, estado, fuente e historial; no aprobación funcional |
 | `context/requirements/` | DF/RM, registros y planes/tareas según rutas del perfil y las plantillas |
 | `context/incidents/` | Investigación INC e índice, sólo al necesitarlos |
 | `context/decisions/adr/` y `context/decisions/rfc/` | Decisiones técnicas bajo demanda |

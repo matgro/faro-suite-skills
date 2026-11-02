@@ -8,6 +8,12 @@ Proponer una versión concreta y justificarla brevemente por impacto. Preguntar 
 
 No repetir decisiones ya autorizadas: si pidió versión y push pero no tag, preguntar sólo por crear/publicar el tag. Una petición de entrega o push no autoriza por sí sola versionar ni taguear. Si sólo se autoriza crear un tag local, no publicarlo. Si sólo se publica una versión ya preparada, verificar su commit sin incrementar otra vez. No abrir PR, crear una release en la plataforma ni desplegar por el solo hecho de publicar un tag.
 
+## Aplicaciones y automatización acordada
+
+Leer la política central `faro/references/application-versioning.md` desde la skill de entrega. La configuración por componente se conserva en `context/requirements/project-profile.md`; una política AUTOMATICA explícitamente autorizada satisface la confirmación anterior sólo para los incrementos y operaciones que cubra. Ante límites excedidos, ambigüedad o falta de política, mantener la confirmación por entrega. No confundir permiso para elegir el número con permiso para publicar o desplegar.
+
+Actualizar la fuente real de la aplicación, no sólo el tag. Resolver una versión objetivo por entrega; conservarla en reintentos y promociones del mismo artefacto. Mantener el alcance por componente y un único escritor (CI o agente); rollback recupera el artefacto anterior y no crea una versión ficticia. La evidencia distingue versión preparada, tag, build y versión efectiva tras deploy. Si falta el mecanismo, no crearlo incidentalmente durante la entrega.
+
 ## Criterio SemVer
 
 Respetar primero la política de versionado explícita del proyecto; no imponer SemVer a un esquema distinto. Para proyectos con SemVer, evaluar el contrato público que consumen sus usuarios:

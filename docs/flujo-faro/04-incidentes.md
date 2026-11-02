@@ -38,6 +38,14 @@ flowchart TD
 
 **Fuentes:** [ruteo e invariantes](../../faro/SKILL.md), [cuándo usar incidentes](../../faro/faro-incidentes/SKILL.md), [QA y sus dos salidas de fallo](../../faro/faro-qa-ejecucion/SKILL.md).
 
+### Vocabulario, versión y evidencia del incidente
+
+Leer el `context/glossary.md` del root coordinador antes de interpretar términos del reporte, también en reanudaciones. No expandir siglas por intuición ni convertir una definición en esperado funcional. Preservar ámbitos, fuente y conflictos; investigar sólo la parte independiente de una ambigüedad. Una consulta o diagnóstico de sólo lectura no actualiza el glosario; conocimiento sustentado sólo se conserva con escritura documental permitida, sin crear otro flujo por vocabulario. [Política de glosario](../../faro/references/domain-glossary.md).
+
+Para atribuir un incidente a una versión, distinguir fuente declarada, commit/tag, artefacto construido y versión leída en el runtime del ambiente autorizado. Un tag no prueba despliegue ni una reproducción local prueba ocurrencia histórica. Usar los lectores/comandos observados en la política por componente; no inventarlos ni leer `.env` para llenar evidencia. Retry o promoción conservan versión y mismo artefacto; rollback autorizado usa el artefacto anterior, no fabrica un incremento correctivo. Investigar no autoriza esas operaciones. [Versionado y readback](../../faro/references/application-versioning.md).
+
+Si la corrección derivada incluye refactor, pasa por [integración, retiro y revisión independiente](03-solicitudes-y-desarrollo.md#refactor-completo-integración-antes-de-marcar-done); no cerrar INC por un método extraído sin consumidores. Un visual Mermaid auxiliar permanece junto a la evidencia existente, distingue hipótesis de hechos y no añade causas ni decisiones por completar el gráfico.
+
 ## 2. Intake, reserva serializada y coexistencia con otra unidad
 
 1. Leer contrato, perfil, índice, workflow y registros relacionados. Confirmar root coordinador, fuentes, entorno, datos, efectos y alcance de investigación autorizado. No escribir artefactos FARO en repositorios externos indexados.

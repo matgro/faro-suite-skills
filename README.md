@@ -52,6 +52,12 @@ Analysis, development and validation share `faro/references/refactoring-completi
 
 Optional, audited capabilities support this control: `requesting-code-review` and `verification-before-completion` from obra/superpowers, and read-only `lc:dead-code` from edulazaro/laraclaude for Laravel. FARO retains scope and lifecycle authority. The external `code-refactoring` skill informs the methodology only; its tooling ecosystem is not installed or required. Missing external skills do not waive the control; missing independent review remains an explicit closure limitation.
 
+### Application versions, not just Git tags
+
+Architecture records each application's version source and readers; the project profile stores the approved per-component policy. Delivery updates an existing mechanism once per versioned release and checks the resulting artifact, rather than bumping on every commit, retry or promotion. Laravel's proposed default is a tracked literal in `config/app.php`, read via `config('app.version')`, not `.env`. .NET/Blazor uses the observed project/build version properties; other stacks retain their native, evidenced mechanism.
+
+Automatic version selection requires an explicit standing policy with limits; it does not authorize deployments or tag publication by itself. Missing readers or pipelines require authorized development before delivery. See [application versioning policy](faro/references/application-versioning.md) and the updated [delivery guide](docs/flujo-faro/05-integraciones-y-entrega.md). This capability is included in FARO `v1.8.0`; existing applications are not modified by installing the suite.
+
 ### Decision trees and full workflow guide (Español)
 
 Read [FARO: cerebro de decisión y mapa completo de flujos](docs/flujo-faro/README.md) for the unified router diagram and detailed trees covering installation, workspace initialization, doctor, architecture, change requests, incidents, integrations and delivery. Each branch explains its checks, requested configuration, specialist handoffs, artifacts and authorization gates, with links to the actual skill sources.

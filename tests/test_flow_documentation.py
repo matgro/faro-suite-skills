@@ -80,6 +80,28 @@ class FlowDocumentationTests(unittest.TestCase):
             with self.subTest(guard=guard):
                 self.assertIn(guard, overview)
 
+    def test_transversal_policies_and_application_versioning_are_covered(self):
+        pages = {name: (GUIDE / name).read_text(encoding="utf-8") for name in PAGES}
+        overview = pages["README.md"]
+        manifest = json.loads((ROOT / "manifest.json").read_text(encoding="utf-8"))
+        self.assertIn(f"FARO Suite {manifest['version']}", overview)
+        self.assertNotIn("cambio local pendiente", overview)
+        self.assertNotIn("Publicada con **FARO Suite 1.6.1**", overview)
+        for reference in ("domain-glossary.md", "refactoring-completion.md", "application-versioning.md"):
+            self.assertIn(f"../../faro/references/{reference}", overview)
+        expectations = {
+            "01-inicio-y-doctor.md": ("context/glossary.md", "CONFIRMADA", "OBSERVADA", "CONFLICTO", "Doctor y consultas de sólo lectura no escriben"),
+            "02-arquitectura-y-decisiones.md": ("Versionado de aplicaciones", "context/requirements/project-profile.md", "CONFIRMAR_POR_ENTREGA", "AUTOMATICA", "config/app.php", "app.version", "Directory.Build.props", "AssemblyVersion", "No adivinar"),
+            "03-solicitudes-y-desarrollo.md": ("origen → destino", "consumidores reales", "revisor independiente", "NO_VERIFICADO", "NO_CONFORME", "stateDiagram-v2", "sequenceDiagram", "RF/RN/CA/PD"),
+            "04-incidentes.md": ("context/glossary.md", "Un tag no prueba despliegue", "mismo artefacto"),
+            "05-integraciones-y-entrega.md": ("Una versión por entrega versionada, no por commit, push o retry", "mismo SHA", "readback", "artefacto anterior", "No leer ni escribir `.env`", "CONFIRMAR_POR_ENTREGA", "AUTOMATICA"),
+        }
+        for name, required in expectations.items():
+            for text in required:
+                with self.subTest(page=name, required=text):
+                    self.assertIn(text.lower(), pages[name].lower())
+        self.assertEqual(set(PAGES), {path.name for path in GUIDE.glob("*.md")})
+
     def test_local_heading_fragments_resolve(self):
         for name in PAGES:
             page = GUIDE / name

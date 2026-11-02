@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "1.8.0",
+      "changes": [
+        "Incorpora versionado de aplicaciones por componente: arquitectura identifica fuente y lectores, desarrollo implementa mecanismos autorizados y entrega actualiza valores existentes con evidencia de artefacto y versión efectiva.",
+        "Propone configuración versionada para Laravel sin .env; respeta propiedades de build en .NET/Blazor y mecanismos nativos observados en otros stacks.",
+        "Registra política opcional en el perfil, confirmación por entrega o automatización explícita con límites, un único escritor y reintentos/promociones sin nuevos incrementos.",
+        "Actualiza la guía completa con versionado de aplicaciones, glosario, cierre verificable de refactorizaciones y visuales Mermaid; conserva el contrato de workspace 1.13.0."
+      ],
+      "renamedSkills": {}
+    },
+    {
       "version": "1.7.0",
       "changes": [
         "Añade glosario de dominio opcional por workspace, consultado en cada interacción por router y especialistas, con evidencia, ámbito, alias, incertidumbre e historial, sin reinicializar ni generar requerimientos artificiales.",

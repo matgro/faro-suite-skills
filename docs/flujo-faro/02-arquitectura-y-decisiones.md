@@ -138,6 +138,43 @@ Todas leen contrato e instrucciones locales y capturan ref/cambios mediante `git
 - Si documentar arquitectura forma parte de un cambio funcional, referenciar RM/BUG/TEC y versión; pasar por `faro-req-ingenieria` antes de transformar la solicitud. Discovery no acredita aprobación funcional ni permite implementar.
 - `available` habilita el ruteo del pedido, no commits, despliegue, QA conforme ni cambio de alcance. Las fases posteriores conservan sus propias puertas.
 
+### Versionado de aplicaciones por componente
+
+Arquitectura **descubre y propone**, no instala ni cambia versiones. Leer primero el glosario del root para no confundir nombres de componentes y ámbitos. La decisión aprobada vive en **Versionado de aplicaciones** de `context/requirements/project-profile.md`; el documento arquitectónico registra evidencia y enlaza esa política sin duplicarla como otra fuente de verdad.
+
+| Campo por componente | Contenido comprobable o pendiente explícito |
+| --- | --- |
+| Identidad y alcance | Root/repositorio, componente y stack observado; conjunto co-versionado si aplica. |
+| Fuente única | Ruta y clave de la versión; mecanismo existente, lectores y valores derivados (UI, API, build). |
+| Esquema | Formato de versión y tag, línea de publicación y criterio de impacto. |
+| Decisión | `CONFIRMAR_POR_ENTREGA` por defecto de decisión; `AUTOMATICA` sólo con autorización explícita y límites por impacto. No adoptar defaults técnicos en aplicaciones existentes. |
+| Operación observada | Comandos update/build/cache y verificación runtime con su fuente; lo desconocido queda pendiente, nunca inventado. |
+| Permisos | Tag, remoto, ambientes, acciones permitidas y evidencia localizable de autorización. |
+
+| Stack | Propuesta si falta mecanismo, sujeta a aprobación | Límites |
+| --- | --- | --- |
+| Laravel | Literal trackeado en `config/app.php`, clave `version`, leída como `app.version` mediante `config('app.version')`, como fuente única. | No usar `env()`/`.env` ni añadir `VERSION` duplicado. Preservar cualquier mecanismo existente hasta autorización de cambio. Regenerar caché sólo en build/deploy autorizado. |
+| .NET / Blazor | Propiedad `Version` en `.csproj` o `Directory.Build.props` para el conjunto co-versionado confirmado. | No cambiar `AssemblyVersion` a ciegas. Información Git derivada; UI consume la fuente, no mantiene otro número manual. |
+| Móvil / genérico / mixto | Mecanismo observado o manifiesto nativo del componente confirmado. | No adivinar archivos, claves o comandos ni imponer SemVer/unificación entre componentes. |
+
+```mermaid
+flowchart TD
+    P0["Arquitectura: componente, fuente, lectores y comandos observados"] --> P1{"Mecanismo existente"}
+    P1 -->|"Sí"| P2["Preservar; documentar política propuesta"]
+    P1 -->|"No"| P3["Proponer mecanismo del stack; faltantes explícitos"]
+    P2 --> P4["Decisión humana en perfil por componente"]
+    P3 --> P4
+    P4 --> P5{"Falta instalar o cambiar mecanismo"}
+    P5 -->|"Sí"| P6["Desarrollo con plan y autorización específica"]
+    P5 -->|"No"| P7["Entrega autorizada usa mecanismo existente"]
+    P6 --> P7
+    P7 --> P8["Una versión por entrega; verificar artefacto y runtime"]
+```
+
+`AUTOMATICA` significa que el agente aplica la decisión de incremento dentro de límites aprobados cuando existe una entrega autorizada: no ejecuta un servicio automático, no autoriza nuevas entregas, deploy, ambientes ni cambios fuera de scope. Si falta una decisión o el impacto excede el límite, consultar sólo ese pendiente. El detalle operativo está en [entrega](05-integraciones-y-entrega.md#versión-de-aplicación-fuente-artefacto-y-runtime).
+
+**Fuentes:** [política de versionado de aplicaciones](../../faro/references/application-versioning.md), [glosario](../../faro/references/domain-glossary.md). No se cambian contrato ni archivos obligatorios por registrar esta política.
+
 ### Diferencias de fuente que no se resuelven cambiando el runtime
 
 1. El rol de genérica dice «no Laravel/API ni móvil» sin excluir expresamente .NET, pero el router tiene ruta .NET específica y `faro-arq-dotnet` prohíbe sustituirla por genérica. Se documenta esa prioridad, no se elimina la ruta especializada.

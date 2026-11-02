@@ -2,6 +2,19 @@
 
 Este historial registra cambios de la suite distribuida, no aprobaciones de proyectos. La versión del paquete es independiente de la versión del contrato de workspace.
 
+## 1.8.0 — 2026-11-02
+
+- Incorpora versionado de aplicaciones por componente: arquitectura descubre fuente/lectores, desarrollo prepara mecanismos autorizados y entrega actualiza valores existentes con evidencia del artefacto y de la versión efectiva.
+- Propone para Laravel una versión literal en `config/app.php`, consumida mediante `config('app.version')`, sin usar `.env`. En .NET/Blazor respeta propiedades de build y assemblies; en otros stacks requiere evidencia del mecanismo nativo.
+- Añade política opcional al perfil, confirmación por entrega o automatización explícita con límites, un único escritor e idempotencia: reintentos/promociones no incrementan y rollback recupera el artefacto anterior.
+- Actualiza la guía completa de FARO con versionado de aplicaciones y los cambios de 1.7.0: glosario transversal, cierre de refactorizaciones y visuales Markdown/Mermaid. La publicación no instala ni modifica aplicaciones.
+
+### Actualización desde 1.7.0
+
+1. Obtener `v1.8.0`, verificar procedencia, inventario y checksums; comparar y confirmar el reemplazo completo de `faro/`.
+2. No requiere reinicializar workspaces ni cambiar el contrato `1.13.0`. Completar la política por componente antes de su primera entrega versionada.
+3. Los mecanismos faltantes requieren desarrollo autorizado; publicar FARO no modifica las aplicaciones ni autoriza sus despliegues.
+
 ## 1.7.0 — 2026-11-02
 
 ### Cambios

@@ -1,7 +1,7 @@
 ---
 name: faro-arq-generica
 description: Use when FARO documents an unrecognized stack.
-version: 1.1.0
+version: 1.2.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -18,6 +18,8 @@ En cada interacción, antes de interpretar términos del pedido, leer y aplicar 
 Documenta arquitectura para un stack confirmado que no es Laravel/API ni móvil. Es conservadora: registra evidencia y pendientes sin imponer convenciones de framework.
 
 ## Procedimiento
+Antes de registrar la operación, leer [Versionado de aplicaciones](../references/application-versioning.md): identificar por evidencia fuente única, lectores, build/CI y derivados de cada componente. Registrar mecanismo observado y propuestas pendientes en arquitectura, y decisiones confirmadas en el perfil; no inventar comandos ni modificar el producto durante discovery.
+
 1. Leer contrato FARO, índice, instrucciones locales y Git; no modificar el repositorio inspeccionado. **Completo:** root y cambios previos identificados.
 2. Inspeccionar manifests, lockfiles, toolchain, scripts, CI, pruebas, configuración no secreta y documentación. **Completo:** runtime, paquetes y comandos tienen fuente.
 3. Mapear entradas, módulos, persistencia, contratos, UI, integraciones, pruebas, operación y distribución sólo desde evidencia. **Completo:** ausencias se expresan como no encontradas.

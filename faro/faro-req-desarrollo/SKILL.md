@@ -1,7 +1,7 @@
 ---
 name: faro-req-desarrollo
 description: Use when FARO develops an approved requirement plan.
-version: 1.2.0
+version: 1.3.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -30,6 +30,8 @@ Implementa una unidad autorizada de un RM, BUG o TEC con plan técnico `LISTO_PA
 Si una precondición falla, actualizar `context/workflow.json` con `waitingOn`, no modificar código y devolver la ruta a `faro`, `faro-req-ingenieria` o `faro-req-analisis-tecnico`.
 
 ## Lineamientos de desarrollo
+
+Si el alcance autorizado incorpora o adapta el mecanismo de versión del producto, leer [Versionado de aplicaciones](../references/application-versioning.md), implementar fuente única y lectores/derivados reales, y verificar el flujo de build/lectura antes de entregarlo. No dejar sólo una propiedad sin consumidor ni trasladar esa implementación a la fase de entrega. No cambiar `.env` para versionar aplicaciones.
 
 Las reglas de código viven en archivos Markdown dentro de esta misma skill, no en el workspace ni en una instalación externa:
 
