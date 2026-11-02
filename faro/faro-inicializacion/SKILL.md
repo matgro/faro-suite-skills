@@ -1,7 +1,7 @@
 ---
 name: faro-inicializacion
 description: Use when initializing a FARO workspace contract.
-version: 1.4.0
+version: 1.5.0
 author: Hermes Agent
 license: MIT
 metadata:

@@ -1,7 +1,7 @@
 ---
 name: faro-arq-laravel
 description: Use when FARO documents an evidenced Laravel architecture.
-version: 1.0.0
+version: 1.1.0
 author: Hermes Agent
 license: MIT
 metadata:

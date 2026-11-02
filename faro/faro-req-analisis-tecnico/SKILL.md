@@ -1,7 +1,7 @@
 ---
 name: faro-req-analisis-tecnico
 description: Use when FARO plans an approved RM against real code.
-version: 1.1.0
+version: 1.2.0
 author: Hermes Agent
 license: MIT
 metadata:

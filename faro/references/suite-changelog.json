@@ -2,6 +2,59 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "1.7.0",
+      "changes": [
+        "Añade glosario de dominio opcional por workspace, consultado en cada interacción por router y especialistas, con evidencia, ámbito, alias, incertidumbre e historial, sin reinicializar ni generar requerimientos artificiales.",
+        "Exige cierre verificable de refactorizaciones: consumidores reales conectados, retiro o delegación de lógica sustituida, pruebas desde entradas reales y revisión independiente; integra apoyos externos condicionados sin nuevas rutas ni instalación implícita.",
+        "Añade visuales Markdown/Mermaid trazables dentro de DF, RM y planes técnicos, con pruebas de contrato e integridad.",
+        "Integra todas las capacidades publicadas hasta 1.6.1 y mantiene el contrato de workspace 1.13.0."
+      ],
+      "renamedSkills": {}
+    },
+    {
+      "version": "1.6.1",
+      "changes": [
+        "Publica en el repositorio la guía del cerebro de decisión FARO y sus árboles de instalación, inicialización, doctor, arquitectura, solicitudes, incidentes, integraciones y entrega, enlazada desde el README.",
+        "Documenta los controles, decisiones humanas, handoffs, límites y diferencias entre política y scripts; agrega comprobaciones de cobertura del inventario y enlaces. No modifica el comportamiento de las skills ni el contrato de workspace."
+      ],
+      "renamedSkills": {}
+    },
+    {
+      "version": "1.6.0",
+      "changes": [
+        "Añade faro-incidentes para registrar síntomas, preservar evidencia e hipótesis y concluir la investigación sin asumir un defecto ni autorizar una corrección; permite cierre sin BUG sustentado y resultados no concluyentes.",
+        "Delega investigación y post-mortem en capacidades externas revisadas de obra/superpowers y github/awesome-copilot, fijadas por commit, archivos requeridos e integridad; bootstrap solicita autorización para instalarlas o reemplazarlas sin afectar skills locales implícitamente.",
+        "Integra registros INC bajo demanda, ruteo y seguimiento independiente en Jira/Azure DevOps; conserva items recibidos aunque su tipo sea Bug sin duplicarlos ni confirmar su clasificación. No requiere migrar contratos de workspace.",
+        "Define confirmación previa de versión y publicación de tags en entregas, criterio SemVer por impacto, tags anotados y verificación remota de las referencias publicadas."
+      ],
+      "renamedSkills": {}
+    },
+    {
+      "version": "1.5.4",
+      "changes": [
+        "Separa los mensajes de commit y PR en título breve, descripción funcional sintetizada y tareas asociadas al final.",
+        "Evita repetir el título en la descripción e incluir código, nombres de clases o detalles internos; exige referencias de tareas verificadas con formato #<ID>, una por línea."
+      ],
+      "renamedSkills": {}
+    },
+    {
+      "version": "1.5.3",
+      "changes": [
+        "Extiende los lineamientos generales .NET/C# para agregar operaciones en las clases y archivos existentes, reutilizando sus métodos y dependencias.",
+        "Impide introducir archivos parciales por operación como Repository.Queries.cs o Repository.Resend.cs sin convención explícita del componente o autorización humana; exceptúa código generado y parciales exigidos por el framework, sin reorganizar divisiones preexistentes."
+      ],
+      "renamedSkills": {}
+    },
+    {
+      "version": "1.5.2",
+      "changes": [
+        "Actualiza la estructura del template RFC con resumen, contexto, alcance, opciones con pros y contras, estado actual, consecuencias, plan de acción, riesgos, preguntas y referencias.",
+        "Conserva los estados open/accepted/rejected/withdrawn, la trazabilidad, la evidencia del problema, la ventana de comentarios y las posiciones atribuibles, sin incorporar contenido del ejemplo.",
+        "Incorpora lineamientos Blazor editables adaptados de NZT junto con los comunes y .NET, seleccionados por evidencia del componente y modo de renderizado, sin nuevas rutas, dependencias ni migraciones."
+      ],
+      "renamedSkills": {}
+    },
+    {
       "version": "1.5.1",
       "changes": [
         "Estandariza las actualizaciones remotas de Jira y Azure DevOps como bitácoras breves y útiles: sólo hitos, unidades materiales, decisiones, bloqueos y referencias externas durables.",

@@ -1,7 +1,7 @@
 ---
 name: faro-documentacion-funcional
 description: Use when FARO creates or maintains a functional document.
-version: 1.1.0
+version: 1.2.0
 author: Hermes Agent
 license: MIT
 metadata:

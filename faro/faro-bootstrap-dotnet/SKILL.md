@@ -1,7 +1,7 @@
 ---
 name: faro-bootstrap-dotnet
 description: Use when FARO creates an authorized new .NET project.
-version: 1.0.0
+version: 1.1.0
 author: Hermes Agent
 license: MIT
 metadata:

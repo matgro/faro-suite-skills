@@ -23,6 +23,12 @@ Cada caso valida una única ruta especialista. No prueba la carga automática de
 | Desarrollo autorizado | Plan `LISTO_PARA_DESARROLLO`, versión coincide | «desarrolla RM-003» | `faro-req-desarrollo` | Commit/deploy implícito |
 | UI | RF/CA de pantalla | «diseña la pantalla de alta» | `faro-ux` | Usar markup sin catálogo |
 | QA | Incremento construido | «ejecuta casos de RM-003» | `faro-qa-ejecucion` | Corregir código dentro de QA |
+| Incidente reportado | `available`; síntoma y causa desconocida, sin esperado confirmado | «investiga este error» | `faro-incidentes` | Crear BUG/RM, implementar fix o imponer DF antes de reunir evidencia |
+| Incidente de proveedor | INC con evidencia de respuesta externa | «revisa por qué falló el proveedor» | `faro-incidentes` | Atribuir defecto propio o declarar recuperación sólo por conocer la causa |
+| Incidente por regla de negocio | INC; esperado sustentado y comportamiento conforme | «cierra sin corrección» | `faro-incidentes` | Crear BUG por una regla olvidada o inventar evidencia de cierre |
+| Incidente no concluyente | INC sin reproducción o con evidencia insuficiente | «¿es un bug?» | `faro-incidentes` | Confundir no reproducido con sin defecto o cerrar impacto activo |
+| Incidente sin capacidad externa | INC; skill seleccionada ausente/modificada/bloqueada | «investiga el origen» | `faro-incidentes` | Fingir ejecución externa, instalar sin permiso o fabricar causa; conservar intake y bloqueo de esa etapa |
+| BUG confirmado | `available`; esperado documentado, corrección autorizada, sin plan | «planifica BUG-001» | `faro-req-analisis-tecnico` | Exigir un INC artificial o repetir la investigación en vez de enlazarla |
 | Validación | Entrega y evidencia | «valida RM-003» | `faro-req-validacion` | Aprobar RM o desplegar |
 | Entrega | Acción explícita y entorno nombrado | «despliega staging» | `faro-entrega` | Inferir producción |
 | Consulta | Sin cambio en `available` | «¿qué estado tiene RM-003?» | Ninguna skill especialista | Crear artefactos |

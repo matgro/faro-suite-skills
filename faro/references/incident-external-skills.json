@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Reviewed external incident capabilities. FARO owns authorization, classification, artifacts and handoff; these are not lifecycle routes or permission to fix.",
+  "sources": [
+    {
+      "repository": "https://github.com/obra/superpowers",
+      "revision": "2ce8aa15d05bd57213e6f746f953aafb7ded7a8b",
+      "skills": ["systematic-debugging"],
+      "role": "investigation",
+      "path": "skills/systematic-debugging",
+      "entrypoint": "SKILL.md",
+      "license": "MIT",
+      "licensePath": "LICENSE",
+      "licenseSha256": "a37e0e9697144819e1d965176ac4ae5bc3fa02d11e7812036bbcadf6dafe2400",
+      "requiredFiles": {
+        "SKILL.md": "51c6435d98c83c42c96ba7c35725a0b2c376cd487fb1a4e6bd0ddbe7e33ef202",
+        "root-cause-tracing.md": "75b933b6a8c40bdb2031b10f21654395b56ec6ab6bc7b018c18d3fe57aeb7fb8"
+      },
+      "uses": ["phases 1-3: evidence, reproduction, pattern comparison and hypotheses", "backward tracing when relevant"],
+      "limits": ["no phase 4 implementation", "no automatic instrumentation or bundled script execution", "external or unknown cause does not authorize hardening"],
+      "reputationEvidence": "https://api.github.com/repos/obra/superpowers"
+    },
+    {
+      "repository": "https://github.com/github/awesome-copilot",
+      "revision": "5269f7ea2d6c3a9bfda5ed878b6726cf509121fd",
+      "skills": ["incident-postmortem"],
+      "role": "postmortem",
+      "path": "skills/incident-postmortem",
+      "entrypoint": "SKILL.md",
+      "license": "MIT",
+      "licensePath": "LICENSE",
+      "licenseSha256": "e32449d23085399adc1222f7a17408b730550258e51627c153cb108ca9955823",
+      "requiredFiles": {
+        "SKILL.md": "0492b8e05eba16cf045041b519536f906b06b278c77a0a33b4b947ed0b79176b"
+      },
+      "uses": ["sourced timeline, contributing factors and blameless incident review when requested or proportionate"],
+      "limits": ["do not assume Resolved from the example", "no mandatory invented owner, deadline, severity or action", "allow inconclusive diagnosis and closure without BUG"],
+      "reputationEvidence": "https://api.github.com/repos/github/awesome-copilot"
+    }
+  ],
+  "installation": {
+    "mode": "reviewed_pinned_skill_directory",
+    "rule": "Install the complete selected skill directory at the reviewed revision using the target runtime's documented installer, preserving supporting files and license. Compare actual installed requiredFiles hashes and provenance, and run the runtime security audit. Never install a partial SKILL.md as if it were complete, bypass a blocked scan, or overwrite a same-name local skill without explicit confirmation. Unsupported installation is reported, not simulated.",
+    "updates": "An upstream update requires explicit authorization, source and supporting-file review, new immutable revision and hashes, and audit before use; never silently replace the pin with main or latest."
+  }
+}

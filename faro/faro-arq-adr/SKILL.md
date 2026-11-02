@@ -1,7 +1,7 @@
 ---
 name: faro-arq-adr
 description: Use when FARO records a significant technical decision.
-version: 1.0.0
+version: 1.1.0
 author: Hermes Agent
 license: MIT
 metadata:

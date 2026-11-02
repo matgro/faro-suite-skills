@@ -11,7 +11,7 @@ import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
 DEVELOPMENT = ROOT / "faro/faro-req-desarrollo"
-GUIDELINES = ("lineamientos-comunes.md", "lineamientos-dotnet.md", "lineamientos-laravel.md")
+GUIDELINES = ("lineamientos-comunes.md", "lineamientos-dotnet.md", "lineamientos-laravel.md", "lineamientos-blazor.md")
 
 
 class DevelopmentGuidelineTests(unittest.TestCase):
@@ -37,6 +37,17 @@ class DevelopmentGuidelineTests(unittest.TestCase):
             result = self.validate(suite)
             self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
             self.assertEqual((development / "SKILL.md").read_bytes(), before)
+
+    def test_local_validation_reports_missing_blazor_guidelines(self):
+        with tempfile.TemporaryDirectory(dir=os.environ.get("TMPDIR")) as temporary:
+            suite = Path(temporary) / "faro"
+            shutil.copytree(ROOT / "faro", suite)
+            reference = suite / "faro-req-desarrollo/references/lineamientos-blazor.md"
+            self.assertTrue(reference.is_file(), str(reference))
+            reference.unlink()
+            result = self.validate(suite)
+            self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
+            self.assertIn("lineamientos-blazor.md", result.stdout)
 
     def test_local_validation_reports_missing_reference_file(self):
         with tempfile.TemporaryDirectory(dir=os.environ.get("TMPDIR")) as temporary:

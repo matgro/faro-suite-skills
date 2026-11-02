@@ -102,8 +102,74 @@ def read_changelog(suite: Path) -> dict:
     return changelog
 
 
+def is_relative_catalog_path(value: object) -> bool:
+    if not isinstance(value, str) or not re.fullmatch(r"[A-Za-z0-9_./-]+", value):
+        return False
+    return all(part not in {"", ".", ".."} for part in value.split("/"))
+
+
+def validate_incident_capabilities(suite: Path) -> list[str]:
+    """Validate declared provenance, not installation or upstream safety."""
+    path = suite / "references/incident-external-skills.json"
+    try:
+        catalog = json.loads(path.read_text(encoding="utf-8"))
+        if not isinstance(catalog, dict) or catalog.get("schemaVersion") != 1:
+            raise ValueError("schemaVersion debe ser 1")
+        sources = catalog.get("sources")
+        if not isinstance(sources, list) or not sources:
+            raise ValueError("sources debe ser una lista no vacía")
+        roles: set[str] = set()
+        skills: set[str] = set()
+        for source in sources:
+            if not isinstance(source, dict):
+                raise ValueError("source debe ser un objeto")
+            repository = source.get("repository")
+            if not isinstance(repository, str) or not re.fullmatch(r"https://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+", repository):
+                raise ValueError("repository debe identificar un repositorio GitHub sin credenciales")
+            revision = source.get("revision")
+            if not isinstance(revision, str) or not re.fullmatch(r"[0-9a-f]{40}", revision):
+                raise ValueError("revision debe ser un commit completo, no una rama mutable")
+            role = source.get("role")
+            if role not in {"investigation", "postmortem"} or role in roles:
+                raise ValueError("role inválido o duplicado")
+            roles.add(role)
+            names = source.get("skills")
+            if not isinstance(names, list) or not names:
+                raise ValueError("skills debe ser una lista no vacía")
+            for name in names:
+                if not isinstance(name, str) or not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", name) or name in skills:
+                    raise ValueError("nombre externo inválido o duplicado")
+                skills.add(name)
+            for field in ("path", "licensePath"):
+                relative = source.get(field)
+                if not is_relative_catalog_path(relative):
+                    raise ValueError(f"{field} debe ser una ruta relativa segura")
+            if source.get("entrypoint") != "SKILL.md" or source.get("license") != "MIT":
+                raise ValueError("entrypoint/licencia no coincide con las capacidades revisadas")
+            files = source.get("requiredFiles")
+            if not isinstance(files, dict) or "SKILL.md" not in files:
+                raise ValueError("requiredFiles debe incluir SKILL.md")
+            for relative, digest in files.items():
+                if not is_relative_catalog_path(relative):
+                    raise ValueError("requiredFiles contiene una ruta insegura")
+                if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-f]{64}", digest):
+                    raise ValueError("requiredFiles debe declarar hashes SHA-256")
+            license_digest = source.get("licenseSha256")
+            if not isinstance(license_digest, str) or not re.fullmatch(r"[0-9a-f]{64}", license_digest):
+                raise ValueError("licenseSha256 debe ser SHA-256")
+            if "systematic-debugging" in names and "root-cause-tracing.md" not in files:
+                raise ValueError("systematic-debugging requiere root-cause-tracing.md")
+        if roles != {"investigation", "postmortem"}:
+            raise ValueError("se requieren roles investigation y postmortem")
+    except (OSError, ValueError, TypeError) as error:
+        return [f"catálogo de incidentes inválido: {error}"]
+    return []
+
+
 def validate_suite(suite: Path) -> list[str]:
     names, problems = suite_inventory(suite)
+    if "faro-incidentes" in names:
+        problems.extend(validate_incident_capabilities(suite))
     try:
         provenance = json.loads((suite / "references/suite-provenance.json").read_text(encoding="utf-8"))
         changelog = read_changelog(suite)

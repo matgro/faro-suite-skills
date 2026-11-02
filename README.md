@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <strong>22 skills</strong> · Complete lifecycle · Integrity checked · Agent-portable
+  <strong>23 skills</strong> · Complete lifecycle · Integrity checked · Agent-portable
 </p>
 
 ---
@@ -51,6 +51,11 @@ The glossary is created only when useful, sourced knowledge is available and doc
 Analysis, development and validation share `faro/references/refactoring-completion.md`. A refactor is not complete until its real callers use the new implementation, replaced logic is retired or delegates for justified compatibility, and behavior is verified through actual entry points. A green test suite that still exercises only the old path is insufficient. Independent review and findings are recorded in the existing task and validation artifacts.
 
 Optional, audited capabilities support this control: `requesting-code-review` and `verification-before-completion` from obra/superpowers, and read-only `lc:dead-code` from edulazaro/laraclaude for Laravel. FARO retains scope and lifecycle authority. The external `code-refactoring` skill informs the methodology only; its tooling ecosystem is not installed or required. Missing external skills do not waive the control; missing independent review remains an explicit closure limitation.
+
+### Decision trees and full workflow guide (Español)
+
+Read [FARO: cerebro de decisión y mapa completo de flujos](docs/flujo-faro/README.md) for the unified router diagram and detailed trees covering installation, workspace initialization, doctor, architecture, change requests, incidents, integrations and delivery. Each branch explains its checks, requested configuration, specialist handoffs, artifacts and authorization gates, with links to the actual skill sources.
+
 
 ## Ask an agent to install FARO
 
@@ -103,6 +108,7 @@ faro/                         Runtime suite
 ├── faro-arq-*/               Evidence-based architecture routes
 ├── faro-req-*/               Requirements, analysis, implementation, validation
 ├── faro-qa-ejecucion/        QA cases and evidence
+├── faro-incidentes/          Incident intake, governed investigation and disposition
 ├── faro-ux/                  Visible-flow and interface design
 ├── faro-entrega/             Explicit commit, PR, release, and deployment handoff
 ├── faro-int-jira/            Optional governed Jira integration
@@ -151,12 +157,21 @@ On Windows, keep the runtime's LF line endings declared by `.gitattributes`. Whe
 
 Changing local files does not publish a release: remote installation and origin verification require the new commit and matching immutable tag to be published. Never reuse the previous tag for a changed tree.
 
+## Incidents are not automatically bugs
+
+`faro-incidentes` records a reported symptom as `INC`, preserves evidence and hypotheses, and separates diagnosis, impact recovery and corrective work. A confirmed defect can lead to an explicitly authorized BUG; a changed business expectation leads to RM, while provider issues, valid business rules or operational causes can conclude without a software fix. Inconclusive evidence is not proof that no bug exists.
+
+The incident directory `context/incidents/` and its index are created only when needed in an available workspace; existing workspaces do not require reinitialization or a contract-version migration. Known QA failures against documented acceptance criteria can still create a BUG directly.
+
+FARO orchestrates rather than reimplements debugging: `systematic-debugging` from `obra/superpowers` supports technical investigation, and `incident-postmortem` from `github/awesome-copilot` supports a proportionate incident review. Reviewed commits, required-file/license hashes and scope limits are in `faro/references/incident-external-skills.json` and `faro/faro-incidentes/references/capacidades-externas.md`. These external skills are not bundled or implicitly installed. Bootstrap requests authorization, preserves same-name local customizations, and verifies complete pinned skills and security audit. Missing or blocked skills leave the applicable stage explicitly blocked, not silently replaced. Investigation never authorizes a fix or deployment.
+
 ## Editable development guidelines
 
 Development loads its rules from these files inside `faro/faro-req-desarrollo/`:
 
 - `references/lineamientos-comunes.md`: shared rules, including readability, naming, responsibilities, errors, configuration, minimal refactoring and TDD.
 - `references/lineamientos-dotnet.md`: .NET/C# rules adapted from the supplied NZT sources; applied only to an evidenced .NET component.
+- `references/lineamientos-blazor.md`: Blazor guidance adapted from reviewed NZT sources, read alongside common and .NET rules only for evidenced Blazor work. Covers components, forms, rendering modes, prerendered state and measured performance without installing NZT or imposing a new architecture.
 - `references/lineamientos-laravel.md`: Laravel rules; applied only to an evidenced Laravel component.
 
 Edit the Markdown rules directly; changing their text does not require editing `SKILL.md`. The agent rereads the common file plus the applicable technology file before each development unit. Mixed workspaces use the appropriate rules per component; other technologies use the common rules and the project's own instructions. Missing or empty selected guides block development instead of being silently ignored.

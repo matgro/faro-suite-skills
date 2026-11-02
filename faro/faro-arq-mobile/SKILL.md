@@ -1,7 +1,7 @@
 ---
 name: faro-arq-mobile
 description: Use when FARO documents an evidenced mobile architecture.
-version: 1.0.0
+version: 1.1.0
 author: Hermes Agent
 license: MIT
 metadata:

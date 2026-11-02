@@ -1,7 +1,7 @@
 ---
 name: faro-req-validacion
 description: Use when FARO validates delivery against an approved RM.
-version: 1.0.0
+version: 1.1.0
 author: Hermes Agent
 license: MIT
 metadata:
