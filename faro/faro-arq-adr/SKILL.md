@@ -12,6 +12,8 @@ metadata:
 
 # FARO — Registro de decisión arquitectónica (ADR)
 
+En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase, sin alterar alcance ni autorizaciones.
+
 ## Rol
 
 Registra una decisión técnica **ya tomada** en `context/decisions/adr/ADR-NNN-<slug>.md`. Conserva qué la forzó, alternativas reales, costos, decisión, consecuencias y el esfuerzo de revertirla. No aprueba alcance funcional, no decide por el usuario, no implementa código ni convierte una preferencia en arquitectura.

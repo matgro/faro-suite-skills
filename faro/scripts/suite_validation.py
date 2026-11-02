@@ -50,7 +50,7 @@ def suite_inventory(suite: Path) -> tuple[set[str], list[str]]:
             problems.append(f"{path.relative_to(suite)}: related_skills apunta a skill ausente: {name}")
     for path in sorted(suite.rglob("*.md")):
         text = path.read_text(encoding="utf-8")
-        for relative in sorted(set(re.findall(r"\[[^\]]+\]\((references/[^)\s#]+)(?:#[^)\s]*)?\)", text))):
+        for relative in sorted(set(re.findall(r"\[[^\]]+\]\(((?:\.\./)?references/[^)\s#]+)(?:#[^)\s]*)?\)", text))):
             reference = path.parent / relative
             if not reference.is_file():
                 problems.append(f"{path.relative_to(suite)}: archivo de referencia ausente: {relative}")

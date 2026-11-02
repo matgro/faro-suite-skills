@@ -9,6 +9,16 @@ Usar la plantilla Standard y añadir sólo las secciones pertinentes:
 ## Estados, cálculos y compatibilidad
 | Entidad | Estado origen | Evento | Condición | Destino | Efecto | Fuente/CA |
 |---|---|---|---|---|---|---|
+
+### Diagrama de estados Markdown/Mermaid (cuando aplique)
+- Entidad, aplicabilidad y trazabilidad RF/RN/CA/PD: NO DEFINIDO.
+```mermaid
+stateDiagram-v2
+    [*] --> EstadoOrigen
+    EstadoOrigen --> EstadoDestino: Evento / RN-XXX
+    EstadoDestino --> [*]: CA-XXX
+```
+
 | Tema | Definición confirmada | Casos límite | Fuente | CA/PD |
 |---|---|---|---|---|
 | Datos/consumidor | Compatibilidad requerida | Fuente | PD |

@@ -12,6 +12,8 @@ metadata:
 
 # FARO — Integración Jira
 
+En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase. El vocabulario por sí solo no crea ni actualiza issues remotas.
+
 ## Rol
 
 `faro-int-jira` es el adaptador de gobernanza entre FARO y la capability externa `jira-rest-v3`. Configura Jira sólo por petición humana expresa, importa una issue como fuente `SRC` y, cuando `work_tracking.mode` es `REQUIRED` y su proveedor es `JIRA`, sincroniza el seguimiento operativo de la solicitud.

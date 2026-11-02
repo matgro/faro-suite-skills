@@ -12,6 +12,8 @@ metadata:
 
 # FARO — Diagnóstico del espacio de trabajo
 
+En cada interacción, leer y aplicar [Glosario de dominio](../references/domain-glossary.md) para consultar `context/glossary.md` si existe. Doctor permanece en sólo lectura: informar presencia, ausencias opcionales y discrepancias observadas, sin crear ni actualizar el glosario o su índice. El script informa presencia, no valida automáticamente las definiciones.
+
 ## Rol
 
 Inspecciona un espacio FARO existente y muestra un estado verificable sin inicializarlo, regenerarlo ni sobrescribir información. Es la respuesta obligatoria a un pedido de inicialización cuando el contrato FARO ya existe: informa que el espacio ya está presente, su estado y la acción de recuperación o continuación aplicable.

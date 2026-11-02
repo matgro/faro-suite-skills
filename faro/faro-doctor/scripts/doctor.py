@@ -160,7 +160,7 @@ def main() -> int:
     args = parser.parse_args()
     root = args.root.resolve()
     config, config_error = load_json(CONFIG_PATH)
-    if config_error:
+    if config_error or config is None:
         print(f"ERROR: configuración canónica {config_error}: {CONFIG_PATH}")
         return 2
 
@@ -252,6 +252,14 @@ def main() -> int:
     print("Arquitectura registrada: " + (next((item.name for item in architectures if item.exists()), "no registrada")))
     workflow = root / "context/workflow.json"
     print("Workflow activo: " + ("sí" if workflow.exists() else "no"))
+    glossary = root / config["workspace"]["glossaryPath"]
+    if glossary.is_file():
+        glossary_status = "presente"
+    elif glossary.exists():
+        glossary_status = "ruta ocupada (no es un archivo; requiere revisión)"
+    else:
+        glossary_status = "no creado (opcional)"
+    print(f"Glosario de dominio: {glossary_status}; contenido no validado automáticamente")
 
     if stats and stats.get("state") == "disabled":
         recommendation = "detener FARO"

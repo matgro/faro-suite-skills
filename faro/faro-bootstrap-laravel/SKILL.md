@@ -12,6 +12,8 @@ metadata:
 
 # FARO — Bootstrap Laravel
 
+En cada interacción, leer y aplicar [Glosario de dominio](../references/domain-glossary.md). No crear `context/glossary.md` antes del scaffold ni ocupar el root vacío; trasladar las definiciones sustentadas al handoff de inicialización.
+
 ## Rol
 
 Crea el scaffold técnico real de un proyecto Laravel nuevo antes de que FARO materialice su contrato. Es la única ruta FARO que puede ejecutar `composer create-project` para un proyecto Laravel nuevo. No documenta arquitectura, no recibe RM/BUG/TEC y no autoriza commits, despliegues ni configuración de secretos.

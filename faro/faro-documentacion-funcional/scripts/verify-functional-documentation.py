@@ -44,6 +44,31 @@ def catalog_document_ids(catalog: Path) -> list[str]:
     return identifiers
 
 
+def verify_mermaid_blocks(path: Path, text: str, failures: list[str]) -> None:
+    """Keep optional Mermaid diagrams readable and structurally complete in a DF."""
+    lines = text.splitlines()
+    index = 0
+    while index < len(lines):
+        if lines[index].strip().lower() != "```mermaid":
+            index += 1
+            continue
+
+        start = index + 1
+        index += 1
+        while index < len(lines) and not lines[index].strip().startswith("```"):
+            index += 1
+        if index == len(lines):
+            failures.append(f"Mermaid sin cierre en {path.name}")
+            return
+
+        body = [line.strip() for line in lines[start:index] if line.strip()]
+        if not body:
+            failures.append(f"Mermaid vacío en {path.name}")
+        elif not body[0].startswith(("flowchart", "stateDiagram-v2", "sequenceDiagram")):
+            failures.append(f"tipo Mermaid no permitido en {path.name}: {body[0]!r}")
+        index += 1
+
+
 def verify_document_ids(requirements: Path, failures: list[str]) -> None:
     documents: dict[str, list[tuple[Path, bool]]] = defaultdict(list)
 
@@ -61,6 +86,8 @@ def verify_document_ids(requirements: Path, failures: list[str]) -> None:
                 f"DF ID mismatch: {path.name} declares {metadata_match.group(1)!r}, expected {df_id!r} from its filename"
             )
         documents[df_id].append((path, internal_note))
+        if not internal_note:
+            verify_mermaid_blocks(path, text, failures)
 
     catalog = requirements / "functional-documents-catalog.md"
     catalog_ids = catalog_document_ids(catalog)

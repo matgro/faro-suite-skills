@@ -2,12 +2,20 @@
 
 Este historial registra cambios de la suite distribuida, no aprobaciones de proyectos. La versión del paquete es independiente de la versión del contrato de workspace.
 
+## Sin publicar
+
+- Exige cierre verificable de refactorizaciones: consumidores conectados, retiro/delegación de lógica sustituida, pruebas desde entradas reales y revisión independiente. Integra apoyos externos condicionados sin instalación automática ni nuevas rutas; Laravel incorpora análisis `lc:dead-code` de sólo lectura. Un método nuevo sin uso no acredita una extracción terminada.
+
+- Añade un glosario de dominio opcional por workspace en `context/glossary.md`, consultado en cada interacción y mantenido sólo con evidencia y permiso documental. Distingue definiciones confirmadas, observaciones, pendientes y conflictos; conserva fuentes, ámbito, alias e historial sin generar RM ni seguimiento remoto artificial.
+- Integra la política transversal en router y especialistas, la plantilla genérica, el diagnóstico de presencia y pruebas de compatibilidad con espacios existentes. No requiere reinicialización ni cambio de `contractVersion`; no modifica instalaciones existentes ni publica una release.
+
 ## 1.5.1 — pendiente de publicación
 
 ### Cambios
 
 - Estandariza las actualizaciones remotas de Jira y Azure DevOps como bitácoras breves y útiles: sólo inicio/cierre de fase, unidades materiales, decisiones, bloqueos y referencias externas durables.
 - Añade `faro/references/comment-format.md` con una plantilla común para desarrollo, QA, validación y entrega, sin transcripciones de comandos, archivos o pruebas intermedias.
+- Añade diagramas opcionales Markdown/Mermaid dentro de DF, RM y planes técnicos: flujos, estados, secuencias y navegación se leen como texto en un README, se trazan a elementos existentes y no crean archivos visuales paralelos.
 
 ### Actualización desde 1.5.0
 

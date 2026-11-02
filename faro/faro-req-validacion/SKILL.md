@@ -12,6 +12,8 @@ metadata:
 
 # FARO — Validación contra requerimientos
 
+En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase, sin alterar alcance ni autorizaciones.
+
 ## Overview
 
 Compara una entrega con la versión aprobada/autorizada, su plan, tareas, código y evidencia. Cada criterio termina CONFORME, NO_CONFORME o NO_VERIFICADO con evidencia específica.
@@ -24,6 +26,8 @@ Compara una entrega con la versión aprobada/autorizada, su plan, tareas, códig
 No aprobar RMs, autorizar merge/despliegue ni modificar código de producto desde esta skill.
 
 ## Procedimiento
+
+Cuando haya extracción, traslado o sustitución de lógica, aplicar [Cierre verificable de refactorizaciones](../references/refactoring-completion.md). Contrastar consumidores, retiro/delegación, revisión independiente y evidencia de ejecución desde entradas reales. Un método nuevo sin uso o lógica anterior activa sin justificación produce NO_CONFORME; evidencia insuficiente produce NO_VERIFICADO. Ninguno permite VERIFIED aunque las pruebas existentes pasen.
 
 1. Leer perfil/contrato, entrada autorizada, baseline, plan, tareas, revisión y entorno. **Completo:** versión y alcance están identificados.
 2. Comparar RF/RN/RNF/RES/CA con entradas de código relevantes, no sólo la pantalla principal. Cuando el alcance cite ADR/RFC, comprobar que el ADR aceptado esté enlazado y que no se haya validado una entrega dependiente de un RFC abierto. **Completo:** se registran conductas agregadas sin origen.

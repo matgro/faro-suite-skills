@@ -12,6 +12,8 @@ metadata:
 
 # FARO — Entrega controlada
 
+En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase, sin alterar alcance ni autorizaciones.
+
 ## Rol
 Ejecuta acciones que sacan trabajo del directorio local: commit, branch, PR, release, despliegue o rollback. No implementa código ni convierte desarrollo en autorización implícita de salida.
 

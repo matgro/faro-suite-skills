@@ -12,6 +12,8 @@ metadata:
 
 # FARO — Integración Azure DevOps / Visual Studio
 
+En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase. El vocabulario por sí solo no crea ni actualiza work items remotos.
+
 ## Rol
 
 `faro-int-azure-devops` es el adaptador de gobernanza entre FARO y `azure-devops-rest-v7`. Configura Azure DevOps sólo por petición humana expresa, importa un work item como fuente `SRC` y, con política `REQUIRED`, sincroniza el seguimiento operativo de la solicitud.

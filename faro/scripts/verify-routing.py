@@ -104,6 +104,18 @@ def main() -> int:
     if config.get("templateSources", {}).get("manifest") != "faro/templates/faro-workspace-manifest.json":
         failures.append("configuración FARO no declara la plantilla de manifiesto")
     initialization = config.get("initialization", {})
+    if config.get("workspace", {}).get("glossaryPath") != "context/glossary.md":
+        failures.append("configuración FARO sin ruta canónica de glosario")
+    if "context/glossary.md" not in {item.get("path") for item in config.get("conditionalFiles", [])}:
+        failures.append("glosario debe ser condicional, no obligatorio")
+    if config.get("templateSources", {}).get("glossary") != "faro/templates/glossary.md" or not (ROOT / "templates/glossary.md").is_file():
+        failures.append("plantilla canónica de glosario ausente")
+    for name, path in discovered.items():
+        if name == "azure-devops-rest-v7":
+            continue
+        text = path.read_text(encoding="utf-8")
+        if "domain-glossary.md" not in text or "context/glossary.md" not in text:
+            failures.append(f"{name}: falta política transversal de glosario")
     if initialization.get("workTrackingModes") != ["OFF", "REQUIRED"]:
         failures.append("configuración FARO no declara modos de seguimiento válidos")
     if initialization.get("workTrackingProviders") != ["JIRA", "AZURE_DEVOPS"]:

@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <strong>17 skills</strong> · Complete lifecycle · Integrity checked · Agent-portable
+  <strong>22 skills</strong> · Complete lifecycle · Integrity checked · Agent-portable
 </p>
 
 ---
@@ -35,6 +35,22 @@ Request → Context → Requirements → Technical plan → Build → QA → Val
 ```
 
 FARO does not collapse those stages into paperwork. Each specialist skill exists to make one transition clear, evidence-based, and reversible when the facts do not support moving forward.
+
+### Readable functional visuals
+
+Functional documents, requirement records, UX decisions, and technical plans can embed optional [Mermaid](https://mermaid.js.org/) blocks directly in Markdown. This keeps flows, state diagrams, and sequences readable as source in a README while platforms with Mermaid support can render them. Visuals are traceable to existing requirements and do not create new business rules or replace the accompanying text/tables.
+
+### Workspace domain glossary
+
+FARO consults `context/glossary.md`, when present, before interpreting domain terms in each interaction, including direct specialist calls and resumed work. Each workspace owns its vocabulary: terms, acronyms, meanings, scope, aliases, evidence and correction history. Unknown or conflicting meanings are not guessed; code observations remain distinct from confirmed definitions.
+
+The glossary is created only when useful, sourced knowledge is available and documentary writes are allowed. It is independent of functional-documentation settings and does not create requirements, workflows or remote issues by itself. Read-only diagnostics never maintain it. Existing workspaces adopt it on demand without reinitialization or a contract-version migration. The shared policy is in `faro/references/domain-glossary.md` and the generic template in `faro/templates/glossary.md`.
+
+### Complete refactoring, not unused extractions
+
+Analysis, development and validation share `faro/references/refactoring-completion.md`. A refactor is not complete until its real callers use the new implementation, replaced logic is retired or delegates for justified compatibility, and behavior is verified through actual entry points. A green test suite that still exercises only the old path is insufficient. Independent review and findings are recorded in the existing task and validation artifacts.
+
+Optional, audited capabilities support this control: `requesting-code-review` and `verification-before-completion` from obra/superpowers, and read-only `lc:dead-code` from edulazaro/laraclaude for Laravel. FARO retains scope and lifecycle authority. The external `code-refactoring` skill informs the methodology only; its tooling ecosystem is not installed or required. Missing external skills do not waive the control; missing independent review remains an explicit closure limitation.
 
 ## Ask an agent to install FARO
 

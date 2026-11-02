@@ -12,6 +12,8 @@ metadata:
 
 # FARO — Arquitectura .NET/C# basada en evidencia
 
+En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase, sin alterar alcance ni autorizaciones.
+
 ## Rol
 
 Produce el registro arquitectónico .NET/C# de FARO mediante evidencia del proyecto y la plantilla canónica `templates/architecture-dotnet.md`. La salida es `context/architecture-dotnet.md` en el root coordinador FARO. Sirve tanto para un proyecto nuevo —después de un scaffold técnico real— como para un proyecto existente. No crea scaffolds, no modifica código, no elige patrones nuevos ni sustituye reglas locales.

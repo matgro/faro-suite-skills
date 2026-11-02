@@ -12,6 +12,8 @@ metadata:
 
 # FARO — Solicitud de comentarios arquitectónica (RFC)
 
+En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase, sin alterar alcance ni autorizaciones.
+
 ## Rol
 
 Formula una decisión técnica **abierta** para que las personas afectadas puedan objetar antes de comprometer el proyecto. Crea `context/decisions/rfc/RFC-NNN-<slug>.md`; no toma la decisión, no inventa posiciones y no permite implementar trabajo dependiente mientras siga abierto.

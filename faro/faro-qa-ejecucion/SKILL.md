@@ -12,6 +12,8 @@ metadata:
 
 # FARO — Ejecución de QA
 
+En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase, sin alterar alcance ni autorizaciones.
+
 ## Rol
 Diseña y ejecuta pruebas de aplicación para un incremento construido, con evidencia por criterio de aceptación. No modifica código, no aprueba el RM y no sustituye las pruebas que acompañan implementación.
 

@@ -12,6 +12,8 @@ metadata:
 
 # FARO — Desarrollo de requerimientos
 
+En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase, sin alterar alcance ni autorizaciones.
+
 ## Rol
 Implementa una unidad autorizada de un RM, BUG o TEC con plan técnico `LISTO_PARA_DESARROLLO`. No redefine comportamiento funcional, no acepta la entrega, no realiza QA de aplicación ni hace commit, PR o despliegue sin la ruta `faro-entrega`.
 
@@ -42,6 +44,10 @@ Leer los archivos aplicables antes de cada unidad de desarrollo; no sustituirlos
 Las instrucciones explícitas del repositorio y la arquitectura aprobada prevalecen sobre estos valores por defecto; las reglas tecnológicas especializan las comunes. Ningún lineamiento modifica el RM, sus autorizaciones o las restricciones de seguridad. Si hay una contradicción no resoluble, volver al análisis técnico o a la definición funcional antes de cambiar código.
 
 El usuario puede editar las reglas directamente en esos archivos sin tocar `SKILL.md`; el agente sólo las cambia por pedido explícito, nunca para eludirlas. Son cambios locales visibles en la comparación de una actualización y en la verificación de hashes: no afirmar integridad de release idéntica ni regenerar checksums de una instalación para ocultarlos. Antes de reemplazar la suite, mostrar las personalizaciones y acordar su conservación o reaplicación; nunca descartarlas silenciosamente.
+
+## Cierre de refactorizaciones
+
+Si se extrae, mueve o sustituye lógica, leer y ejecutar [Cierre verificable de refactorizaciones](../references/refactoring-completion.md). Antes del paso 6, demostrar consumidores reales conectados, retiro o delegación de la implementación anterior, ausencia de código nuevo sin uso y pruebas desde las entradas afectadas. Solicitar revisión independiente del diff final; usar las capabilities externas aprobadas en esa referencia cuando estén disponibles y auditadas, sin delegarles autoridad de ciclo de vida. Un método nuevo no llamado o una copia vieja todavía activa sin justificación es trabajo incompleto: no marcar `done` ni anunciar cierre. Registrar evidencia y limitaciones en la tarea existente.
 
 ## Procedimiento
 1. Confirmar la unidad en el plan y marcarla `doing` en workflow. Si seguimiento está `REQUIRED`, transicionar el item al estado remoto de trabajo y registrar una actualización concisa conforme a `../references/comment-format.md` cuando la unidad permanezca abierta entre sesiones; si falla, bloquear antes de editar código. **Completo:** unidad, versión, autorización y seguimiento trazables.

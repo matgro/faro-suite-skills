@@ -1,7 +1,7 @@
 ---
 name: faro
 description: Use when user invokes FARO project routing.
-version: 1.17.0
+version: 1.18.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -18,6 +18,8 @@ metadata:
 
 Las capacidades Laravel externas aprobadas se catalogan en `references/laravel-external-skills.json`. Son asistentes de una skill FARO ya elegida, no rutas del ciclo de vida, ni sustituyen autorización, evidencia o QA. Una skill bloqueada por el análisis de seguridad no se fuerza ni se usa.
 
+Para extracción, traslado o sustitución de lógica, análisis/desarrollo/validación aplican [Cierre verificable de refactorizaciones](references/refactoring-completion.md): integración real, retiro de lógica sustituida y revisión independiente antes de cerrar. Esta referencia selecciona `requesting-code-review`, `verification-before-completion` y, para Laravel, `lc:dead-code` como apoyos condicionados a procedencia, disponibilidad y auditoría; no son rutas FARO ni se instalan automáticamente. `code-refactoring` se usa sólo como fuente metodológica, no como dependencia ejecutable.
+
 El contrato persistente del workspace vive en `AGENTS.md`, `context/faro-workspace.json`, `context/stats.json`, `context/README.md`, `context/requirements/project-profile.md` y, sólo para continuidad activa, `context/workflow.json`. Los registros de decisión son opcionales y bajo demanda: `context/decisions/adr/` y `context/decisions/rfc/`; no forman parte de la inicialización obligatoria. `templates/faro-workspace-config.json` es la política estructural canónica y central: declara los archivos/directorios requeridos y las plantillas aprobadas. `context/faro-workspace.json` es únicamente un manifiesto local de versión y artefactos instalados; no puede redefinir la política FARO. La lógica de inicialización, ruteo, Jira, autorización y entrega vive exclusivamente en `faro` y las skills `faro-*`.
 
 ## Activación
@@ -25,6 +27,10 @@ El contrato persistente del workspace vive en `AGENTS.md`, `context/faro-workspa
 Usar cuando el usuario diga `usa faro-<nombre>`, pida inicializar, reanudar, diagnosticar/revisar estado o realizar trabajo gobernado por FARO, o cuando exista el bloque `FARO:START` en `AGENTS.md`.
 
 No tomar control de un directorio ajeno sin invocación FARO explícita.
+
+## Glosario de dominio transversal
+
+En cada interacción, después de confirmar root/estado y antes de interpretar el pedido, leer y aplicar [Glosario de dominio](references/domain-glossary.md). Consultar `context/glossary.md` si existe y evaluar altas o correcciones sustentadas, también en consultas y reanudaciones; su ausencia no bloquea ni exige inicialización. La ruta activa lo mantiene como conocimiento auxiliar, sin otra skill ni flujo. Respetar sólo lectura, estado y autorización: el glosario no autoriza cambios funcionales.
 
 ## Regla de root
 
@@ -50,6 +56,7 @@ El root coordinador es siempre el directorio de trabajo actual de la sesión. Se
 | `context/README.md` | Índice de código, documentación y fuentes. |
 | `context/requirements/project-profile.md` | Decisiones de seguimiento, proveedor y documentación funcional, sin secretos. |
 | `context/workflow.json` | Sólo continuidad de una unidad activa; no duplica RM, planes ni tareas. |
+| `context/glossary.md` | Condicional: vocabulario del sistema con ámbito, evidencia e historial; se crea sólo con conocimiento sustentado, no durante toda inicialización. |
 
 Durante inicialización se formula una sola consulta agrupada para identidad/tipo/fuentes que no puedan observarse, seguimiento de trabajo (`OFF`/`REQUIRED`), proveedor (`JIRA`/`AZURE_DEVOPS`) y documentación funcional (`HABILITADA`/`DESHABILITADA`). Con Jira `REQUIRED`, se proponen `https://matgro.atlassian.net` y `LPK`. Con Azure DevOps `REQUIRED`, se pide URL de organización, proyecto, área y equipo; una URL de proyecto aportada puede descomponerse como propuesta, pero cada valor se confirma. Un proyecto queda `initializing` hasta que una skill de arquitectura registre evidencia y habilite `available`.
 
@@ -71,7 +78,7 @@ Durante inicialización se formula una sola consulta agrupada para identidad/tip
 | Estado `new`/`initializing`, stack confirmado distinto | `faro-arq-generica` | Arquitectura mínima basada en evidencia; completar disponibilidad. |
 | `available`; agregar/configurar Jira explícitamente | `faro-int-jira` | Integración autorizada o issue enlazada como `SRC`. |
 | `available`; agregar/configurar Azure DevOps / Visual Studio explícitamente | `faro-int-azure-devops` | Integración autorizada o work item enlazado como `SRC`. |
-| `available`; perfil DF `HABILITADA`; solicitud funcional/cambio/BUG sin esperado o DF | `faro-documentacion-funcional` | DF identificado/creado; si hay cambio, siguiente ruta `faro-req-ingenieria`. |
+| `available`; perfil DF `HABILITADA`; solicitud funcional/cambio/BUG sin esperado o DF | `faro-documentacion-funcional` | DF identificado/creado; procesos, estados o integraciones ambiguas se aclaran en Markdown/Mermaid trazable; si hay cambio, siguiente ruta `faro-req-ingenieria`. |
 | `available`; solicitud funcional/cambio/BUG sin esperado; DF no habilitada | `faro-req-ingenieria` | RM/BUG/TEC trazable, versión y estado de definición. |
 | RM/BUG/TEC requiere aclarar, cambiar alcance o resolver PD | `faro-req-ingenieria` | Artefacto funcional actualizado. |
 | RM/BUG/TEC autorizado; impacto, plan o tareas | `faro-req-analisis-tecnico` | Plan/tareas contra código, estado técnico. |
@@ -84,9 +91,11 @@ Durante inicialización se formula una sola consulta agrupada para identidad/tip
 | Laravel: stacktrace reproducible | `faro-req-analisis-tecnico` | Análisis contra código y evidencia; `analyze-error` puede apoyar el diagnóstico sin autorizar un fix. |
 | Laravel: inspección runtime autorizada y Laravel Boost disponible | `faro-req-analisis-tecnico` | Evidencia runtime; `boost-inspect` es apoyo opcional, no requisito. |
 | Laravel: prueba de regresión autorizada | `faro-req-desarrollo` | Implementación y prueba conforme a convenciones del repositorio; `generate-test` puede apoyar la cobertura. |
+| Refactorización autorizada, extracción o movimiento de lógica | Skill FARO de fase aplicable | Análisis inventaría consumidores; desarrollo conecta, retira y solicita revisión; validación exige evidencia. Las capabilities externas apoyan sin reemplazar el control FARO. |
 | Laravel: Nightwatch, starter kit o Laravel Cloud explícitamente autorizado | Skill FARO de fase aplicable | Usar respectivamente `configure-nightwatch`, `starter-kit-upgrade` o `deploying-to-cloud` como capacidad auxiliar, sin omitir controles FARO. |
 | Commit, PR, release, despliegue o rollback explícito | `faro-entrega` | Acción de salida explícitamente autorizada. |
 | Consulta sin cambio de artefacto en `available` | Responder desde el contrato | Sin creación artificial de flujo. |
+| Consulta, definición o corrección de vocabulario sin cambio funcional en `available` | Aplicar política transversal de glosario | Consultar o mantener `context/glossary.md` según evidencia y permiso de escritura; sin RM, workflow ni seguimiento remoto artificial. |
 
 ## Continuidad e invariantes
 

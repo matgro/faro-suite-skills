@@ -12,6 +12,8 @@ metadata:
 
 # FARO — Inicialización de espacio de trabajo
 
+En cada interacción, leer y aplicar [Glosario de dominio](../references/domain-glossary.md) para `context/glossary.md`. No crearlo vacío: sólo después de materializar el contrato y con conocimiento sustentado; indexarlo sin modificar los artefactos obligatorios del manifiesto.
+
 ## Rol
 
 Crea el contrato persistente y configurable de FARO en el root coordinador. Esta skill no formaliza solicitudes ni declara el proyecto `available`: deja un espacio inicializado, verificable y listo para que la ruta de arquitectura reúna evidencia.

@@ -28,6 +28,28 @@ baseline: null
 | Paso | Participante | Acción | Resultado esperado |
 |---|---|---|---|
 
+### 4.1 Flujo visual en Markdown/Mermaid
+- Aplicabilidad y alcance: NO DEFINIDO. El diagrama no sustituye la tabla anterior.
+- Trazabilidad: RF/RN/CA/PD: NO DEFINIDO.
+- Eliminar este bloque si no reduce ambigüedad; no usarlo como decoración.
+```mermaid
+flowchart TD
+    A[Inicio: NO DEFINIDO] --> B[Acción: NO DEFINIDO]
+    B --> C{Condición: RN-XXX}
+    C -->|Sí| D[Resultado: CA-XXX]
+    C -->|No| E[Excepción o pendiente: PD-XXX]
+```
+
+### 4.2 Estados del proceso o entidad
+- Aplicabilidad y entidad: NO DEFINIDO. Si no hay ciclo de vida, indicar `No aplica`.
+- Transiciones y trazabilidad: NO DEFINIDO.
+```mermaid
+stateDiagram-v2
+    [*] --> EstadoInicial: evento confirmado
+    EstadoInicial --> EstadoFinal: RN-XXX / CA-XXX
+    EstadoFinal --> [*]
+```
+
 ## 5. Reglas de negocio
 | ID | Regla |
 |---|---|

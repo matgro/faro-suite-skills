@@ -34,6 +34,17 @@ approval: {approved_version: null, approved_by: null, approved_at: null, evidenc
 ## Flujo, criterios, impacto y pendientes
 | Paso | Actor | Acción/condición | Resultado | Fuente/elemento |
 |---|---|---|---|---|
+
+### Visuales en Markdown/Mermaid (cuando apliquen)
+- Propósito, aplicabilidad y trazabilidad RF/RN/CA/PD: NO DEFINIDO.
+- El bloque se lee como texto en un README y no agrega comportamiento fuera del RM.
+```mermaid
+flowchart TD
+    A[RF-XXX: disparador] --> B{RN-XXX: condición}
+    B -->|Cumple| C[CA-XXX: resultado]
+    B -->|No cumple| D[PD-XXX o excepción documentada]
+```
+
 ### CA-001 — <Título>
 - Origen, dado, cuando, entonces, método: NO DEFINIDO.
 ### PD-001 — <Pregunta>

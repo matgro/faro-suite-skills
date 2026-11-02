@@ -12,6 +12,8 @@ metadata:
 
 # FARO — Arquitectura genérica basada en evidencia
 
+En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase, sin alterar alcance ni autorizaciones.
+
 ## Rol
 Documenta arquitectura para un stack confirmado que no es Laravel/API ni móvil. Es conservadora: registra evidencia y pendientes sin imponer convenciones de framework.
 

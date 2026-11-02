@@ -12,6 +12,8 @@ metadata:
 
 # FARO — Bootstrap .NET
 
+En cada interacción, leer y aplicar [Glosario de dominio](../references/domain-glossary.md). No crear `context/glossary.md` antes del scaffold ni ocupar el root vacío; trasladar las definiciones sustentadas al handoff de inicialización.
+
 ## Rol
 
 Crea el scaffold técnico real de un proyecto .NET/C# nuevo antes de que FARO materialice su contrato. Es la única ruta FARO que puede ejecutar `dotnet new` para un proyecto nuevo. No documenta arquitectura, no recibe RM/BUG/TEC y no autoriza commits, despliegues, paquetes extra, secretos ni cambios de configuración.

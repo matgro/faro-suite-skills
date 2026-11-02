@@ -12,6 +12,8 @@ metadata:
 
 # FARO Arquitectura Laravel
 
+En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase, sin alterar alcance ni autorizaciones.
+
 ## Overview
 
 Produce el registro arquitectónico Laravel de FARO con evidencia del repositorio y la plantilla canónica `templates/architecture-laravel.md`. La salida es `context/architecture-laravel.md` en el root coordinador FARO. No inventa hechos ni sustituye reglas locales.
