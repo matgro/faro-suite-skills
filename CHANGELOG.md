@@ -2,6 +2,18 @@
 
 Este historial registra cambios de la suite distribuida, no aprobaciones de proyectos. La versión del paquete es independiente de la versión del contrato de workspace.
 
+## 1.8.1 — 2026-11-02
+
+- Exige detenerse y esperar validación humana explícita ante cambios ajenos o de atribución incierta antes de cambiar de rama o implementar. Mostrar archivos afectados y acción propuesta; el silencio o una autorización general no permiten continuar.
+- Mantiene el desarrollo en el repositorio y directorio actuales. Crear clones, copias o worktrees requiere autorización humana previa específica para la operación y el destino; no permite eludir el bloqueo por cambios locales.
+- Preserva el trabajo existente: stash, descarte, traslado o inclusión de cambios ajenos en commits requieren permiso explícito. Vuelve a comprobar Git antes de reanudar.
+- Incorpora pruebas de contrato para estas restricciones y actualiza `faro-req-desarrollo` a `1.3.1`.
+
+### Actualización desde 1.8.0
+
+1. Obtener `v1.8.1`, verificar procedencia, inventario y checksums; comparar y confirmar el reemplazo completo de `faro/`.
+2. No requiere migrar ni reinicializar workspaces; conserva el contrato `1.13.0`. La publicación no actualiza instalaciones existentes automáticamente.
+
 ## 1.8.0 — 2026-11-02
 
 - Incorpora versionado de aplicaciones por componente: arquitectura descubre fuente/lectores, desarrollo prepara mecanismos autorizados y entrega actualiza valores existentes con evidencia del artefacto y de la versión efectiva.

@@ -189,10 +189,12 @@ flowchart TD
 | Coherencia de plan/tareas | Plan `LISTO_PARA_DESARROLLO`; plan y tareas de la misma versión | Volver a análisis; no usar un plan anterior como autorización de una versión nueva. |
 | Contexto técnico | `AGENTS.md`, arquitectura, instrucciones locales, Git, tarea activa, código vecino, consumidores y pruebas leídos | Obtener evidencia faltante antes de cambiar código. |
 | Memoria de decisiones | Índice ADR si existe y ADR relevantes; registrar IDs revisados o ausencia del catálogo; sin RFC abierto dependiente | Contradicción con ADR aceptado → análisis/ADR sucesor. RFC dependiente → `waitingOn`. |
-| Rama/base y trabajo ajeno | Rama `feature/<RM-ID>-<descripcion-kebab-case>`; crear desde base autorizada si no existe, antes de modificar | Cambios no atribuibles a unidad → bloquear y pedir decisión; no sobrescribirlos. |
+| Rama/base y trabajo ajeno | Inspeccionar y atribuir cambios antes de cambiar de rama; una vez resuelto el control, usar `feature/<RM-ID>-<descripcion-kebab-case>` desde base autorizada en el mismo repositorio | Cambios ajenos o de atribución incierta → mostrar archivos y acción propuesta, registrar `waitingOn` y esperar validación humana explícita antes de continuar. |
 | Reglas aplicables | Leer archivos seleccionados **antes de cada unidad**, registrar cuáles y excepciones en evidencia existente | Si falta o está vacío uno seleccionado, bloquear con su ruta, no inventar reglas. |
 | Seguimiento `REQUIRED` | Inicio/unidad y estado remoto de trabajo sincronizados; actualización al permanecer abierta entre sesiones | Bloquear antes de editar si falla. |
 | Interfaz | Handoff a UX antes de modificar pantallas | Resolver catálogo/diseño o PD sin inventar comportamiento. |
+
+Trabajar en el repositorio y directorio de código actuales. No crear clones, copias ni worktrees para eludir el bloqueo: requieren autorización humana previa específica para la operación y su destino. El silencio, una autorización general de implementar o una aprobación que no contemple los cambios detectados no permiten continuar. Registrar la decisión y volver a comprobar Git antes de reanudar; nuevos cambios no contemplados requieren nueva validación. Stash, descarte, traslado o inclusión de cambios ajenos en commits también requieren permiso específico.
 
 La nomenclatura de rama está escrita literalmente con `<RM-ID>` en la skill, aunque admite entrada BUG/TEC. La fuente no explicita una variante de patrón para estos IDs: no inventar aquí una convención alternativa; aclarar la aplicación si ese caso bloquea la unidad.
 

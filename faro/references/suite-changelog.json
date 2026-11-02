@@ -2,6 +2,15 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "1.8.1",
+      "changes": [
+        "Exige detenerse y esperar validación humana explícita ante cambios ajenos o de atribución incierta antes de cambiar de rama o implementar; una autorización general no resuelve ese bloqueo.",
+        "Mantiene el desarrollo en el repositorio y directorio actuales: clones, copias y worktrees requieren autorización previa específica para la operación y su destino, sin usarlos para eludir el bloqueo.",
+        "Preserva los cambios existentes, exige permiso específico para stash, descarte, traslado o inclusión en commits y vuelve a comprobar Git antes de reanudar. No requiere migrar el contrato de workspace."
+      ],
+      "renamedSkills": {}
+    },
+    {
       "version": "1.8.0",
       "changes": [
         "Incorpora versionado de aplicaciones por componente: arquitectura identifica fuente y lectores, desarrollo implementa mecanismos autorizados y entrega actualiza valores existentes con evidencia de artefacto y versión efectiva.",

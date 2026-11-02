@@ -4,7 +4,7 @@
 
 ## Qué representa este flujo
 
-Son instrucciones que interpreta y ejecuta un agente, no un motor que dispare todas las ramas automáticamente. El router `faro` identifica el contexto y entrega una única ruta especialista; los handoffs siguientes son decisiones guiadas, no una cadena de scripts implícita. Esta página describe las fuentes del repositorio: paquete `1.8.0`, contrato canónico `1.13.0`. Son versiones independientes; tampoco se confunden con el `version` de cada skill.
+Son instrucciones que interpreta y ejecuta un agente, no un motor que dispare todas las ramas automáticamente. El router `faro` identifica el contexto y entrega una única ruta especialista; los handoffs siguientes son decisiones guiadas, no una cadena de scripts implícita. Esta página describe las fuentes del repositorio: paquete `1.8.1`, contrato canónico `1.13.0`. Son versiones independientes; tampoco se confunden con el `version` de cada skill.
 
 Hay tres operaciones distintas:
 

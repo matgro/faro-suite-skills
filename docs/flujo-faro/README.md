@@ -1,6 +1,6 @@
 # FARO: cerebro de decisión y mapa completo de flujos
 
-Guía de **FARO Suite 1.8.0**, contrato de workspace **1.13.0**. Incluye la política de versionado de aplicaciones y conserva glosario, cierre de refactorizaciones y visuales Mermaid incorporados en v1.7.0.
+Guía de **FARO Suite 1.8.1**, contrato de workspace **1.13.0**. Incluye la validación humana ante cambios ajenos, la política de versionado de aplicaciones y conserva glosario, cierre de refactorizaciones y visuales Mermaid incorporados en v1.7.0.
 
 Las versiones del paquete, contrato, skills, artefactos funcionales y aplicaciones son independientes. Publicar o instalar la suite no modifica aplicaciones ni autoriza despliegues en proyectos existentes.
 

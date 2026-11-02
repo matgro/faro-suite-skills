@@ -1,7 +1,7 @@
 ---
 name: faro-req-desarrollo
 description: Use when FARO develops an approved requirement plan.
-version: 1.3.0
+version: 1.3.1
 author: Hermes Agent
 license: MIT
 metadata:
@@ -25,9 +25,17 @@ Implementa una unidad autorizada de un RM, BUG o TEC con plan técnico `LISTO_PA
 - Se revisó `context/decisions/adr/README.md` si existe y los ADRs relevantes a la tarea; sus IDs o la ausencia del catálogo quedarán en la evidencia.
 - Se identificó la tecnología del componente y se leyeron los archivos de lineamientos aplicables, según la sección siguiente.
 - No hay RFC abierto cuya decisión afecte la tarea; si existe, `waitingOn` identifica el RFC y su bloqueo.
-- Antes de editar código, la rama activa debe cumplir `feature/<RM-ID>-<descripcion-kebab-case>`. Si no existe, crearla desde la base autorizada antes de modificar archivos. Si hay cambios no atribuibles a la unidad, bloquear y pedir decisión.
+- Antes de editar código, inspeccionar Git y atribuir los cambios existentes. Si hay cambios no atribuibles a la unidad o cuya atribución sea incierta, detenerse y esperar validación humana explícita antes de cambiar de rama o implementar; aplicar el control siguiente. Una vez resuelto ese control, la rama activa debe cumplir `feature/<RM-ID>-<descripcion-kebab-case>`; si no existe, crearla desde la base autorizada en el mismo repositorio antes de modificar archivos, preservando los cambios existentes.
 
 Si una precondición falla, actualizar `context/workflow.json` con `waitingOn`, no modificar código y devolver la ruta a `faro`, `faro-req-ingenieria` o `faro-req-analisis-tecnico`.
+
+## Cambios existentes y validación humana
+
+- Trabajar en el repositorio y directorio de código actuales, respetando el root y las rutas autorizadas. La presencia de cambios locales no autoriza duplicar el proyecto.
+- Ante cambios ajenos o de atribución incierta, mostrar los archivos afectados, su atribución y la acción propuesta, sin exponer secretos; registrar el bloqueo en `waitingOn`. A continuación, detenerse y esperar validación humana explícita. No continuar con la implementación mientras falte esa respuesta.
+- El silencio, la autorización general de implementar o una aprobación anterior que no contemple esos cambios no resuelven el bloqueo. Registrar la decisión humana en la evidencia existente de la tarea y volver a comprobar Git antes de reanudar; si aparecen cambios no contemplados, volver a esperar validación.
+- No crear clones, copias del repositorio ni worktrees para eludir el bloqueo o satisfacer la regla de rama. Cualquiera de esas alternativas requiere autorización humana explícita previa para esa operación y su destino; proponerla no autoriza ejecutarla ni trasladar cambios.
+- No hacer stash, descartar, mover ni incluir cambios ajenos en un commit sin autorización humana explícita para esa operación. Preservar el trabajo existente; la autorización para continuar no concede permiso para limpiarlo ni incorporarlo a la entrega.
 
 ## Lineamientos de desarrollo
 
