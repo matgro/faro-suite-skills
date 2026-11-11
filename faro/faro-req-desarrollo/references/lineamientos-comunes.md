@@ -46,6 +46,9 @@ Las instrucciones explícitas del repositorio y su arquitectura prevalecen sobre
 - Mantener los contratos públicos salvo cambio autorizado. Revisar consumidores antes de modificar firmas, datos serializados o comportamiento observable.
 - Refactorizar en pasos pequeños, conservando comportamiento y pruebas en verde. Si el código no tiene cobertura suficiente, agregar pruebas de caracterización antes de reorganizarlo.
 - Si una mejora exige ampliar el diseño o el alcance aprobado, volver al análisis técnico o a la definición funcional; no aprovechar la tarea para incorporarla.
+- Una extracción termina al conectar los consumidores reales y retirar la lógica sustituida, no al crear un método en otra clase. Si se conserva una firma por compatibilidad, debe delegar a la nueva implementación; otra coexistencia requiere autorización y condición de retiro explícitas.
+- Comprobar referencias directas, registros y llamadas dinámicas antes de declarar código sin uso. No eliminar sólo porque una búsqueda textual no encuentre llamadas.
+- Verificar integración desde entradas reales, no sólo invocar el método nuevo en un test: las pruebas pueden pasar porque todavía se ejecuta la ruta vieja. Aplicar el control compartido de cierre de refactorizaciones y su revisión independiente antes de dar la tarea por terminada.
 
 ## Pruebas y TDD
 

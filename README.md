@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <strong>17 skills</strong> · Complete lifecycle · Integrity checked · Agent-portable
+  <strong>23 skills</strong> · Complete lifecycle · Integrity checked · Agent-portable
 </p>
 
 ---
@@ -35,6 +35,33 @@ Request → Context → Requirements → Technical plan → Build → QA → Val
 ```
 
 FARO does not collapse those stages into paperwork. Each specialist skill exists to make one transition clear, evidence-based, and reversible when the facts do not support moving forward.
+
+### Readable functional visuals
+
+Functional documents, requirement records, UX decisions, and technical plans can embed optional [Mermaid](https://mermaid.js.org/) blocks directly in Markdown. This keeps flows, state diagrams, and sequences readable as source in a README while platforms with Mermaid support can render them. Visuals are traceable to existing requirements and do not create new business rules or replace the accompanying text/tables.
+
+### Workspace domain glossary
+
+FARO consults `context/glossary.md`, when present, before interpreting domain terms in each interaction, including direct specialist calls and resumed work. Each workspace owns its vocabulary: terms, acronyms, meanings, scope, aliases, evidence and correction history. Unknown or conflicting meanings are not guessed; code observations remain distinct from confirmed definitions.
+
+The glossary is created only when useful, sourced knowledge is available and documentary writes are allowed. It is independent of functional-documentation settings and does not create requirements, workflows or remote issues by itself. Read-only diagnostics never maintain it. Existing workspaces adopt it on demand without reinitialization or a contract-version migration. The shared policy is in `faro/references/domain-glossary.md` and the generic template in `faro/templates/glossary.md`.
+
+### Complete refactoring, not unused extractions
+
+Analysis, development and validation share `faro/references/refactoring-completion.md`. A refactor is not complete until its real callers use the new implementation, replaced logic is retired or delegates for justified compatibility, and behavior is verified through actual entry points. A green test suite that still exercises only the old path is insufficient. Independent review and findings are recorded in the existing task and validation artifacts.
+
+Optional, audited capabilities support this control: `requesting-code-review` and `verification-before-completion` from obra/superpowers, and read-only `lc:dead-code` from edulazaro/laraclaude for Laravel. FARO retains scope and lifecycle authority. The external `code-refactoring` skill informs the methodology only; its tooling ecosystem is not installed or required. Missing external skills do not waive the control; missing independent review remains an explicit closure limitation.
+
+### Application versions, not just Git tags
+
+Architecture records each application's version source and readers; the project profile stores the approved per-component policy. Delivery updates an existing mechanism once per versioned release and checks the resulting artifact, rather than bumping on every commit, retry or promotion. Laravel's proposed default is a tracked literal in `config/app.php`, read via `config('app.version')`, not `.env`. .NET/Blazor uses the observed project/build version properties; other stacks retain their native, evidenced mechanism.
+
+Automatic version selection requires an explicit standing policy with limits; it does not authorize deployments or tag publication by itself. Missing readers or pipelines require authorized development before delivery. See [application versioning policy](faro/references/application-versioning.md) and the updated [delivery guide](docs/flujo-faro/05-integraciones-y-entrega.md). This capability is included in FARO `v1.8.0`; existing applications are not modified by installing the suite.
+
+### Decision trees and full workflow guide (Español)
+
+Read [FARO: cerebro de decisión y mapa completo de flujos](docs/flujo-faro/README.md) for the unified router diagram and detailed trees covering installation, workspace initialization, doctor, architecture, change requests, incidents, integrations and delivery. Each branch explains its checks, requested configuration, specialist handoffs, artifacts and authorization gates, with links to the actual skill sources.
+
 
 ## Ask an agent to install FARO
 
@@ -87,6 +114,7 @@ faro/                         Runtime suite
 ├── faro-arq-*/               Evidence-based architecture routes
 ├── faro-req-*/               Requirements, analysis, implementation, validation
 ├── faro-qa-ejecucion/        QA cases and evidence
+├── faro-incidentes/          Incident intake, governed investigation and disposition
 ├── faro-ux/                  Visible-flow and interface design
 ├── faro-entrega/             Explicit commit, PR, release, and deployment handoff
 ├── faro-int-jira/            Optional governed Jira integration
@@ -134,6 +162,14 @@ python -B faro/scripts/verify-routing.py
 On Windows, keep the runtime's LF line endings declared by `.gitattributes`. When preparing a new release from an older CRLF checkout, `python tools/update_checksums.py --normalize-line-endings` performs the explicit conversion before calculating hashes. Never normalize an installed or published release to bypass verification. Retrieve releases with `git -c core.autocrlf=false clone ...`.
 
 Changing local files does not publish a release: remote installation and origin verification require the new commit and matching immutable tag to be published. Never reuse the previous tag for a changed tree.
+
+## Incidents are not automatically bugs
+
+`faro-incidentes` records a reported symptom as `INC`, preserves evidence and hypotheses, and separates diagnosis, impact recovery and corrective work. A confirmed defect can lead to an explicitly authorized BUG; a changed business expectation leads to RM, while provider issues, valid business rules or operational causes can conclude without a software fix. Inconclusive evidence is not proof that no bug exists.
+
+The incident directory `context/incidents/` and its index are created only when needed in an available workspace; existing workspaces do not require reinitialization or a contract-version migration. Known QA failures against documented acceptance criteria can still create a BUG directly.
+
+FARO orchestrates rather than reimplements debugging: `systematic-debugging` from `obra/superpowers` supports technical investigation, and `incident-postmortem` from `github/awesome-copilot` supports a proportionate incident review. Reviewed commits, required-file/license hashes and scope limits are in `faro/references/incident-external-skills.json` and `faro/faro-incidentes/references/capacidades-externas.md`. These external skills are not bundled or implicitly installed. Bootstrap requests authorization, preserves same-name local customizations, and verifies complete pinned skills and security audit. Missing or blocked skills leave the applicable stage explicitly blocked, not silently replaced. Investigation never authorizes a fix or deployment.
 
 ## Editable development guidelines
 

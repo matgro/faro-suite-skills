@@ -1,7 +1,7 @@
 ---
 name: faro-arq-adr
 description: Use when FARO records a significant technical decision.
-version: 1.0.0
+version: 1.1.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -11,6 +11,8 @@ metadata:
 ---
 
 # FARO — Registro de decisión arquitectónica (ADR)
+
+En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase, sin alterar alcance ni autorizaciones.
 
 ## Rol
 

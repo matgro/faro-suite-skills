@@ -1,7 +1,7 @@
 ---
 name: faro-bootstrap-dotnet
 description: Use when FARO creates an authorized new .NET project.
-version: 1.0.0
+version: 1.1.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -11,6 +11,8 @@ metadata:
 ---
 
 # FARO — Bootstrap .NET
+
+En cada interacción, leer y aplicar [Glosario de dominio](../references/domain-glossary.md). No crear `context/glossary.md` antes del scaffold ni ocupar el root vacío; trasladar las definiciones sustentadas al handoff de inicialización.
 
 ## Rol
 

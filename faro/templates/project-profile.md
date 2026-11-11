@@ -44,6 +44,30 @@ updated_at: UPDATED_AT
 | Seguimiento de trabajo | `PENDIENTE` | Pendiente de respuesta humana durante la inicialización. |
 | Documentación funcional | `PENDIENTE` | Pendiente de respuesta humana durante la inicialización. |
 
+## Versionado de aplicaciones
+
+Opcional y por componente. Completar con evidencia y autorización antes de la primera entrega versionada; la ausencia de esta sección en un workspace existente no invalida su contrato. No inventar valores ni conservar aquí una segunda copia de la versión actual.
+
+### Componente — PENDIENTE
+
+| Campo | Decisión / evidencia |
+| --- | --- |
+| Componente, repositorio/root autorizado, stack y conjunto de versionado | PENDIENTE |
+| Fuente única: archivo/clave exacta o generador existente | PENDIENTE |
+| Lectores efectivos de la versión | PENDIENTE |
+| Derivados y mapeo de versión de producto, build y revisión | PENDIENTE |
+| Esquema y formato; tag y remoto, o sin tag autorizado | PENDIENTE |
+| Modo de decisión | CONFIRMAR_POR_ENTREGA; AUTOMATICA sólo con autorización y límites explícitos |
+| Incrementos, componentes y prereleases permitidos en modo automático | PENDIENTE |
+| Escritor de la versión: agente o CI; reserva/serialización de entregas | PENDIENTE |
+| Procedimiento observado de actualización y lectura segura | PENDIENTE |
+| Comandos observados de validación, build y caché | PENDIENTE |
+| Artefacto/digest y mecanismo de comprobación de versión efectiva | PENDIENTE |
+| Permisos: edición, commit, tag local/remoto, deploy y ambientes | PENDIENTE |
+| Autorización: fuente, responsable, alcance y restricciones | PENDIENTE |
+
+El agente consulta la política central `faro/references/application-versioning.md`. Registrar valores no sensibles; no copiar contenido de `.env`. Cambiar el mecanismo de versión requiere desarrollo autorizado, no una edición incidental al entregar.
+
 ## Regla de uso
 
 - Con seguimiento `REQUIRED`, toda solicitud se vincula a un item remoto y la configuración del proveedor debe incluir sus metadatos confirmados, sin secretos.

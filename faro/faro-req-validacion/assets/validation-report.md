@@ -18,6 +18,12 @@ Estados: CONFORME, NO_CONFORME, NO_VERIFICADO.
 |---|---|---|---|---|---|---|
 
 ## Límites y conclusión
+
+### Refactorizaciones (si aplica)
+| Origen → destino | Consumidor real comprobado | Retiro o delegación y compatibilidad | Entrada ejecutada y evidencia | Revisor y revisión inspeccionada | Resultado |
+|---|---|---|---|---|---|
+
+- Método nuevo sin uso o lógica sustituida activa sin justificación: NO_CONFORME. Integración/equivalencia sin evidencia: NO_VERIFICADO. Pruebas verdes de la ruta vieja no acreditan el refactor.
 - No inspeccionado, pruebas no ejecutadas, accesos faltantes y decisiones funcionales: NO DEFINIDO.
 - Totales CONFORME/NO_CONFORME/NO_VERIFICADO, estado de entrega y siguientes acciones: NO DEFINIDO.
 

@@ -2,6 +2,94 @@
 
 Este historial registra cambios de la suite distribuida, no aprobaciones de proyectos. La versión del paquete es independiente de la versión del contrato de workspace.
 
+## 1.8.1 — 2026-11-02
+
+- Exige detenerse y esperar validación humana explícita ante cambios ajenos o de atribución incierta antes de cambiar de rama o implementar. Mostrar archivos afectados y acción propuesta; el silencio o una autorización general no permiten continuar.
+- Mantiene el desarrollo en el repositorio y directorio actuales. Crear clones, copias o worktrees requiere autorización humana previa específica para la operación y el destino; no permite eludir el bloqueo por cambios locales.
+- Preserva el trabajo existente: stash, descarte, traslado o inclusión de cambios ajenos en commits requieren permiso explícito. Vuelve a comprobar Git antes de reanudar.
+- Incorpora pruebas de contrato para estas restricciones y actualiza `faro-req-desarrollo` a `1.3.1`.
+
+### Actualización desde 1.8.0
+
+1. Obtener `v1.8.1`, verificar procedencia, inventario y checksums; comparar y confirmar el reemplazo completo de `faro/`.
+2. No requiere migrar ni reinicializar workspaces; conserva el contrato `1.13.0`. La publicación no actualiza instalaciones existentes automáticamente.
+
+## 1.8.0 — 2026-11-02
+
+- Incorpora versionado de aplicaciones por componente: arquitectura descubre fuente/lectores, desarrollo prepara mecanismos autorizados y entrega actualiza valores existentes con evidencia del artefacto y de la versión efectiva.
+- Propone para Laravel una versión literal en `config/app.php`, consumida mediante `config('app.version')`, sin usar `.env`. En .NET/Blazor respeta propiedades de build y assemblies; en otros stacks requiere evidencia del mecanismo nativo.
+- Añade política opcional al perfil, confirmación por entrega o automatización explícita con límites, un único escritor e idempotencia: reintentos/promociones no incrementan y rollback recupera el artefacto anterior.
+- Actualiza la guía completa de FARO con versionado de aplicaciones y los cambios de 1.7.0: glosario transversal, cierre de refactorizaciones y visuales Markdown/Mermaid. La publicación no instala ni modifica aplicaciones.
+
+### Actualización desde 1.7.0
+
+1. Obtener `v1.8.0`, verificar procedencia, inventario y checksums; comparar y confirmar el reemplazo completo de `faro/`.
+2. No requiere reinicializar workspaces ni cambiar el contrato `1.13.0`. Completar la política por componente antes de su primera entrega versionada.
+3. Los mecanismos faltantes requieren desarrollo autorizado; publicar FARO no modifica las aplicaciones ni autoriza sus despliegues.
+
+## 1.7.0 — 2026-11-02
+
+### Cambios
+
+- Exige cierre verificable de refactorizaciones: consumidores conectados, retiro/delegación de lógica sustituida, pruebas desde entradas reales y revisión independiente. Integra apoyos externos condicionados sin instalación automática ni nuevas rutas; Laravel incorpora análisis `lc:dead-code` de sólo lectura. Un método nuevo sin uso no acredita una extracción terminada.
+
+- Añade un glosario de dominio opcional por workspace en `context/glossary.md`, consultado en cada interacción y mantenido sólo con evidencia y permiso documental. Distingue definiciones confirmadas, observaciones, pendientes y conflictos; conserva fuentes, ámbito, alias e historial sin generar RM ni seguimiento remoto artificial.
+- Integra la política transversal en router y especialistas, incluidos incidentes, la plantilla genérica, el diagnóstico de presencia y pruebas de compatibilidad con espacios existentes.
+- Añade diagramas opcionales Markdown/Mermaid dentro de DF, RM y planes técnicos: flujos, estados, secuencias y navegación trazables, sin documentos visuales paralelos.
+- Integra todas las capacidades publicadas hasta 1.6.1, incluidos incidentes, lineamientos .NET/Blazor, estructura RFC y guía de flujos.
+
+### Actualización desde 1.6.1
+
+1. Obtener `v1.7.0`, verificar procedencia, inventario y checksums; comparar y confirmar el reemplazo completo de `faro/`.
+2. No requiere reinicializar workspaces ni cambiar el contrato `1.13.0`. El glosario se crea bajo demanda con evidencia.
+3. La publicación no instala capabilities externas ni modifica instalaciones del agente; su uso exige disponibilidad, procedencia y auditoría.
+
+## 1.6.1
+
+### Cambios
+
+- Publica `docs/flujo-faro/README.md` como mapa central del router y cinco capítulos con árboles de decisión para instalación/inicio/doctor, arquitectura/ADR/RFC, solicitudes/desarrollo/QA/validación, incidentes e integraciones/entrega.
+- Explica qué observa, qué pregunta, a quién deriva, qué produce y qué bloquea cada ruta, con fuentes y límites de los scripts reales. Incluye 23 diagramas Mermaid y comprobaciones de cobertura del inventario, enlaces y secciones.
+- La guía conserva la revisión fuente de FARO 1.6.0 que describe; esta publicación sólo añade documentación, pruebas y metadatos de release. No cambia el comportamiento, las versiones individuales de skills ni el contrato de workspace.
+
+### Actualización desde 1.6.0
+
+1. Consultar la guía en el repositorio bajo el tag `v1.6.1`; `docs/` no se copia al instalar el árbol runtime `faro/`.
+2. Si se actualiza la instalación, verificar procedencia, inventario y checksums, comparar el destino y confirmar el reemplazo completo como siempre.
+3. No requiere migrar ni reinicializar workspaces, instalar nuevas dependencias externas ni modificar su `contractVersion`.
+
+## 1.6.0
+
+### Cambios
+
+- Añade `faro-incidentes` como orquestador de registro INC, evidencia, investigación y conclusión independiente de una corrección BUG/RM/TEC. Admite cierre sin BUG sustentado y resultado no concluyente sin fingir recuperación.
+- Delega investigación y post-mortem en capacidades externas revisadas de `obra/superpowers` y `github/awesome-copilot`, fijadas por commit e integridad; no las instala ni reemplaza skills locales implícitamente.
+- Integra ruteo, plantillas bajo demanda, trazabilidad Jira/Azure DevOps y controles de disponibilidad externa. No exige migración de contratos ni crea incidentes artificiales para cada fallo de QA conocido.
+- Conserva el item recibido aunque su tipo sea Bug sin confirmar el defecto ni duplicarlo; exige un tipo neutral sólo para altas nuevas de incidentes.
+- Establece confirmación previa de versión y tag al entregar, criterio SemVer por impacto, creación de tags anotados y verificación de las referencias remotas autorizadas.
+
+### Actualización desde 1.5.3 o 1.5.4
+
+1. Obtener el tag `v1.6.0` publicado y verificar versión, procedencia, inventario y checksums. Incluye el formato de mensajes documentado en 1.5.4.
+2. Comparar la instalación existente y solicitar confirmación antes de reemplazar el árbol completo `faro/`.
+3. Confirmar por separado la instalación/reemplazo de las capacidades externas de incidentes y auditar revisión, archivos auxiliares y licencia. Un nombre coincidente no autoriza reemplazar una skill local.
+4. No requiere migrar workspaces ni modificar su `contractVersion`; los registros INC se crean bajo demanda. La instalación de dependencias externas no se acredita con la sola publicación del tag de FARO.
+
+## 1.5.4 — pendiente de publicación
+
+### Cambios
+
+- Define mensajes de commit con título en la primera línea, descripción funcional de una o dos oraciones y tareas asociadas al final, separadas por líneas en blanco.
+- La descripción explica qué funcionalidad cambió, se agregó o se quitó, sin repetir el título ni incluir código, nombres de clases o detalles internos.
+- Las tareas verificadas se indican como `#<ID>`, una por línea y fuera del título; si no hay tareas asociadas, se omite el bloque.
+- Aplica la misma separación al título y la descripción de PR e incorpora pruebas de contrato del formato.
+
+### Actualización desde 1.5.3
+
+1. Obtener la release publicada y verificar versión, procedencia, inventario y checksums.
+2. Comparar la instalación existente y solicitar confirmación antes de reemplazar el árbol completo `faro/`.
+3. No requiere migrar workspaces, modificar su `contractVersion` ni reescribir commits o PR existentes.
+
 ## 1.5.3 — pendiente de publicación
 
 ### Cambios
@@ -32,12 +120,14 @@ Este historial registra cambios de la suite distribuida, no aprobaciones de proy
 2. Comparar la instalación existente y solicitar confirmación antes de reemplazar el árbol completo `faro/`.
 3. No requiere migrar workspaces, modificar su `contractVersion` ni reescribir RFC existentes.
 
+
 ## 1.5.1 — pendiente de publicación
 
 ### Cambios
 
 - Estandariza las actualizaciones remotas de Jira y Azure DevOps como bitácoras breves y útiles: sólo inicio/cierre de fase, unidades materiales, decisiones, bloqueos y referencias externas durables.
 - Añade `faro/references/comment-format.md` con una plantilla común para desarrollo, QA, validación y entrega, sin transcripciones de comandos, archivos o pruebas intermedias.
+
 
 ### Actualización desde 1.5.0
 

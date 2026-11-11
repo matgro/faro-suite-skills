@@ -1,7 +1,7 @@
 ---
 name: faro-inicializacion
 description: Use when initializing a FARO workspace contract.
-version: 1.4.0
+version: 1.5.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -11,6 +11,8 @@ metadata:
 ---
 
 # FARO — Inicialización de espacio de trabajo
+
+En cada interacción, leer y aplicar [Glosario de dominio](../references/domain-glossary.md) para `context/glossary.md`. No crearlo vacío: sólo después de materializar el contrato y con conocimiento sustentado; indexarlo sin modificar los artefactos obligatorios del manifiesto.
 
 ## Rol
 

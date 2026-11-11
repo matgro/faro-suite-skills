@@ -35,6 +35,13 @@
 - **Pruebas observadas:** {{TEST_EVIDENCE}}.
 - **CI, firma, release y observabilidad:** {{OPERATIONS_EVIDENCE}}.
 
+## Versión de aplicación y entrega
+
+| Componente | Fuente/manifiesto observado | Versión visible y build number | Distribución y comprobación efectiva | Política confirmada en perfil o pendiente |
+| --- | --- | --- | --- | --- |
+
+Registrar restricciones reales de plataforma/tienda y mecanismos existentes sin modificar ni construir durante discovery.
+
 ## Pendientes explícitos
 
 {{PENDING_ITEMS}}

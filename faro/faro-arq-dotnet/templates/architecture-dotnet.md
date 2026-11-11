@@ -40,6 +40,13 @@
 - **CI, distribución, despliegue y operación:** {{OPERATIONS_EVIDENCE}}.
 - **ADRs o documentación local:** {{LOCAL_DOCUMENTATION}}.
 
+## Versión de aplicación y entrega
+
+| Componente / conjunto | Fuente y propiedad observadas | Imports/overrides y derivados assembly | Artefacto, lector Blazor si aplica y comprobación | Política confirmada en perfil o pendiente |
+| --- | --- | --- | --- | --- |
+
+Separar SDK, versión de producto, identidad de assembly y revisión Git. No crear propiedades ni ejecutar builds durante discovery.
+
 ## Pendientes explícitos
 
 {{PENDING_ITEMS}}

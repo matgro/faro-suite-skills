@@ -8,6 +8,7 @@
 ### TASK-001 — <Acción concreta>
 - Estado: TODO.
 - Objetivo, RF/RN/CA o justificación, archivos, dependencias, inicio, terminado, verificación, evidencia y bloqueo: NO DEFINIDO.
+- Refactorización (si aplica): origen/destino; Consumidor real actualizado; Retiro o delegación; prueba desde entrada real; código sin uso y falsos positivos; Revisor independiente, revisión/diff inspeccionado, hallazgos y resolución. NO DEFINIDO / No aplica justificado.
 
 ## Registro de cambios
 | Fecha | Versión funcional | Estado anterior | Estado nuevo | Motivo | Evidencia | Responsable |

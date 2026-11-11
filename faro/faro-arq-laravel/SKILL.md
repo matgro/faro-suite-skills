@@ -1,7 +1,7 @@
 ---
 name: faro-arq-laravel
 description: Use when FARO documents an evidenced Laravel architecture.
-version: 1.0.0
+version: 1.2.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -11,6 +11,8 @@ metadata:
 ---
 
 # FARO Arquitectura Laravel
+
+En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase, sin alterar alcance ni autorizaciones.
 
 ## Overview
 
@@ -33,6 +35,8 @@ No usar para modificar código Laravel ni para reemplazar este flujo con una ski
 6. Validar índice y rutas; actualizar `stats.json.updatedAt` UTC y permitir `available` sólo con evidencia completa. **Completo:** índice, estado y documento concuerdan.
 
 ## Registro obligatorio
+
+Leer [Versionado de aplicaciones](../references/application-versioning.md). Identificar fuente, lectores y caché de versión del producto por componente; si falta mecanismo, proponer `config/app.php` con clave `version` literal y lectura `config('app.version')`, sin depender de `.env`. Registrar en arquitectura y en el perfil sólo decisiones confirmadas; lo demás queda pendiente. No modificar código ni ejecutar caché durante discovery; adoptar un mecanismo faltante exige desarrollo autorizado.
 
 Incluir ruta/ref/estado Git, fuentes, PHP/Laravel/Livewire/dependencias verificadas, comandos, módulos/límites, contratos/API, integraciones, frontend, pruebas, operación, documentación local/ADRs y pendientes.
 

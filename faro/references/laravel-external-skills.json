@@ -34,8 +34,8 @@
         "path": "skills",
         "entrypoint": "SKILL.md"
       },
-      "skills": ["analyze-error", "boost-inspect", "generate-test"],
-      "uses": ["análisis de stacktrace", "inspección Laravel verificada en runtime", "pruebas de regresión"]
+      "skills": ["analyze-error", "boost-inspect", "generate-test", "lc:dead-code"],
+      "uses": ["análisis de stacktrace", "inspección Laravel verificada en runtime", "pruebas de regresión", "lc:dead-code: análisis de código sin uso en sólo lectura; confirmar llamadas dinámicas y nunca ejecutar clean automáticamente"]
     }
   ],
   "maintenance": {

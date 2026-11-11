@@ -1,7 +1,7 @@
 ---
 name: faro-req-ingenieria
 description: Use when FARO formalizes a functional software request.
-version: 1.1.0
+version: 1.3.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -11,6 +11,8 @@ metadata:
 ---
 
 # FARO — Ingeniería de requerimientos
+
+En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase, sin alterar alcance ni autorizaciones.
 
 ## Overview
 
@@ -24,12 +26,14 @@ Convierte una solicitud informal en un RM trazable antes de implementar comporta
 
 No usar para consultas explicativas, bugs con comportamiento esperado documentado ni mantenimiento técnico que preserve el contrato observable; esas rutas se clasifican y documentan conforme al contrato.
 
+Un pedido de investigar un síntoma o causa desconocida se deriva primero a `faro-incidentes`, sin abrir RM/BUG por anticipado. Una conclusión de negocio correcto sólo abre RM si el usuario pide cambiar ese comportamiento; conservar el INC como fuente, sin duplicar su investigación.
+
 ## Procedimiento
 
 1. Leer `context/requirements/project-profile.md`, `references/process-contract.md`, catálogo y fuentes pertinentes. **Completo:** se conocen configuración, ID/rutas y evidencias accesibles.
 2. Preservar la solicitud y clasificar: consulta, RM, BUG, TEC o mixto. **Completo:** ninguna parte funcional se oculta como mantenimiento.
 3. Reservar ID según el perfil y elegir `rm-lite.md`, `rm-standard.md` o `rm-extended.md`. **Completo:** ID estable antes de referencias externas.
-4. Registrar SOL, SRC, RF, RN, RNF, RES, ACT, DAT, INT, VAL, CA y PD sólo cuando tengan evidencia o derivación necesaria. **Completo:** las propuestas quedan separadas y los bloqueos tienen pregunta/impacto.
+4. Registrar SOL, SRC, RF, RN, RNF, RES, ACT, DAT, INT, VAL, CA y PD sólo cuando tengan evidencia o derivación necesaria. Para flujos, estados, decisiones o integraciones que ganarían claridad, incorporar un bloque Markdown/Mermaid en el mismo RM: debe ser legible sin renderizado, enlazar RF/RN/CA/PD existentes y no inventar comportamiento. **Completo:** las propuestas quedan separadas, los bloqueos tienen pregunta/impacto y cada visual es trazable.
 5. Ejecutar `references/quality-checklist.md`, asignar DRAFT, PENDING_DEFINITION o READY_FOR_REVIEW y actualizar catálogo. **Completo:** READY_FOR_REVIEW no contiene PD bloqueantes.
 6. Registrar APPROVED únicamente con evidencia humana válida de una versión y alcance exactos; preservar baseline. **Completo:** la aprobación no es atribuida por el agente.
 7. Si seguimiento está `REQUIRED`, importar el item como `SRC` o crearlo al crear el RM; registrar proveedor, identificador/URL, proyecto y el vínculo bidireccional. Sincronizar el cierre o bloqueo de definición con el estado remoto verificado y una actualización concisa conforme a `../references/comment-format.md`. Si la sincronización falla, bloquear el flujo. **Completo:** toda solicitud tiene trazabilidad remota.

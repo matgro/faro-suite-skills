@@ -1,7 +1,7 @@
 ---
 name: faro-doctor
 description: Use when diagnosing an existing FARO workspace.
-version: 1.1.0
+version: 1.2.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -11,6 +11,8 @@ metadata:
 ---
 
 # FARO — Diagnóstico del espacio de trabajo
+
+En cada interacción, leer y aplicar [Glosario de dominio](../references/domain-glossary.md) para consultar `context/glossary.md` si existe. Doctor permanece en sólo lectura: informar presencia, ausencias opcionales y discrepancias observadas, sin crear ni actualizar el glosario o su índice. El script informa presencia, no valida automáticamente las definiciones.
 
 ## Rol
 

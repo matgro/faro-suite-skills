@@ -15,6 +15,7 @@
     "indexPath": "context/README.md",
     "profilePath": "context/requirements/project-profile.md",
     "workflowPath": "context/workflow.json",
+    "glossaryPath": "context/glossary.md",
     "agentsPath": "AGENTS.md"
   },
   "requiredDirectories": ["context", "context/requirements"],
@@ -29,6 +30,10 @@
     {
       "path": "context/workflow.json",
       "when": "Hay una unidad FARO activa que requiere continuidad entre interacciones."
+    },
+    {
+      "path": "context/glossary.md",
+      "when": "Hay vocabulario de dominio sustentado que conservar y la interacción permite escritura documental; su ausencia no invalida el workspace."
     }
   ],
   "templateSources": {
@@ -37,7 +42,8 @@
     "stats": "faro/templates/stats.json",
     "index": "faro/templates/context-README.md",
     "projectProfile": "faro/templates/project-profile.md",
-    "workflow": "faro/templates/workflow.json"
+    "workflow": "faro/templates/workflow.json",
+    "glossary": "faro/templates/glossary.md"
   },
   "supportedStates": ["new", "initializing", "available", "disabled"],
   "initialization": {

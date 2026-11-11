@@ -41,6 +41,13 @@
 - **CI/despliegue/operación:** {{OPERATIONS_EVIDENCE}}.
 - **ADRs o documentación local:** {{LOCAL_DOCUMENTATION}}.
 
+## Versión de aplicación y entrega
+
+| Componente | Fuente y clave observadas | Lectores / caché / derivados | Build y comprobación efectiva | Política confirmada en perfil o pendiente |
+| --- | --- | --- | --- | --- |
+
+No confundir versión del producto con PHP/Laravel. Si no hay mecanismo, proponer configuración versionada sin `.env`; no crearla durante discovery.
+
 ## Pendientes explícitos
 
 {{PENDING_ITEMS}}

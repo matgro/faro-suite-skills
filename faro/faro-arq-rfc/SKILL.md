@@ -1,7 +1,7 @@
 ---
 name: faro-arq-rfc
 description: Use when FARO requests external agreement on a decision.
-version: 1.0.0
+version: 1.1.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -11,6 +11,8 @@ metadata:
 ---
 
 # FARO — Solicitud de comentarios arquitectónica (RFC)
+
+En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase, sin alterar alcance ni autorizaciones.
 
 ## Rol
 

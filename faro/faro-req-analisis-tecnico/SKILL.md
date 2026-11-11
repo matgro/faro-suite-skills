@@ -1,7 +1,7 @@
 ---
 name: faro-req-analisis-tecnico
 description: Use when FARO plans an approved RM against real code.
-version: 1.0.0
+version: 1.2.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -11,6 +11,8 @@ metadata:
 ---
 
 # FARO — Análisis técnico de requerimientos
+
+En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase, sin alterar alcance ni autorizaciones.
 
 ## Overview
 
@@ -24,11 +26,13 @@ Contrasta un RM, BUG o TEC con el repositorio y crea un plan técnico y tareas t
 
 ## Procedimiento
 
+Para refactorizaciones, leer [Cierre verificable de refactorizaciones](../references/refactoring-completion.md) y completar en el plan consumidores antes/después, retiro o delegación, compatibilidad, pruebas desde entradas reales y revisión independiente. No planificar una extracción como mera creación de una clase o método; la tarea incluye conectar y retirar dentro del alcance autorizado.
+
 1. Leer perfil, contrato, instrucciones del repositorio, documento/version de entrada, autorización y estado Git. **Completo:** no se pisa trabajo ajeno y la base está identificada.
 2. Inspeccionar arquitectura, entradas, modelos, contratos, dependencias y pruebas relevantes. **Completo:** hechos observados se distinguen de rutas propuestas.
 3. Mapear RF/RN/RNF/RES a componentes reales y detectar contradicciones/duplicación. **Completo:** ninguna regla se cambia para acomodar el código.
 4. Si una decisión técnica es costosa de revertir, restringe opciones futuras o fue controvertida, registrar una decisión humana ya tomada con `faro-arq-adr`. Si además necesita acuerdo de personas fuera de la conversación y hay alternativas reales, abrir `faro-arq-rfc` antes; ningún trabajo dependiente queda listo para desarrollo mientras el RFC esté `open`. Las decisiones funcionales faltantes regresan a `faro-req-ingenieria`. **Completo:** decisión, aprobación y bloqueo se distinguen.
-5. Crear o actualizar el plan desde `assets/technical-plan.md` y tareas desde `assets/tasks.md`; para BUG/TEC usar `assets/maintenance-record.md`. Usar nombres estables sin versión, por ejemplo `<RM-ID>-plan-tecnico.md` y `<RM-ID>-tareas.md`: versión, baseline e historial pertenecen dentro del documento. No duplicar archivos por cada versión salvo archivado explícitamente solicitado. **Completo:** cada tarea apunta a alcance funcional o justificación técnica y verificación.
+5. Crear o actualizar el plan desde `assets/technical-plan.md` y tareas desde `assets/tasks.md`; para BUG/TEC usar `assets/maintenance-record.md`. Cuando la relación entre componentes, contratos o integraciones no se entienda con la tabla, añadir un bloque Markdown/Mermaid dentro del plan, legible sin renderizado y trazado al elemento funcional o justificación técnica existente. Usar nombres estables sin versión, por ejemplo `<RM-ID>-plan-tecnico.md` y `<RM-ID>-tareas.md`: versión, baseline e historial pertenecen dentro del documento. No duplicar archivos por cada versión salvo archivado explícitamente solicitado. **Completo:** cada tarea apunta a alcance funcional o justificación técnica y verificación.
 6. Marcar PRELIMINAR, BLOQUEADO o LISTO_PARA_DESARROLLO según contrato, bloqueos y evidencia. **Completo:** la aprobación y la revisión citada concuerdan.
 7. Si seguimiento está `REQUIRED`, sincronizar el cierre o bloqueo del análisis con una actualización concisa conforme a `../references/comment-format.md`, con enlace al plan cuando exista; mantener el estado de trabajo o transicionar conforme al workflow remoto verificado. Si la sincronización falla, bloquear el flujo.
 8. Actualizar catálogo/handoff y `context/workflow.json` cuando exista: `nextRoute` es `faro-req-desarrollo` sólo si la versión y autorización coinciden y no hay RFC abierto dependiente. **Completo:** plan, tareas, workflow y traspaso apuntan a la misma versión.

@@ -15,6 +15,28 @@ GUIDELINES = ("lineamientos-comunes.md", "lineamientos-dotnet.md", "lineamientos
 
 
 class DevelopmentGuidelineTests(unittest.TestCase):
+    def test_existing_changes_require_explicit_human_validation(self):
+        skill = (DEVELOPMENT / "SKILL.md").read_text(encoding="utf-8")
+        for rule in (
+            "detenerse y esperar validación humana explícita",
+            "archivos afectados, su atribución y la acción propuesta",
+            "El silencio, la autorización general de implementar o una aprobación anterior",
+            "volver a comprobar Git",
+        ):
+            with self.subTest(rule=rule):
+                self.assertIn(rule, skill)
+
+    def test_repository_duplication_is_not_an_automatic_escape(self):
+        skill = (DEVELOPMENT / "SKILL.md").read_text(encoding="utf-8")
+        for rule in (
+            "repositorio y directorio de código actuales",
+            "No crear clones, copias del repositorio ni worktrees",
+            "autorización humana explícita previa para esa operación y su destino",
+            "No hacer stash, descartar, mover ni incluir cambios ajenos en un commit",
+        ):
+            with self.subTest(rule=rule):
+                self.assertIn(rule, skill)
+
     def test_skill_links_nonempty_guidelines_inside_its_directory(self):
         skill = (DEVELOPMENT / "SKILL.md").read_text(encoding="utf-8")
         for filename in GUIDELINES:

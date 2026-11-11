@@ -1,7 +1,7 @@
 ---
 name: faro-bootstrap-laravel
 description: Use when FARO creates an authorized new Laravel project.
-version: 1.0.0
+version: 1.1.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -11,6 +11,8 @@ metadata:
 ---
 
 # FARO — Bootstrap Laravel
+
+En cada interacción, leer y aplicar [Glosario de dominio](../references/domain-glossary.md). No crear `context/glossary.md` antes del scaffold ni ocupar el root vacío; trasladar las definiciones sustentadas al handoff de inicialización.
 
 ## Rol
 

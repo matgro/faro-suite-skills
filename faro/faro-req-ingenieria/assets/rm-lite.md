@@ -31,6 +31,14 @@ approval: {approved_version: null, approved_by: null, approved_at: null, evidenc
 ### CA-001 — <Resultado verificable>
 - Origen, dado, cuando, entonces y método: NO DEFINIDO.
 
+## Visuales en Markdown/Mermaid (cuando apliquen)
+- Propósito, aplicabilidad y trazabilidad RF/RN/CA/PD: NO DEFINIDO.
+- El bloque se lee como texto en un README y no agrega comportamiento fuera del RM.
+```mermaid
+flowchart TD
+    A[RF-XXX] --> B[CA-XXX]
+```
+
 ## Pendientes
 | ID | Pregunta | Afecta | Fase | Bloqueante y motivo | Estado | Respuesta/evidencia |
 |---|---|---|---|---|---|---|

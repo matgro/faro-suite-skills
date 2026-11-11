@@ -1,7 +1,7 @@
 ---
 name: faro-arq-dotnet
 description: Use when FARO documents an evidenced .NET/C# architecture.
-version: 1.0.0
+version: 1.2.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -11,6 +11,8 @@ metadata:
 ---
 
 # FARO — Arquitectura .NET/C# basada en evidencia
+
+En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase, sin alterar alcance ni autorizaciones.
 
 ## Rol
 
@@ -44,6 +46,8 @@ No usar para crear un proyecto vacío, implementar código, inferir una arquitec
 - La existencia de EF Core, Clean Architecture, DDD, vertical slices, controllers, Minimal APIs, Blazor o una carpeta instalada no autoriza aplicarlos a código nuevo: desarrollo sigue el código, el contrato y los lineamientos .NET de FARO.
 
 ## Registro obligatorio
+
+Leer [Versionado de aplicaciones](../references/application-versioning.md). Registrar fuente y valores efectivos previstos de `Version` por `.csproj` o conjunto en `Directory.Build.props`, imports/overrides de CI y mapeo a assemblies/artefactos. En Blazor distinguir host/cliente y su lector de versión. Conservar decisiones confirmadas por componente en el perfil, sin cambiar código ni ejecutar builds durante discovery; las propuestas pendientes no autorizan migrar el mecanismo.
 
 Incluir ref/estado Git, fuentes inspeccionadas, SDK y frameworks objetivo, solución y proyectos, referencias y paquetes directos relevantes, entradas y componentes, límites y organización observada, persistencia y datos, API/contratos e integraciones, UI si existe, pruebas, CI/operación/distribución, documentación local y pendientes explícitos.
 
