@@ -178,8 +178,7 @@ flowchart TD
 ### Diferencias de fuente que no se resuelven cambiando el runtime
 
 1. El rol de genérica dice «no Laravel/API ni móvil» sin excluir expresamente .NET, pero el router tiene ruta .NET específica y `faro-arq-dotnet` prohíbe sustituirla por genérica. Se documenta esa prioridad, no se elimina la ruta especializada.
-2. Doctor omite el documento y la recomendación .NET en su búsqueda textual. No significa que la arquitectura .NET no exista; véase [limitaciones de doctor](01-inicio-y-doctor.md#límites-y-discrepancias-observadas-no-corregidas).
-3. Las skills de arquitectura expresan la puerta de disponibilidad con distinto detalle: Laravel exige evidencia completa; móvil arquitectura verificable; .NET/genérica explicitan índice, proyecto, repositorios y arquitectura. No hay un script que centralice y acredite automáticamente toda esa semántica. La guía conserva el requisito de evidencia y decisiones del router/inicialización sin prometer una validación automática adicional.
+2. Las skills de arquitectura expresan la puerta de disponibilidad con distinto detalle: Laravel exige evidencia completa; móvil arquitectura verificable; .NET/genérica explicitan índice, proyecto, repositorios y arquitectura. Doctor detecta evidencia y documento .NET para recomendar la ruta correcta, pero ningún script acredita automáticamente toda la semántica arquitectónica. La guía conserva el requisito de evidencia y decisiones del router/inicialización sin prometer una certificación automática adicional.
 
 ## 3. Decisiones: cuándo ADR y cuándo RFC
 

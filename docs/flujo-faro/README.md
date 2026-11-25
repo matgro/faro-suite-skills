@@ -1,8 +1,21 @@
 # FARO: cerebro de decisión y mapa completo de flujos
 
-Guía de **FARO Suite 1.8.1**, contrato de workspace **1.13.0**. Incluye la validación humana ante cambios ajenos, la política de versionado de aplicaciones y conserva glosario, cierre de refactorizaciones y visuales Mermaid incorporados en v1.7.0.
+Guía de **FARO Suite 2.0.0**, contrato de workspace **2.0.0**. Separa conocimiento duradero de expedientes RM/BUG/TEC, declara al gestor remoto como autoridad operativa e incorpora migración versionada y cierre con congelamiento.
 
 Las versiones del paquete, contrato, skills, artefactos funcionales y aplicaciones son independientes. Publicar o instalar la suite no modifica aplicaciones ni autoriza despliegues en proyectos existentes.
+
+## Versiones: qué representa cada una
+
+| Dato | Ejemplo | Para qué sirve | No significa |
+| --- | --- | --- | --- |
+| Suite FARO | `2.0.0` | Identifica el paquete distribuido e instalado. | Que todos los proyectos ya usan ese contrato. |
+| Skill principal / otras skills | `faro 2.0.0`, otra skill `1.2.0` | Identifica la revisión de una instrucción concreta. | Compatibilidad del workspace. |
+| Contrato del workspace | `2.0.0` | Determina el layout que doctor puede leer o escribir. | La versión de la aplicación ni la de un RM. |
+| `stats.faro.version` | `2.0.0` | Conserva qué paquete materializó o actualizó ese workspace. | Un error si difiere del paquete instalado hoy. |
+| Workflow | `schemaVersion: 2` | Valida la forma del checkpoint temporal. | Una release ni el estado remoto del item. |
+| DF/RM/plan/QA/validación | `document_version: 1.3` | Identifica la baseline o evidencia de un expediente. | Permiso para cambiar el contrato o desplegar. |
+
+`faro-doctor` muestra esta matriz antes de su recomendación. La compatibilidad se decide entre **suite** y **contrato**; los demás valores aportan trazabilidad y no se comparan como si fueran la misma versión.
 
 Esta documentación explica lo que existe; no agrega reglas, estados ni permisos. Si cambia una skill, su fuente y el contrato central prevalecen sobre este mapa.
 
@@ -32,34 +45,43 @@ Fuentes: [bootstrap de instalación](../../bootstrap/SKILL.md), [router](../../f
 
 ## 2. Cerebro central: contexto antes de elegir trabajo
 
+### Cómo leer los diagramas
+
+- **Azul:** una *skill* que FARO invoca. Una skill no invoca toda la cadena: devuelve un handoff o un bloqueo.
+- **Amarillo (rombo):** una decisión o gate. La etiqueta de la flecha dice cuándo se toma cada salida.
+- **Gris:** contexto, evidencia o resultado. No es una skill ni concede permiso.
+- Una flecha significa “FARO selecciona esta siguiente acción cuando se cumple la condición”; no significa ejecución automática ni autorización implícita.
+
 ```mermaid
 flowchart TD
-    request["Pedido del usuario o activación por bloque FARO"] --> intent{"¿Instalar o actualizar la suite?"}
-    intent -->|"Sí"| install["faro-bootstrap: fuente, tag, staging, integridad y confirmación"]
-    intent -->|"No"| inspect["faro: fijar root actual y leer presencia de contrato, perfil, estado y workflow"]
-    inspect --> health{"¿Diagnóstico o inicialización sobre espacio existente o parcial?"}
-    health -->|"Sí"| doctor["faro-doctor: informar y recomendar sin reparar"]
-    health -->|"No"| exists{"¿Hay bloque o algún artefacto FARO?"}
-    exists -->|"No"| new{"¿Nuevo Laravel o .NET con scaffold expresamente autorizado y root vacío?"}
-    new -->|"Sí"| scaffold["faro-bootstrap-laravel o faro-bootstrap-dotnet"]
-    scaffold --> initialize["faro-inicializacion: contrato en initializing"]
-    new -->|"No"| initask{"¿Pidió preparar o inicializar el espacio?"}
-    initask -->|"Sí"| initialize
-    initask -->|"No"| missing["No inventar contrato: falta preparación y autorización para ese trabajo FARO"]
-    exists -->|"Sí"| coherent{"¿Contrato, suite y nextRoute válidos y compatibles?"}
-    coherent -->|"No"| doctor
-    coherent -->|"Sí"| state{"Estado del espacio"}
-    state -->|"disabled"| stop["Detener FARO"]
-    state -->|"new o initializing"| setup["Integración REQUIRED pendiente o arquitectura evidenciada; sin intake de solicitudes"]
-    initialize --> setup
-    setup --> ready{"¿Arquitectura y decisiones de preparación completas?"}
-    ready -->|"No"| blocked["Mantener initializing y registrar el pendiente real"]
-    ready -->|"Sí"| available["available: seleccionar trabajo por intención, evidencia y autorización"]
-    state -->|"available"| available
-    available --> selector["Árbol de selección del apartado 3"]
+    request["Pedido del usuario"] --> router["Skill: faro\nlee root, contrato y estado"]
+    router --> install_q{"¿Instalar o actualizar la suite?"}
+    install_q -->|"Sí"| install["Skill: faro-bootstrap"]
+    install_q -->|"No"| health_q{"¿Diagnóstico, espacio existente o contrato inválido?"}
+    health_q -->|"Sí"| doctor["Skill: faro-doctor\nsolo informa y recomienda"]
+    health_q -->|"No"| new_q{"¿Crear proyecto Laravel/.NET nuevo autorizado?"}
+    new_q -->|"Sí, root vacío"| scaffold["Skill: faro-bootstrap-laravel\no faro-bootstrap-dotnet"]
+    scaffold --> initialize["Skill: faro-inicializacion"]
+    new_q -->|"No"| init_q{"¿Pidió inicializar un espacio ausente?"}
+    init_q -->|"Sí"| initialize
+    init_q -->|"No"| no_contract["Bloqueo: falta contrato o autorización"]
+    initialize --> prep["Resultado: workspace initializing"]
+    router --> state_q{"¿Contrato actual y estado available?"}
+    state_q -->|"No"| prep
+    state_q -->|"Sí"| available["Resultado: FARO puede elegir una skill de trabajo"]
+    prep --> ready_q{"¿Arquitectura e integración requerida completas?"}
+    ready_q -->|"No"| wait["Resultado: mantener initializing"]
+    ready_q -->|"Sí"| available
+    available --> selector["Ver árbol de trabajo"]
+    classDef skill fill:#dbeafe,stroke:#2563eb,color:#172554
+    classDef decision fill:#fef3c7,stroke:#d97706,color:#78350f
+    classDef result fill:#f3f4f6,stroke:#6b7280,color:#111827
+    class router,install,doctor,scaffold,initialize skill
+    class install_q,health_q,new_q,init_q,state_q,ready_q decision
+    class request,prep,no_contract,wait,available,selector result
 ```
 
-La presencia de **cualquier** artefacto FARO distingue un espacio existente de uno ausente: un contrato incompleto no habilita sobrescribirlo. El root es el directorio actual; un repositorio externo indexado no recibe escrituras del contrato FARO. Una reparación o un cambio de root requieren autorización explícita.
+La presencia del bloque FARO o de un artefacto propio del contrato distingue un espacio existente de uno ausente; un `AGENTS.md` ajeno sin bloque no basta. Doctor clasifica `current`, `legacy-migratable`, `mixed-ambiguous`, `future-unsupported` o `corrupt`: sólo `current` admite trabajo y la migración de un legado requiere dry-run y autorización separada. El root es el directorio actual; un repositorio externo indexado no recibe escrituras del contrato FARO.
 
 Antes de seguir `nextRoute`, el router pide validar el workflow con `suite_validation.py`. Una ruta retirada o desconocida se diagnostica; no se ejecuta ni se traduce silenciosamente. Reanudar tampoco hereda autorización de otra versión o alcance.
 
@@ -69,26 +91,33 @@ Fuentes: [router: detección y continuidad](../../faro/SKILL.md), [validación d
 
 ```mermaid
 flowchart TD
-    available["Workspace available: pedido y evidencia conocidos"] --> goal{"¿Qué se solicita ahora?"}
-    goal -->|"Sólo explicar o consultar estado"| query["Responder desde contrato y fuentes; sin crear flujo artificial"]
-    goal -->|"Investigar un síntoma o retomar INC"| incident["faro-incidentes"]
-    goal -->|"Cambio funcional o esperado por definir"| doc{"¿Documentación funcional habilitada?"}
-    doc -->|"Sí"| df["faro-documentacion-funcional: identificar DF y su impacto"]
-    df -->|"Cambio solicitado"| engineering["faro-req-ingenieria: RM y aprobación exacta"]
-    doc -->|"No"| engineering
-    goal -->|"BUG confirmado o TEC autorizado"| analysis["faro-req-analisis-tecnico: registro y plan"]
-    engineering -->|"Versión y alcance autorizados"| analysis
-    goal -->|"Impacto o plan de unidad autorizada"| analysis
-    goal -->|"Decisión técnica significativa"| decision{"¿Requiere acuerdo externo pendiente?"}
-    decision -->|"Sí, con alternativas reales"| rfc["faro-arq-rfc"]
-    decision -->|"No, decisión humana ya tomada"| adr["faro-arq-adr"]
+    available["Contexto: workspace available"] --> goal{"¿Qué pidió el usuario?"}
+    goal -->|"Consulta"| query["Resultado: responder; sin crear flujo artificial"]
+    goal -->|"Síntoma o causa desconocida"| incident["Skill: faro-incidentes"]
+    goal -->|"Cambio funcional"| df_q{"¿DF habilitada?"}
+    df_q -->|"Sí"| df["Skill: faro-documentacion-funcional"]
+    df_q -->|"No"| tracking_q{"¿Seguimiento REQUIRED y verificado?"}
+    df -->|"Hay cambio que formalizar"| tracking_q
+    tracking_q -->|"Sí"| engineering["Skill: faro-req-ingenieria"]
+    tracking_q -->|"No"| integration["Skill: faro-int-jira\no faro-int-azure-devops"]
+    goal -->|"BUG confirmado o TEC autorizado"| analysis["Skill: faro-req-analisis-tecnico"]
+    engineering -->|"Alcance y versión aprobados"| analysis
+    goal -->|"Decisión técnica"| decision_q{"¿Falta acuerdo externo?"}
+    decision_q -->|"Sí"| rfc["Skill: faro-arq-rfc"]
+    decision_q -->|"No, decisión tomada"| adr["Skill: faro-arq-adr"]
     rfc -->|"Aceptado"| adr
-    goal -->|"Pantallas o flujo visible"| ux["faro-ux: diseño proporcional y catálogo"]
-    goal -->|"Implementación exacta autorizada y plan listo"| development["faro-req-desarrollo"]
-    goal -->|"QA de incremento construido"| qa["faro-qa-ejecucion"]
-    goal -->|"Comparar entrega con alcance aprobado"| validation["faro-req-validacion"]
-    goal -->|"Configurar seguimiento explícitamente"| integration["faro-int-jira o faro-int-azure-devops"]
-    goal -->|"Commit, PR, release, deploy o rollback explícito"| delivery["faro-entrega"]
+    goal -->|"Interfaz o flujo visible"| ux["Skill: faro-ux"]
+    goal -->|"Plan listo + permiso exacto"| development["Skill: faro-req-desarrollo"]
+    goal -->|"QA"| qa["Skill: faro-qa-ejecucion"]
+    goal -->|"Validar alcance entregado"| validation["Skill: faro-req-validacion"]
+    validation -->|"VERIFIED"| close["Skill: faro-cierre"]
+    goal -->|"Commit, PR, release o deploy"| delivery["Skill: faro-entrega"]
+    classDef skill fill:#dbeafe,stroke:#2563eb,color:#172554
+    classDef decision fill:#fef3c7,stroke:#d97706,color:#78350f
+    classDef result fill:#f3f4f6,stroke:#6b7280,color:#111827
+    class incident,df,engineering,integration,analysis,rfc,adr,ux,development,qa,validation,close,delivery skill
+    class goal,df_q,tracking_q,decision_q decision
+    class available,query result
 ```
 
 Las condiciones escritas en las flechas son gates, no permisos automáticos. Por ejemplo, terminar el plan permite proponer desarrollo, pero no convierte una autorización de análisis en autorización de implementación.
@@ -101,7 +130,9 @@ Prioridades y desvíos que cambian la ruta:
 - **UI visible:** requiere el diseño proporcional de UX antes de implementar lo dependiente; no autoriza cambiar la regla de negocio.
 - **RFC abierto:** bloquea sólo implementación/QA/validación que dependan de esa decisión, no toda actividad del proyecto.
 - **Seguimiento REQUIRED:** atraviesa las fases como política. No es otra fase que otorgue aprobación funcional; si una sincronización obligatoria falla, se registra el bloqueo y no se avanza de fase.
-- **Entrega:** requiere la acción de salida expresamente pedida; ni QA correcto ni validación conforme autorizan commit, push o deploy por inferencia.
+- **Seguimiento OFF:** permite consulta, arquitectura y documentación sin unidad; no habilita RM/BUG/TEC Markdown como gestor local implícito.
+- **Entrega:** requiere la acción de salida expresamente pedida; ni QA correcto ni validación conforme autorizan commit, push o deploy por inferencia. Una operación externa completada tampoco cierra el item.
+- **Cierre:** sólo después del veredicto global `VERIFIED` consolida o justifica conocimiento duradero, verifica la transición remota a `DONE` y congela el expediente estable.
 
 Fuentes: [tabla de ruteo](../../faro/SKILL.md), [casos canónicos](../../faro/references/routing-cases.md), [contrato de requerimientos](../../faro/faro-req-ingenieria/references/process-contract.md), [incidentes](../../faro/faro-incidentes/SKILL.md).
 
@@ -115,15 +146,15 @@ Preparación del espacio
 Cambio funcional
     [DF si está habilitada] → ingeniería y aprobación
         → análisis técnico y tareas → [UX y ADR/RFC según dependencia]
-        → desarrollo autorizado → QA → validación → [entrega autorizada]
+        → desarrollo autorizado → QA → validación → [entrega autorizada] → cierre
 
 BUG conocido
     esperado con fuente y corrección autorizada
-        → análisis técnico → desarrollo → QA → validación → [entrega]
+        → análisis técnico → desarrollo → QA → validación → [entrega] → cierre
 
 TEC
     justificación de contrato observable preservado y autorización
-        → análisis técnico → desarrollo → verificación proporcional → [entrega]
+        → análisis técnico → desarrollo → verificación proporcional → [entrega] → cierre
 
 Incidente
     registro → capacidad externa verificada → evidencia/hipótesis/conclusión
@@ -147,14 +178,18 @@ Los corchetes indican una condición o autorización adicional, no un paso que p
 
 ```mermaid
 flowchart LR
-    C0["Root y estado confirmados"] --> C1["Leer glosario y fuentes pertinentes"]
-    C1 --> C2["Ruta autorizada: definición, arquitectura o trabajo"]
-    C2 --> C3["Visuales trazables en artefactos existentes"]
-    C2 --> C4["Refactor: integración, retiro y revisión"]
-    C2 --> C5["Aplicación: política por componente y entrega autorizada"]
-    C3 --> C6["Evidencia y pendientes; sin ampliar permisos"]
+    C0["Contexto confirmado"] --> C1["Leer glosario y fuentes"]
+    C1 --> C2{"¿Qué control aplica a la ruta elegida?"}
+    C2 -->|"Visual"| C3["Resultado: visual trazable"]
+    C2 -->|"Refactor"| C4["Resultado: integración, retiro y revisión"]
+    C2 -->|"Versión/entrega"| C5["Resultado: operación autorizada"]
+    C3 --> C6["Evidencia y pendientes\nsin ampliar permisos"]
     C4 --> C6
     C5 --> C6
+    classDef decision fill:#fef3c7,stroke:#d97706,color:#78350f
+    classDef result fill:#f3f4f6,stroke:#6b7280,color:#111827
+    class C2 decision
+    class C0,C1,C3,C4,C5,C6 result
 ```
 
 ## 5. Inventario: dónde está cada skill y quién la utiliza
@@ -181,6 +216,7 @@ Esta tabla cubre todo el inventario de [manifest.json](../../manifest.json). El 
 | `faro-ux` | Pantallas/estados visibles y ajuste al catálogo frontend | [Desarrollo](03-solicitudes-y-desarrollo.md) |
 | `faro-qa-ejecucion` | Casos y ejecución con evidencia por CA | [QA](03-solicitudes-y-desarrollo.md) |
 | `faro-req-validacion` | Conformidad contra el alcance y la versión aprobados | [Validación](03-solicitudes-y-desarrollo.md) |
+| `faro-cierre` | Promoción de conocimiento, cierre remoto verificado y congelamiento del expediente | [Cierre](03-solicitudes-y-desarrollo.md) |
 | `faro-incidentes` | Investigar sin asumir defecto y separar conclusión/corrección/impacto | [Incidentes](04-incidentes.md) |
 | `faro-int-jira` | Gobernanza de seguimiento Jira; utiliza `jira-rest-v3` externa | [Integraciones](05-integraciones-y-entrega.md) |
 | `faro-int-azure-devops` | Gobernanza de seguimiento Azure DevOps/Visual Studio | [Integraciones](05-integraciones-y-entrega.md) |
@@ -200,14 +236,17 @@ Instalación de la suite: [`faro-bootstrap`](../../bootstrap/SKILL.md) → [árb
 | `context/README.md` | Índice de repositorios y fuentes, no copia de su código |
 | `context/requirements/project-profile.md` | Seguimiento, proveedor, DF y sección «Versionado de aplicaciones» por componente, sin secretos |
 | `context/glossary.md`, condicional | Vocabulario de dominio con ámbito, estado, fuente e historial; no aprobación funcional |
-| `context/requirements/` | DF/RM, registros y planes/tareas según rutas del perfil y las plantillas |
+| `context/requirements/functional/DF-ID/` | DF duradero y su investigación interna; comportamiento funcional baselineado |
+| `context/requirements/work-items/ID/` | Expediente estable RM/BUG/TEC: definición, plan, tareas, QA, validación, entrega y cierre |
+| `context/requirements/requirements-catalog.md` | Reservas y localización de expedientes/relaciones/referencia remota; sin estado operativo |
+| Jira o Azure DevOps | Estado operativo, prioridad, asignación, iteración y cola global de RM/BUG/TEC/INC/TASK |
 | `context/incidents/` | Investigación INC e índice, sólo al necesitarlos |
 | `context/decisions/adr/` y `context/decisions/rfc/` | Decisiones técnicas bajo demanda |
-| `context/workflow.json` | Continuidad de una unidad activa: `active`, `phase`, `authorization`, `currentUnit`, `waitingOn`, `nextRoute`, `notes` |
+| `context/workflow.json` | Sólo puntero/checkpoint de una unidad activa: ID/ruta, fase, autorización, espera y siguiente ruta; sin backlog ni terminadas |
 
-Fuentes: [configuración](../../faro/templates/faro-workspace-config.json), [perfil](../../faro/templates/project-profile.md), [workflow](../../faro/templates/workflow.json), [contrato funcional](../../faro/faro-req-ingenieria/references/process-contract.md).
+Fuentes: [configuración](../../faro/templates/faro-workspace-config.json), [perfil](../../faro/templates/project-profile.md), [workflow](../../faro/templates/workflow.json), [ciclo de expedientes](../../faro/references/work-item-lifecycle.md), [contrato funcional](../../faro/faro-req-ingenieria/references/process-contract.md).
 
-Una unidad tiene `todo`, `doing`, `done` o `dropped`, con máximo una `doing`. Eso no es el mismo vocabulario que `initializing/available` del espacio, `APPROVED` del RM, `PASSED` de QA, `CONFORME` de validación o `CERRADO` de INC. Tampoco el estado remoto de Jira/Azure DevOps acredita aprobación FARO.
+La madurez documental (`spec_maturity`, `assessment_maturity`, `plan_readiness`), los resultados de QA y el veredicto de validación permanecen locales porque son evidencia semántica: no es el mismo vocabulario que el estado remoto y no debe copiarlo. Una carpeta no se mueve a `completed/`: el cierre genera un manifiesto de hashes y un cambio posterior crea un sucesor enlazado.
 
 ## 7. Límites de esta guía y mantenimiento
 

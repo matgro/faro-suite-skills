@@ -70,12 +70,12 @@ Con `functional_documentation: HABILITADA`, las solicitudes funcionales pasan pr
 | --- | --- |
 | `context/requirements/project-profile.md` | Decide habilitación. No es una autorización de implementación. |
 | `context/requirements/functional-documents-catalog.md` | Localiza DF y contiene `## Documentos` / `## Reservas`; no es fuente normativa. |
-| `context/requirements/DF-<NNN>-<dominio>.md` | Único DF compartible por ID, en lenguaje de negocio: propósito, alcance/exclusiones, participantes, proceso, reglas, información, casos especiales, CA y pendientes. |
-| `context/requirements/DF-<NNN>-<dominio>-investigacion-interna.md` | Como máximo una nota interna por DF, mismo ID; fuentes, observaciones, hipótesis, vocabulario técnico y trazabilidad detallada. No es otro DF ni entregable al usuario. |
+| `context/requirements/functional/DF-<NNN>/DF-<NNN>.md` | Nombre de un DF nuevo y único por ID, en lenguaje de negocio: propósito, alcance/exclusiones, participantes, proceso, reglas, información, casos especiales, CA y pendientes. Un DF migrado puede conservar otro basename indicado por `Documento principal` en el catálogo. |
+| `context/requirements/functional/DF-<NNN>/DF-<NNN>-investigacion-interna.md` | Nombre de la nota interna opcional para un DF nuevo; como máximo una por ID, con fuentes, observaciones, hipótesis, vocabulario técnico y trazabilidad detallada. Una nota migrada conserva su basename; no es otro DF ni entregable al usuario. |
 
 ### Reserva e integridad de identificadores
 
-1. Inventariar **todos** los `DF-<NNN>-*.md` de requisitos; comparar sin distinción de mayúsculas/minúsculas ID del nombre, `df_id` y entradas activas del catálogo, incluidas reservas.
+1. Resolver e inventariar con el helper central todas las carpetas `functional/DF-<NNN>/`; comparar sin distinción de mayúsculas/minúsculas sólo para detectar colisiones entre ID de carpeta, archivo, `df_id` y catálogo. Esa comparación nunca acepta ni normaliza casing: todo valor y prefijo identificador debe conservar exactamente `DF` en mayúsculas, incluidas reservas y basenames históricos.
 2. Comprobar un solo entregable por ID y como máximo una nota con sufijo exacto `-investigacion-interna.md`, siempre con padre.
 3. Ante duplicidad, IDs incoherentes o nota huérfana: **detenerse sin crear, actualizar, consumir ni renumerar automáticamente**. Pedir decisión humana sobre quién conserva ID y quién recibe otro.
 4. Tras esa decisión, actualizar conjuntamente nombre, front matter, título, catálogo, referencias cruzadas y nota interna. Sólo entonces reservar mediante entrada serializada en `Reservas`; nunca máximo+1 concurrente.
@@ -94,7 +94,7 @@ Con `functional_documentation: HABILITADA`, las solicitudes funcionales pasan pr
 
 ## 4. Ingeniería: del SOL a una versión aprobable, sin inventar alcance
 
-Preservar solicitud, clasificar y reservar ID según perfil antes de referencias externas. Prefijos documentales: `RM-0001`, `BUG-0001`, `TEC-0001`; tareas `TASK-001`. No reutilizar IDs ni asignar por máximo+1 sin reserva serializada. Usar referencias completas como `RM-0001#RN-001`.
+Preservar solicitud y clasificarla. Antes de reservar, confirmar seguimiento `REQUIRED`, proveedor verificado y permiso para crear o enlazar el item remoto. Prefijos documentales: `RM-0001`, `BUG-0001`, `TEC-0001`; tareas `TASK-001`. Reservar y resolver sólo mediante el helper central, que crea una carpeta estable `context/requirements/work-items/<ID>/`; no reutilizar IDs ni asignar por máximo+1. Usar referencias completas como `RM-0001#RN-001`.
 
 ### Elegir profundidad, no burocracia
 
@@ -128,14 +128,15 @@ flowchart TD
     humana -->|"Sí"| aprobado["APPROVED; preservar baseline y catálogo"]
     aprobado --> tracking{"¿Seguimiento REQUIRED sincronizado?"}
     tracking -->|"Falla"| bloqueo_remoto["Bloquear flujo y registrar impedimento"]
-    tracking -->|"Sí, o OFF"| plan["Handoff a análisis técnico con versión y fuentes"]
+    tracking -->|"Sí"| plan["Handoff a análisis técnico con versión y fuentes"]
+    tracking -->|"OFF o no verificado"| bloqueo_remoto
 ```
 
 ### Gate de aprobación exacta
 
 El checklist produce `APTO_PARA_REVISION` o `REQUIERE_DEFINICION`: **no aprueba ni valida código**. Estados RM: `DRAFT`, `PENDING_DEFINITION`, `READY_FOR_REVIEW`, `APPROVED`, `SUPERSEDED`. `READY_FOR_REVIEW` no admite PD bloqueantes. Registrar `APPROVED` exige evidencia humana de **persona autorizada, versión exacta, alcance, fecha con zona y localizador**. El agente no se atribuye esa aprobación; una nueva versión no hereda la anterior.
 
-Actualizar catálogo y artefactos estables in-place: versión/baseline/historial dentro del documento, no nombres paralelos `vN` salvo archivado solicitado. Si seguimiento es `REQUIRED`, importar el item como `SRC` o crearlo al crear RM, conservando proveedor, ID/URL, proyecto y vínculo bidireccional; sincronizar cierre/bloqueo de definición con estado remoto verificado. Si falla, bloquear. Ingeniería no escribe código.
+Actualizar catálogo y artefactos estables in-place: versión/baseline/historial dentro del documento, no nombres paralelos `vN` salvo archivado solicitado. El catálogo conserva ruta, documento principal, proveedor, key/URL y relaciones, nunca estado, prioridad, asignación o sprint. El item remoto se importa como `SRC` o se crea al materializar el expediente; cada cambio operativo se verifica mediante readback. Si falla, bloquear. Ingeniería no escribe código.
 
 **Fuentes:** [ingeniería](../../faro/faro-req-ingenieria/SKILL.md), [contrato](../../faro/faro-req-ingenieria/references/process-contract.md), [checklist](../../faro/faro-req-ingenieria/references/quality-checklist.md), [Lite](../../faro/faro-req-ingenieria/assets/rm-lite.md), [Standard](../../faro/faro-req-ingenieria/assets/rm-standard.md), [Extended](../../faro/faro-req-ingenieria/assets/rm-extended.md).
 
@@ -189,14 +190,14 @@ flowchart TD
 | Coherencia de plan/tareas | Plan `LISTO_PARA_DESARROLLO`; plan y tareas de la misma versión | Volver a análisis; no usar un plan anterior como autorización de una versión nueva. |
 | Contexto técnico | `AGENTS.md`, arquitectura, instrucciones locales, Git, tarea activa, código vecino, consumidores y pruebas leídos | Obtener evidencia faltante antes de cambiar código. |
 | Memoria de decisiones | Índice ADR si existe y ADR relevantes; registrar IDs revisados o ausencia del catálogo; sin RFC abierto dependiente | Contradicción con ADR aceptado → análisis/ADR sucesor. RFC dependiente → `waitingOn`. |
-| Rama/base y trabajo ajeno | Inspeccionar y atribuir cambios antes de cambiar de rama; una vez resuelto el control, usar `feature/<RM-ID>-<descripcion-kebab-case>` desde base autorizada en el mismo repositorio | Cambios ajenos o de atribución incierta → mostrar archivos y acción propuesta, registrar `waitingOn` y esperar validación humana explícita antes de continuar. |
+| Rama/base y trabajo ajeno | Inspeccionar y atribuir cambios antes de cambiar de rama; una vez resuelto el control, respetar la convención observada del repositorio o, si no existe, usar `feature/<ID>-<descripcion-kebab-case>` desde base autorizada en el mismo repositorio | Cambios ajenos o de atribución incierta → mostrar archivos y acción propuesta, registrar `waitingOn` y esperar validación humana explícita antes de continuar. |
 | Reglas aplicables | Leer archivos seleccionados **antes de cada unidad**, registrar cuáles y excepciones en evidencia existente | Si falta o está vacío uno seleccionado, bloquear con su ruta, no inventar reglas. |
 | Seguimiento `REQUIRED` | Inicio/unidad y estado remoto de trabajo sincronizados; actualización al permanecer abierta entre sesiones | Bloquear antes de editar si falla. |
 | Interfaz | Handoff a UX antes de modificar pantallas | Resolver catálogo/diseño o PD sin inventar comportamiento. |
 
 Trabajar en el repositorio y directorio de código actuales. No crear clones, copias ni worktrees para eludir el bloqueo: requieren autorización humana previa específica para la operación y su destino. El silencio, una autorización general de implementar o una aprobación que no contemple los cambios detectados no permiten continuar. Registrar la decisión y volver a comprobar Git antes de reanudar; nuevos cambios no contemplados requieren nueva validación. Stash, descarte, traslado o inclusión de cambios ajenos en commits también requieren permiso específico.
 
-La nomenclatura de rama está escrita literalmente con `<RM-ID>` en la skill, aunque admite entrada BUG/TEC. La fuente no explicita una variante de patrón para estos IDs: no inventar aquí una convención alternativa; aclarar la aplicación si ese caso bloquea la unidad.
+La convención efectiva del repositorio tiene precedencia. Sólo cuando no existe una regla observada, el fallback `feature/<ID>-<descripcion-kebab-case>` conserva el prefijo real RM, BUG o TEC; no se cambia a `feat/` ni se fuerza un patrón ajeno al proyecto.
 
 ### Selector de lineamientos, no copia de todas las reglas
 
@@ -212,7 +213,7 @@ No seleccionar por nombre del repo ni extensión aislada. Instrucciones explíci
 
 ### Ejecución y cierre de la unidad
 
-1. Confirmar unidad en plan y marcar `doing` en workflow; autorización y seguimiento deben coincidir.
+1. Resolver el expediente por catálogo/helper, confirmar la unidad en el plan y verificar mediante readback que el item remoto permite continuar; autorización y seguimiento deben coincidir. Workflow guarda sólo ID/ruta/fase/checkpoint, no `doing` ni otro estado operativo.
 2. Reutilizar implementaciones, consumidores y decisiones existentes; hacer sólo el alcance autorizado, sin renombres, dependencias o limpiezas incidentales.
 3. Aplicar disciplina común de pruebas para comportamiento nuevo/corrección: **RED ejecutado por el fallo real → GREEN mínimo → REFACTOR con suite relevante en verde**. Si falta entorno o una prueba automatizada útil, registrar motivo y acordar explícitamente excepción/verificación alternativa. No omitirlo en silencio.
 4. Ejecutar pruebas relevantes y checks existentes, revisar diff contra lineamientos; compilación, inspección y prueba son resultados distintos.
@@ -309,49 +310,57 @@ flowchart TD
     todos -->|"No; falta definición"| definicion["Ingeniería; no redefinir esperado en validación"]
     todos -->|"No; falta plan o corrección"| corregir["Análisis o desarrollo con gates vigentes"]
     todos -->|"No; falta evidencia"| evidencia["NO_VERIFICADO; completar verificación autorizada o QA"]
-    todos -->|"Sí"| verified["VERIFIED; no merge, despliegue ni aceptación productiva"]
-    verified --> df{"¿DF relacionado e incorporación justificada?"}
-    df -->|"Sí"| baseline["Ruta DF: nueva versión, sólo elementos conformes e historial"]
-    df -->|"No"| salida["Reportar cierre y siguiente acción"]
-    baseline --> salida
-    salida --> entrega{"¿Acción de entrega explícitamente autorizada?"}
-    entrega -->|"Sí"| ruta_entrega["faro-entrega; comprobar acción y ambiente"]
-    entrega -->|"No"| fin["Detenerse; sin efectos productivos implícitos"]
+    todos -->|"Sí"| verified["VERIFIED; completar matriz de impacto duradero"]
+    verified --> close["faro-cierre: consolidar o justificar NO_APLICA"]
+    close --> delivery{"¿Operación externa requerida y aún pendiente?"}
+    delivery -->|"Sí"| ruta_entrega["faro-entrega; volver a cierre con evidencia"]
+    delivery -->|"No"| done["Transición DONE + readback + manifiesto de hashes"]
 ```
 
-`VERIFIED` sólo procede con **todos** los CA del alcance `CONFORME` y sin divergencias materiales. No basta `TASK DONE`, build correcto o QA parcialmente verde. Validación no modifica código de producto, no aprueba RM y no autoriza merge/despliegue. Si seguimiento es `REQUIRED`, publicar resultado/bloqueo y mantener estado remoto de trabajo hasta cierre operativo; si sincronización falla, bloquear y actualizar handoff real, sin simular cierre.
+`VERIFIED` sólo procede con **todos** los CA del alcance `CONFORME` y sin divergencias materiales. No basta `TASK DONE`, build correcto o QA parcialmente verde. Validación no modifica código de producto, no aprueba RM, no autoriza merge/despliegue y no transiciona a `DONE`. Registra la matriz de impacto duradero —producto/DF, arquitectura/ADR, operación/runbook y referencia/API/glosario— con destino o `NO_APLICA` justificado y entrega el expediente a `faro-cierre`.
 
 **Fuentes:** [validación](../../faro/faro-req-validacion/SKILL.md), [plantilla de reporte](../../faro/faro-req-validacion/assets/validation-report.md), [contrato de estados](../../faro/faro-req-ingenieria/references/process-contract.md), [incorporación DF](../../faro/faro-documentacion-funcional/SKILL.md). Acciones de salida: [integraciones y entrega](05-integraciones-y-entrega.md).
 
-## 9. Artefactos, continuidad y límites compartidos
+## 9. Cierre: consolidar, comprobar y congelar
+
+`faro-cierre` recibe un expediente no congelado con `validation_outcome: VERIFIED` para los mismos bytes del primario: `validated_primary_version` y `validated_primary_sha256` deben coincidir. Reconstruye la cobertura exacta de CA, hashea sus evidencias locales, contrasta cada promoción con la autoridad durable del perfil y una versión/baseline acreditada, y exige que las operaciones de entrega declaradas por el alcance coincidan exactamente con `<ID>-entrega.md`. Campos planos sin tablas, archivos o hashes no acreditan estos gates.
+
+Sólo después de validar localmente solicita `DONE` al proveedor configurado. `freeze --apply` vuelve a validar antes de enviar credenciales, exige una raíz autorizada fuera del workspace (`JIRA_BASE_URL` o `AZDO_ORGANIZATION_URL`), ejecuta su propio GET HTTPS y deriva ID, tipo y estado de la respuesta raw. No acepta strings manuales de estado/readback.
+
+Con esos gates completos genera `<ID>-cierre.json` schema 3 con fuente de reserva, referencia remota, respuesta raw codificada y su SHA-256, snapshot semántico de CA/promociones/entrega, fecha e inventario de hashes. El validador offline vuelve a derivar el readback del body conservado y reconstruye los gates desde los documentos congelados. La continuidad se limpia únicamente si `workItemRef` apunta al mismo ID. El expediente no se mueve ni se reabre; un pedido posterior crea otro RM/BUG/TEC y declara `successor_of`.
+
+Si el cierre falla antes de la transición, conserva el estado remoto observado y el workflow con el bloqueo concreto. Si el proveedor ya confirmó `DONE` pero falla el congelado, no intenta ocultarlo ni revertirlo: conserva la continuidad, reporta la divergencia remota/local y exige reconciliación explícita. Un commit, PR, release o deploy exitoso es evidencia de entrega, no sustituto de esta ruta.
+
+**Fuentes:** [cierre](../../faro/faro-cierre/SKILL.md), [ciclo de expedientes](../../faro/references/work-item-lifecycle.md), [entrega](../../faro/faro-entrega/SKILL.md).
+
+## 10. Artefactos, continuidad y límites compartidos
 
 | Artefacto/fuente de verdad | Se conserva | No sustituye |
 | --- | --- | --- |
-| RM estable en `context/requirements/` | SOL/SRC, definición, CA/PD, versión, aprobación/baseline e historial | Plan, autorización de efectos, QA ni entrega. |
+| Expediente estable en `context/requirements/work-items/<ID>/` | Definición/diagnóstico, plan, tareas, QA, validación, entrega y cierre de una RM/BUG/TEC | Estado, prioridad, asignación o cola del gestor remoto. |
 | Registro BUG/TEC desde mantenimiento | Clasificación, alcance, autorización, revisión, esperado/reproducción o preservación observable; INC de origen si existe | Investigación INC ni RM cuando aparece cambio funcional. |
 | `<ID>-plan-tecnico.md` | Entrada/versión/baseline/autorización, revisión, diseño observado/propuesto, compatibilidad, verificación y bloqueos | Aprobación funcional. |
 | `<ID>-tareas.md` | Objetivo por TASK, origen RF/RN/CA o justificación, archivos/dependencias, inicio/terminado, verificación/evidencia/bloqueo e historial | Estado de validación de la entrega. |
-| Casos/evidencia QA | Por CA, entorno/datos/efectos, ejecución, resultado y limpieza | Conformidad de validación ni aceptación productiva. La skill no fija aquí una plantilla/nombre único de archivo QA. |
+| `<ID>-qa.md` | Por CA, entorno/datos/efectos, ejecución, resultado y limpieza | Conformidad de validación ni aceptación productiva. |
 | Reporte de validación | Resultado por CA, cobertura, ejecuciones, hallazgos, límites y conclusión | Merge, despliegue ni cierre de impacto de un INC. |
-| `context/workflow.json` condicional | `active`, `phase`, `authorization` (`status`, `source`, `artifactVersion`, `scope`), `currentUnit`, `waitingOn`, `nextRoute`, `notes`, fecha/esquema | Contenido completo de DF/RM/planes/tareas ni autorización de otra versión. |
+| `<ID>-cierre.json` | Readback remoto, resolución de impacto duradero y hashes que congelan el expediente | Un nuevo cambio ni cierre automático de un INC. |
+| `context/workflow.json` condicional | ID/ruta activa, fase/checkpoint, autorización, `waitingOn`, `nextRoute`, notas y fecha/esquema | Backlog, unidades terminadas, estado remoto ni contenido del expediente. |
 
-No mezclar vocabularios: las **unidades de workflow** usan `todo`, `doing`, `done`, `dropped` (máximo una `doing`); las **tareas** usan `TODO`, `IN_PROGRESS`, `BLOCKED`, `DONE`; el **estado de entrega** usa `NOT_STARTED`, `IN_DEVELOPMENT`, `BLOCKED`, `IMPLEMENTED`, `VERIFIED`. QA y validación tienen los estados propios de las secciones anteriores. `DONE` no equivale a `VERIFIED`.
+No mezclar vocabularios: el proveedor conserva el estado operativo; definición y plan expresan madurez documental; tareas, QA y validación conservan resultados/evidencia locales. `DONE` remoto no equivale a `VERIFIED`, y `VERIFIED` no cierra sin promoción y congelamiento.
 
-La plantilla workflow comienza con campos de actividad nulos y `authorization.status: none`; no enumera por sí sola todos los valores o estructuras posibles. No inventar un estado nuevo ni tratar `nextRoute` como permiso de ejecución: se valida contra la suite y se comprueban gates de la fase receptora. Preservar una unidad activa ajena; un cambio de foco necesita decisión humana.
+La plantilla workflow comienza sin `workItemRef`, con `phase` y `checkpoint` nulos y `authorization.status: none`. No tratar `nextRoute` como permiso de ejecución ni usar notas/checkpoint para copiar un backlog: se valida contra la suite y se comprueban gates de la fase receptora. Preservar una unidad activa ajena; un cambio de foco necesita decisión humana.
 
 En seguimiento `REQUIRED`, usar proveedor configurado y workflow remoto verificado; el estado remoto es avance operativo, no aprobación. Cada fase sincroniza sus hitos materiales y bloquea ante fallos donde lo prescribe su skill. Comentarios concisos según formato central, no transcript ni secretos. Una aprobación RM nunca permite por sí sola operaciones externas, merge o despliegue; éstos requieren la ruta y autorización específicas de entrega.
 
 **Fuentes:** [router e invariantes](../../faro/SKILL.md), [plantilla workflow](../../faro/templates/workflow.json), [plan](../../faro/faro-req-analisis-tecnico/assets/technical-plan.md), [tareas](../../faro/faro-req-analisis-tecnico/assets/tasks.md), [mantenimiento BUG/TEC](../../faro/faro-req-analisis-tecnico/assets/maintenance-record.md), [contrato](../../faro/faro-req-ingenieria/references/process-contract.md), [formato de seguimiento](../../faro/references/comment-format.md), [incidentes y foco activo](../../faro/faro-incidentes/SKILL.md).
 
-## 10. Huecos y diferencias de granularidad de las fuentes
+## 11. Límites de granularidad
 
 Estos puntos describen los límites de la documentación fuente; **no agregan reglas al runtime**:
 
 - Las plantillas RM no definen umbrales cerrados para Lite/Standard/Extended. Extended es expresamente complemento a Standard.
 - La skill DF exige fuentes, glosario, actores/permisos, RF/RN/RNF, restricciones, integraciones y trazabilidad/historial de baselines; su plantilla entregable es más breve y no presenta todas esas secciones ni la matriz RM explícitamente. Usar la plantilla no basta para acreditar todo el procedimiento; mantener evidencia técnica fuera del DF.
-- El verificador DF comprueba integridad parcial: lee IDs de `## Documentos`, no valida reservas serializadas, y no exige `df_id` cuando falta; además espera una sección/formato de habilitación que la plantilla general de perfil no trae literalmente. No sustituye inventario y revisión humana del procedimiento.
 - La plantilla de mantenimiento dice volver a ingeniería si falta esperado; router/contrato/skills actuales dan prioridad a incidentes **cuando el pedido es investigar un síntoma**. Son contextos distintos: no usar aquella frase para crear RM por anticipado ni para saltar el intake de investigación.
-- La rama de desarrollo conserva el patrón literal `feature/<RM-ID>-<descripcion-kebab-case>` sin detallar una variante BUG/TEC. No se corrige esa ambigüedad mediante una regla nueva en esta guía.
-- QA no aporta un asset de casos ni ruta canónica en su directorio; workflow no es un esquema exhaustivo de sus campos en la plantilla. Esta guía no crea formatos obligatorios adicionales ni una máquina de estados automática.
+- Los validadores comprueban estructura, identidad, referencias y hashes, pero no demuestran que la promoción documental sea semánticamente correcta ni que una persona haya aprobado el alcance.
 
 **Fuentes:** [plantillas RM](../../faro/faro-req-ingenieria/assets/rm-extended.md), [skill DF](../../faro/faro-documentacion-funcional/SKILL.md), [asset DF](../../faro/faro-documentacion-funcional/assets/functional-document.md), [verificador DF](../../faro/faro-documentacion-funcional/scripts/verify-functional-documentation.py), [perfil](../../faro/templates/project-profile.md), [mantenimiento](../../faro/faro-req-analisis-tecnico/assets/maintenance-record.md), [router](../../faro/SKILL.md), [desarrollo](../../faro/faro-req-desarrollo/SKILL.md), [QA](../../faro/faro-qa-ejecucion/SKILL.md), [workflow](../../faro/templates/workflow.json).

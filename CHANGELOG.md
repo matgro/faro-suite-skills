@@ -2,6 +2,25 @@
 
 Este historial registra cambios de la suite distribuida, no aprobaciones de proyectos. La versión del paquete es independiente de la versión del contrato de workspace.
 
+## 2.0.0 — pendiente de publicación
+
+- Evoluciona el contrato de workspace a `2.0.0`: DF duraderos bajo `context/requirements/functional/DF-ID/` y expedientes RM, BUG y TEC bajo `context/requirements/work-items/ID/`, con rutas que no cambian al completar el trabajo.
+- Añade catálogos canónicos de localización/reserva y herramientas centrales para resolver IDs, validar el layout completo, detectar huérfanos/legacy, conservar la fuente publicada y evitar fuentes o items remotos compartidos. Catálogo y workflow ya no son gestores paralelos de estado; `DF` y todos los prefijos identificadores son estrictamente mayúsculos.
+- Declara Jira o Azure DevOps como autoridad de estado operativo, prioridad, asignación, iteración y cola. `OFF` sigue disponible para consulta, arquitectura y documentación, pero no para crear RM/BUG/TEC gobernados.
+- Amplía doctor con clasificación cerrada `absent`, `current`, `legacy-migratable`, `mixed-ambiguous`, `future-unsupported` y `corrupt`, detección FARO real y validación de estructura, catálogos, front matter, workflow y arquitectura .NET.
+- Incorpora una migración explícita `1.13.0` → `2.0.0` con dry-run, autorización de `--apply`, inventario de hashes, controles de path/case/collision e idempotencia; no crea items remotos ni reescribe globalmente documentos históricos.
+- Añade `faro-cierre`: exige `VERIFIED`, hash exacto del primario, cobertura/evidencia de todos los CA, promociones bajo autoridad/versiones verificables y entrega completa. El freeze hace readback GET autenticado contra una raíz autorizada fuera del workspace, conserva y rederiva la respuesta raw, y congela el expediente con validación offline semántica. Un cambio posterior usa un nuevo ID enlazado.
+- Separa `faro-entrega` del cierre. Push, PR, release, deploy o rollback registran su evidencia, pero nunca finalizan por sí solos el work item.
+- Mantiene los incidentes en `context/incidents/` y amplía los adaptadores para RM, BUG, TEC, INC y TASK, incluidas relaciones directas y derivadas.
+
+### Actualización desde 1.8.1
+
+1. Obtener la futura release `v2.0.0`, verificar procedencia, inventario y checksums y confirmar el reemplazo completo de `faro/`. Estos cambios locales todavía no publican esa release.
+2. Ejecutar `faro-doctor` en cada workspace. No inicializar ni mover archivos manualmente.
+3. Para un contrato `1.13.0` clasificado como migrable, revisar primero `python3 -B <skills-root>/faro/scripts/migrate_workspace_v2.py --root <workspace>` y autorizar por separado la ejecución con `--apply`.
+4. Resolver manualmente cualquier colisión o layout mixto. Reconciliar estados locales/remotos divergentes antes de declarar al gestor remoto como autoridad; los valores locales previos quedan como evidencia histórica.
+5. No abrir items remotos durante la migración y no modificar expedientes congelados. Validar el contrato `2.0.0` con doctor antes de reanudar trabajo.
+
 ## 1.8.1 — 2026-11-02
 
 - Exige detenerse y esperar validación humana explícita ante cambios ajenos o de atribución incierta antes de cambiar de rama o implementar. Mostrar archivos afectados y acción propuesta; el silencio o una autorización general no permiten continuar.

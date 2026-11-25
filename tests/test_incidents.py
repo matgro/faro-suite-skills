@@ -41,7 +41,7 @@ class IncidentContractTests(unittest.TestCase):
 
     def test_incident_is_on_demand_and_does_not_migrate_workspace(self):
         config = json.loads(text("templates/faro-workspace-config.json"))
-        self.assertEqual(config["contractVersion"], "1.13.0")
+        self.assertRegex(config["contractVersion"], r"^\d+\.\d+\.\d+$")
         self.assertFalse(any("incidents" in item for item in config["requiredDirectories"] + config["requiredFiles"]))
         self.assertIn("No crear esta estructura durante inicialización", self.skill)
         self.assertIn("sin reserva serializada", self.skill)
@@ -75,11 +75,12 @@ class IncidentContractTests(unittest.TestCase):
 
     def test_closure_distinguishes_investigation_impact_and_correction(self):
         for guard in (
-            "`ABIERTO`, `EN_INVESTIGACION`, `CERRADO`",
+            "esos eventos no son un segundo estado operativo",
             "Causa conocida no significa servicio recuperado",
             "Un cierre sin BUG es válido si se justifica con evidencia",
             "Si persiste impacto activo o no verificado",
             "decisión humana explícita y ausencia de impacto activo pendiente",
+            "Solicitar `DONE` remoto sólo mediante la operación explícita de cierre del INC",
             "Reabrir el mismo INC ante nueva evidencia",
         ):
             with self.subTest(guard=guard):
@@ -97,6 +98,11 @@ class IncidentContractTests(unittest.TestCase):
             with self.subTest(field=field):
                 self.assertIn(field, template)
         self.assertNotIn("Status: Resolved", template)
+        self.assertNotIn("- Estado:", template)
+        self.assertIn("Último readback remoto", template)
+        index = text("faro-incidentes/assets/incident-index.md")
+        self.assertNotIn("| ID | Registro | Estado |", index)
+        self.assertIn("fuente canónica del estado operativo", index)
 
     def test_external_stages_are_pinned_gated_and_do_not_replace_local_skills(self):
         for guard in (
@@ -115,11 +121,15 @@ class IncidentContractTests(unittest.TestCase):
         for adapter in ("faro-int-jira/SKILL.md", "faro-int-azure-devops/SKILL.md"):
             content = text(adapter)
             with self.subTest(adapter=adapter):
-                for guard in ("faro-incidentes", "tipo neutral", "ni usar Bug por defecto", "sin autorización explícita", "Verificar por lectura toda escritura", "no cierra automáticamente el incidente"):
+                for guard in (
+                    "faro-incidentes", "tipo neutral", "BUG derivado de INC",
+                    "autorización explícita", "estado operativo remoto es canónico",
+                    "releer", "no cierra",
+                ):
                     self.assertIn(guard, content)
-        self.assertIn("`OFF`: no crear tickets remotos", self.skill)
-        self.assertIn("no avanzar de fase ni declarar el cierre remoto", self.skill)
-        self.assertIn("sin confirmar BUG por el tipo remoto", text("faro-int-jira/SKILL.md"))
+        self.assertIn("`OFF`: no crear tickets remotos ni afirmar un estado remoto", self.skill)
+        self.assertIn("no avanzar en la operación dependiente ni declarar estado o cierre remoto", self.skill)
+        self.assertIn("un tipo remoto Bug no confirma un defecto", text("faro-int-jira/SKILL.md"))
         self.assertIn("No exigir INC para fallos conocidos contra CA", text("faro-qa-ejecucion/SKILL.md"))
 
     def test_received_bug_item_does_not_force_reclassification_or_duplication(self):
@@ -129,15 +139,27 @@ class IncidentContractTests(unittest.TestCase):
         for adapter in ("faro-int-jira/SKILL.md", "faro-int-azure-devops/SKILL.md"):
             content = text(adapter)
             with self.subTest(adapter=adapter):
-                self.assertIn("exigir tipo neutral sólo para items nuevos", content)
-                self.assertIn("Conservar el item recibido aunque sea de tipo Bug", content)
-                self.assertIn("su tipo remoto no confirma un defecto", content)
-                self.assertIn("crear un item neutral separado requiere decisión explícita", content)
+                self.assertIn("un tipo remoto Bug no confirma un defecto", content)
+                self.assertIn("BUG derivado de INC requiere autorización explícita", content)
+                self.assertIn("Nunca convertir", content)
+                self.assertIn("vínculos bidireccionales", content)
 
     def test_workflow_can_resume_incident_without_mutating_it(self):
         with tempfile.TemporaryDirectory(dir=os.environ.get("TMPDIR")) as directory:
             workflow = Path(directory) / "workflow.json"
-            payload = '{"active": {"id": "INC-0001"}, "nextRoute": "faro-incidentes"}'
+            workflow_v2 = json.loads(text("templates/workflow.json"))
+            workflow_v2.update(
+                {
+                    "updatedAt": "2026-11-17T12:00:00Z",
+                    "phase": "incident-investigation",
+                    "workItemRef": {
+                        "id": "INC-0001",
+                        "path": "context/incidents/INC-0001-ejemplo.md",
+                    },
+                    "nextRoute": "faro-incidentes",
+                }
+            )
+            payload = json.dumps(workflow_v2, ensure_ascii=False, sort_keys=True)
             workflow.write_text(payload, encoding="utf-8")
             self.assertEqual(VALIDATION["validate_workflow"](workflow, FARO), [])
             self.assertEqual(workflow.read_text(encoding="utf-8"), payload)

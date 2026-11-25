@@ -16,7 +16,7 @@ FARO = ROOT / "faro"
 class DomainGlossaryTests(unittest.TestCase):
     def test_glossary_is_optional_and_does_not_migrate_existing_contracts(self):
         config = json.loads((FARO / "templates/faro-workspace-config.json").read_text())
-        self.assertEqual(config["contractVersion"], "1.13.0")
+        self.assertEqual(config["contractVersion"], "2.0.0")
         self.assertNotIn("context/glossary.md", config["requiredFiles"])
         self.assertIn("context/glossary.md", [item["path"] for item in config["conditionalFiles"]])
         self.assertEqual(config["workspace"]["glossaryPath"], "context/glossary.md")
@@ -63,15 +63,38 @@ class DomainGlossaryTests(unittest.TestCase):
         self.assertIn("vocabulario de negocio", text)
         self.assertIn("no reescribir baselines", text)
 
-    def test_doctor_accepts_old_workspace_and_reports_glossary_without_writing(self):
+    def test_doctor_accepts_current_workspace_and_reports_glossary_without_writing(self):
         config = json.loads((FARO / "templates/faro-workspace-config.json").read_text())
-        templates = ["AGENTS.md", "faro-workspace-manifest.json", "stats.json", "context-README.md", "project-profile.md"]
         with tempfile.TemporaryDirectory(dir=os.environ.get("TMPDIR")) as directory:
             root = Path(directory)
-            for destination, template in zip(config["requiredFiles"], templates):
+            for relative in config["requiredDirectories"]:
+                (root / relative).mkdir(parents=True, exist_ok=True)
+            sources = config["templateSources"]
+            templates = {
+                "AGENTS.md": sources["agents"],
+                config["workspace"]["manifestPath"]: sources["manifest"],
+                config["workspace"]["statePath"]: sources["stats"],
+                config["workspace"]["indexPath"]: sources["index"],
+                config["workspace"]["profilePath"]: sources["projectProfile"],
+                config["workspace"]["requirementsCatalogPath"]: sources["requirementsCatalog"],
+                config["workspace"]["functionalCatalogPath"]: sources["functionalCatalog"],
+            }
+            for destination, template in templates.items():
                 path = root / destination
                 path.parent.mkdir(parents=True, exist_ok=True)
-                path.write_bytes((FARO / "templates" / template).read_bytes())
+                path.write_bytes((ROOT / template).read_bytes())
+            stats_path = root / config["workspace"]["statePath"]
+            stats = json.loads(stats_path.read_text())
+            provenance = json.loads((FARO / "references/suite-provenance.json").read_text())
+            stats["faro"]["version"] = provenance["packageVersion"]
+            stats["project"] = {
+                "name": "Glossary fixture",
+                "type": "existing",
+                "repositories": [],
+            }
+            stats["state"] = "initializing"
+            stats["updatedAt"] = "2026-11-17T12:00:00-03:00"
+            stats_path.write_text(json.dumps(stats, ensure_ascii=False, indent=2) + "\n")
             for present in (False, True):
                 with self.subTest(glossary_present=present):
                     if present:

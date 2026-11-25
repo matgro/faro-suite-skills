@@ -2,6 +2,16 @@
   "schemaVersion": 1,
   "releases": [
     {
+      "version": "2.0.0",
+      "changes": [
+        "Separa conocimiento duradero y expedientes: DF bajo functional/DF-ID y RM, BUG y TEC bajo work-items/ID con rutas estables y resolución central por catálogo.",
+        "Declara Jira o Azure DevOps como autoridad del estado operativo; catálogo y workflow dejan de duplicar estado, prioridad, asignación o historial terminado.",
+        "Añade diagnóstico por clases de compatibilidad, migración explícita 1.13.0 a 2.0.0 con plan previo y cierre separado que consolida conocimiento, verifica DONE remoto y congela el expediente.",
+        "Separa entrega externa de cierre: commit, PR, release, deploy o rollback no finalizan por sí solos la unidad de trabajo."
+      ],
+      "renamedSkills": {}
+    },
+    {
       "version": "1.8.1",
       "changes": [
         "Exige detenerse y esperar validación humana explícita ante cambios ajenos o de atribución incierta antes de cambiar de rama o implementar; una autorización general no resuelve ese bloqueo.",

@@ -1,0 +1,41 @@
+{
+  "schemaVersion": 3,
+  "workItemId": "WORK_ITEM_ID",
+  "reservationSource": "SERIALIZED_RESERVATION_SOURCE",
+  "frozenAt": "FROZEN_AT",
+  "externalReference": {
+    "provider": "PROVIDER",
+    "id": "EXTERNAL_ID",
+    "url": "EXTERNAL_URL"
+  },
+  "remoteReadback": {
+    "provider": "PROVIDER",
+    "externalId": "EXTERNAL_ID",
+    "externalUrl": "EXTERNAL_URL",
+    "remoteType": "REMOTE_TYPE",
+    "observedState": "PROVIDER_DONE_STATE",
+    "mappedRemoteType": "MAPPED_REMOTE_TYPE",
+    "mappedDoneState": "MAPPED_DONE_STATE",
+    "canonicalState": "DONE",
+    "observedAt": "OBSERVED_AT",
+    "requestUrl": "HTTPS_GET_ENDPOINT",
+    "responseSha256": "RAW_RESPONSE_SHA256",
+    "responseBodyBase64": "RAW_RESPONSE_BODY_BASE64"
+  },
+  "validationGate": {
+    "path": "VALIDATION_PATH",
+    "sha256": "VALIDATION_SHA256",
+    "outcome": "VERIFIED",
+    "primary": {
+      "path": "PRIMARY_PATH",
+      "version": "PRIMARY_VERSION",
+      "sha256": "PRIMARY_SHA256"
+    },
+    "criteria": [],
+    "promotions": {},
+    "impacts": {},
+    "delivery": {}
+  },
+  "hashAlgorithm": "sha256",
+  "artifacts": {}
+}

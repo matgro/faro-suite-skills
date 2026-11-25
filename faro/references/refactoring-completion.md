@@ -35,7 +35,7 @@ Registrar en los artefactos existentes, por extracción:
 
 Si no hay revisor independiente disponible, registrar la limitación y mantener el cierre pendiente; no llamar independiente a una segunda lectura del mismo agente. Una excepción requiere aceptación humana explícita y conserva la limitación: no acredita revisión realizada ni permite declarar VERIFIED si falta evidencia de integración o equivalencia.
 
-`done`/DONE y el handoff a QA no se acreditan como refactorización completa con un método nuevo sin uso, lógica sustituida todavía activa sin justificación o evidencia/revisión pendiente. En validación: fallo demostrado → `NO_CONFORME`; integración o equivalencia no comprobada → `NO_VERIFICADO`; nunca `VERIFIED` sólo porque la suite existente sigue verde. Una fase transitoria autorizada puede cerrarse sólo contra su alcance exacto, nunca como retiro total concluido.
+Un resultado local `COMPLETADO`, una transición remota o el handoff a QA no acreditan una refactorización completa con un método nuevo sin uso, lógica sustituida todavía activa sin justificación o evidencia/revisión pendiente. En validación: fallo demostrado → `NO_CONFORME`; integración o equivalencia no comprobada → `NO_VERIFICADO`; nunca `VERIFIED` sólo porque la suite existente sigue verde. Una fase transitoria autorizada puede cerrarse sólo contra su alcance exacto, nunca como retiro total concluido.
 
 ## Capacidades externas y selección
 

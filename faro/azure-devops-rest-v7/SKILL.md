@@ -1,7 +1,7 @@
 ---
 name: azure-devops-rest-v7
 description: Use when Azure DevOps REST work tracking needs real calls.
-version: 1.1.0
+version: 2.0.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -14,7 +14,7 @@ metadata:
 
 ## Rol
 
-Ejecuta llamadas reales y autenticadas contra Azure DevOps Services para descubrir configuración de un proyecto y gestionar work items autorizados. Es la capability técnica de `faro-int-azure-devops`; no interpreta ni modifica contratos FARO.
+Ejecuta llamadas reales y autenticadas contra Azure DevOps Services para descubrir configuración de un proyecto y gestionar work items autorizados. Es la capability técnica de `faro-int-azure-devops`; no interpreta ni modifica contratos FARO. Opera tipos y relaciones ya autorizados para RM, BUG, TEC, INC y TASK, sin decidir su clasificación.
 
 No describir solamente endpoints cuando se pide una acción Azure DevOps: comprobar configuración, construir la llamada, ejecutarla con `curl`, interpretar JSON y reportar el resultado. Si no existen credenciales, no realizar llamadas remotas.
 
@@ -50,25 +50,26 @@ Usar siempre `Accept: application/json`; en escrituras JSON Patch usar `Content-
 
 ## Descubrimiento obligatorio en inicialización
 
-Con `PROJECT` y `TEAM` confirmados, ejecutar estas lecturas antes de registrar valores definitivos o crear items:
+Con `PROJECT` y `TEAM` confirmados, ejecutar estas lecturas antes de registrar valores definitivos o crear items. Repetir campos y estados para cada tipo remoto mapeado que vaya a utilizarse; no extrapolar el workflow de un tipo a otro:
 
 | Dato | Método y ruta | Resultado que se conserva |
 | --- | --- | --- |
 | Conectividad/identidad | `GET /_apis/connectionData?api-version=7.1` | acceso confirmado, sin copiar identidad personal innecesaria |
 | Tipos | `GET /{project}/_apis/wit/workitemtypes?api-version=7.1` | nombres y referencias de tipos válidos |
+| Relaciones | `GET /_apis/wit/workitemrelationtypes?api-version=7.1` | referencias habilitadas para padre/hijo y origen/derivado |
 | Campos del tipo | `GET /{project}/_apis/wit/workitemtypes/{type}/fields?api-version=7.1` | actividad, estimación, estado y editabilidad |
 | Áreas | `GET /{project}/_apis/wit/classificationnodes/areas?depth=10&api-version=7.1` | rutas de área válidas |
 | Iteraciones del proyecto | `GET /{project}/_apis/wit/classificationnodes/iterations?depth=10&api-version=7.1` | rutas de iteración válidas |
 | Iteraciones del equipo | `GET /{project}/{team}/_apis/work/teamsettings/iterations?api-version=7.1` | iteraciones que el equipo puede usar |
-| Estados | `GET /{project}/_apis/wit/workitemtypes/{type}/states?api-version=7.1` | mapeo remoto PENDING/DOING/DONE/CANCELLED |
+| Estados por tipo | `GET /{project}/_apis/wit/workitemtypes/{type}/states?api-version=7.1` | mapeo remoto PENDING/DOING/DONE/CANCELLED de ese tipo |
 
 Codificar `project`, `team`, tipo y segmentos de ruta. Para una URL de proyecto como `https://farmacity.visualstudio.com/FarmaAgil/`, usar `https://farmacity.visualstudio.com` como organización y `FarmaAgil` como proyecto sólo después de confirmación humana o desde el perfil.
 
 ## Actividad, iteración, estimación y asignación
 
-1. Para el tipo de work item configurado, consultar sus campos antes de usar `Microsoft.VSTS.Common.Activity`, el campo de estimación configurado o `System.AssignedTo`. Las actividades permitidas se obtienen del metadato/`allowedValues` del campo de actividad; no asumir la lista de otro proceso.
+1. Para cada tipo de work item configurado, consultar sus campos antes de usar `Microsoft.VSTS.Common.Activity`, el campo de estimación configurado o `System.AssignedTo`. Las actividades permitidas se obtienen del metadato/`allowedValues` del campo de actividad; no asumir la lista de otro proceso.
 2. Si una actividad o iteración solicitada no está en los valores validados del perfil, volver a consultar las rutas y campos anteriores. Si sigue ausente, detenerse y reportar el valor no válido.
-3. Para un tipo `Task`, el perfil debe declarar `estimate_field`. Si la petición omite la estimación, agregar el valor numérico `1` mediante JSON Patch. No reemplazar una estimación explícita ni usar `1` en otros tipos sin instrucción.
+3. Para la clase local `TASK`, el perfil debe declarar su tipo remoto y `estimate_field`. Si la petición omite la estimación, agregar el valor numérico `1` mediante JSON Patch. No reemplazar una estimación explícita ni usar `1` en RM/BUG/TEC/INC u otros tipos sin instrucción.
 4. `default_assigned_to` es una configuración opcional. Antes de usar un valor no validado, consultar `GET /_apis/graph/users?api-version=7.1-preview.1` cuando el PAT tenga scope, o pedir el descriptor/identidad exacta al usuario. Nunca adivinar una persona por nombre parcial.
 5. Cambiar asignado, área, iteración, actividad o estimación es una mutación que requiere autorización humana específica; la configuración sólo prepara y valida los valores.
 
@@ -77,6 +78,8 @@ Codificar `project`, `team`, tipo y segmentos de ruta. Para una URL de proyecto 
 ### Crear
 
 `PATCH /{project}/_apis/wit/workitems/${TYPE}?api-version=7.1`
+
+`TYPE` proviene del mapeo confirmado para RM, BUG, TEC, INC o TASK. La capability no decide la clase local ni sustituye un tipo faltante. Para INC nuevo el adaptador exige tipo neutral; para BUG la clasificación debe llegar confirmada y autorizada.
 
 Crear el archivo temporal de JSON Patch y luego ejecutar `curl`. Ejemplo de payload para un `Task` con estimación predeterminada:
 
@@ -98,6 +101,14 @@ curl --silent --show-error --fail --max-time "$AZDO_TIMEOUT" \
   --data-binary @/tmp/azdo-work-item.json
 ```
 
+Tras crear, leer el item por ID con relaciones expandidas y comprobar proyecto, tipo, título y campos solicitados antes de devolverlo al adaptador.
+
+### Relacionar trabajo
+
+Descubrir primero las referencias de relación disponibles. Para una TASK usar la relación padre/hijo configurada hacia su RM/BUG/TEC. Para BUG derivado de INC usar la relación origen/derivado configurada; si el proceso sólo permite una relación neutral, usarla únicamente después de que el adaptador la confirme. No convertir el item del INC en BUG ni reutilizarlo como corrección.
+
+Agregar una relación mediante JSON Patch sobre `/relations/-`, usando la URL API del item destino y la referencia verificada. Leer después ambos items con `$expand=Relations` y comprobar la relación bidireccional efectiva o sus extremos según la semántica del tipo. Una respuesta `200` sin esa lectura no acredita el vínculo.
+
 ### Leer, actualizar, comentar y estados
 
 - Leer: `GET /{project}/_apis/wit/workitems/{id}?$expand=Relations&api-version=7.1`.
@@ -105,7 +116,11 @@ curl --silent --show-error --fail --max-time "$AZDO_TIMEOUT" \
 - Comentarios: `POST /{project}/_apis/wit/workItems/{id}/comments?api-version=7.1-preview.4` con `{"text":"..."}`.
 - Estados: obtenerlos por tipo antes de aplicar `System.State`; nunca traducir nombres de Jira ni asumir `Done`.
 
-Para cada mutación, usar un archivo temporal para el payload, ejecutar una lectura posterior y reportar ID, URL y campos solicitados. `DELETE`, cambios de prioridad, sprint, adjuntos, tiempos o reasignación sólo se ejecutan con solicitud explícita.
+El valor actual de `System.State` leído desde Azure DevOps es la fuente canónica del estado operativo cuando el perfil usa seguimiento `REQUIRED`. Los artefactos locales pueden conservar la fecha y resultado de la lectura como evidencia, pero no reemplazarlo con una copia mutable. Antes de una transición releer item, tipo y estado; aplicar sólo una transición mapeada para ese tipo.
+
+Push, PR, merge, release, tag o despliegue no implican `DONE`. La capability aplica el estado de cierre sólo cuando el adaptador entrega una operación explícita de cierre ya autorizada; nunca lo infiere de comentarios, vínculos Git o resultados de entrega. `CANCELLED` también exige la decisión humana transmitida por el adaptador.
+
+Para cada mutación, usar un archivo temporal para el payload y ejecutar una lectura posterior específica del recurso afectado. En creación/actualización comprobar campos; en estado, `System.State`; en relación, ambos extremos; en comentario, el comentario creado. Reportar ID, URL y campos solicitados. `DELETE`, cambios de prioridad, sprint, adjuntos, tiempos o reasignación sólo se ejecutan con solicitud explícita.
 
 ## Fallos y verificación
 

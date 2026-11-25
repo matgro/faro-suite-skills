@@ -32,6 +32,28 @@ class SuiteUpdateTests(unittest.TestCase):
                 "renamedSkills": {"faro-req-implementacion": "faro-req-desarrollo"},
             }],
         }))
+        self.write("scripts/migrate_workspace_v2.py", "#!/usr/bin/env python3\n")
+        self.write("templates/faro-workspace-config.json", json.dumps({
+            "schemaVersion": 2,
+            "contractVersion": "2.0.0",
+            "compatibility": {
+                "diagnosticReadContracts": ["1.13.0", "2.0.0"],
+                "writeContract": "2.0.0",
+                "migrationCatalog": "faro/references/contract-migrations.json",
+            },
+        }))
+        self.write("references/contract-migrations.json", json.dumps({
+            "schemaVersion": 1,
+            "migrations": [{
+                "fromContract": "1.13.0",
+                "toContract": "2.0.0",
+                "script": "faro/scripts/migrate_workspace_v2.py",
+                "authorization": "EXPLICIT_APPLY",
+                "readCompatibility": "DIAGNOSTIC_ONLY",
+                "writeCompatibility": "V2_ONLY",
+                "description": "Fixture de migración explícita.",
+            }],
+        }))
 
     def write(self, relative, text):
         path = self.suite / relative
@@ -46,6 +68,23 @@ class SuiteUpdateTests(unittest.TestCase):
             capture_output=True, text=True, encoding="utf-8", errors="replace",
             env={**os.environ, "PYTHONIOENCODING": "utf-8"},
         )
+
+    def workflow(self, **updates):
+        payload = {
+            "schemaVersion": 2,
+            "updatedAt": "2026-11-17T12:00:00-03:00",
+            "phase": None,
+            "authorization": {
+                "status": "none", "source": None, "artifactVersion": None, "scope": None,
+            },
+            "workItemRef": None,
+            "waitingOn": None,
+            "nextRoute": None,
+            "checkpoint": None,
+            "notes": [],
+        }
+        payload.update(updates)
+        return payload
 
     def test_consistent_suite_is_accepted(self):
         result = self.validate()
@@ -94,6 +133,30 @@ class SuiteUpdateTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("changelog/provenance inválido", result.stdout)
 
+    def test_missing_or_unsafe_contract_migration_is_rejected(self):
+        catalog_path = self.suite / "references/contract-migrations.json"
+        original = catalog_path.read_text(encoding="utf-8")
+        catalog_path.unlink()
+        result = self.validate()
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("catálogo de migraciones inválido", result.stdout)
+
+        catalog = json.loads(original)
+        catalog["migrations"][0]["script"] = "../outside.py"
+        self.write("references/contract-migrations.json", json.dumps(catalog))
+        result = self.validate()
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("ruta Python segura", result.stdout)
+
+    def test_contract_migration_must_match_write_compatibility(self):
+        path = self.suite / "references/contract-migrations.json"
+        catalog = json.loads(path.read_text(encoding="utf-8"))
+        catalog["migrations"][0]["authorization"] = "IMPLICIT"
+        self.write("references/contract-migrations.json", json.dumps(catalog))
+        result = self.validate()
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("EXPLICIT_APPLY", result.stdout)
+
     def test_rename_cycle_is_rejected(self):
         path = self.suite / "references/suite-changelog.json"
         changelog = json.loads(path.read_text())
@@ -105,7 +168,7 @@ class SuiteUpdateTests(unittest.TestCase):
 
     def test_renamed_workflow_route_has_actionable_diagnostic_without_writes(self):
         workflow = self.root / "workflow.json"
-        workflow.write_text(json.dumps({"nextRoute": "faro-req-implementacion", "authorization": {"status": "approved"}}))
+        workflow.write_text(json.dumps(self.workflow(nextRoute="faro-req-implementacion")))
         before = workflow.read_bytes()
         result = self.validate("--workflow", workflow)
         self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
@@ -115,13 +178,13 @@ class SuiteUpdateTests(unittest.TestCase):
 
     def test_current_workflow_route_is_accepted(self):
         workflow = self.root / "workflow.json"
-        workflow.write_text(json.dumps({"nextRoute": "faro-req-desarrollo"}))
+        workflow.write_text(json.dumps(self.workflow(nextRoute="faro-req-desarrollo")))
         result = self.validate("--workflow", workflow)
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
 
     def test_unknown_workflow_route_is_rejected(self):
         workflow = self.root / "workflow.json"
-        workflow.write_text(json.dumps({"nextRoute": "faro-inexistente"}))
+        workflow.write_text(json.dumps(self.workflow(nextRoute="faro-inexistente")))
         result = self.validate("--workflow", workflow)
         self.assertEqual(result.returncode, 1)
         self.assertIn("nextRoute apunta a skill ausente", result.stdout)
@@ -133,6 +196,87 @@ class SuiteUpdateTests(unittest.TestCase):
         self.assertEqual(result.returncode, 1)
         self.assertIn("workflow/changelog inválido", result.stdout)
         self.assertEqual(workflow.read_bytes(), b'{"nextRoute":')
+
+    def test_workflow_v2_rejects_retired_and_missing_fields_without_writes(self):
+        workflow = self.root / "workflow.json"
+        payload = self.workflow()
+        payload["active"] = "RM-0001"
+        payload["currentUnit"] = {"status": "doing"}
+        del payload["checkpoint"]
+        workflow.write_text(json.dumps(payload), encoding="utf-8")
+        before = workflow.read_bytes()
+        result = self.validate("--workflow", workflow)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("faltan campos v2: checkpoint", result.stdout)
+        self.assertIn("estado operativo prohibido", result.stdout)
+        self.assertEqual(workflow.read_bytes(), before)
+
+    def test_workflow_v2_validates_reference_authorization_and_checkpoint(self):
+        workflow = self.root / "workflow.json"
+        payload = self.workflow(
+            authorization={"status": "approved"},
+            workItemRef={"id": "RM-0001", "path": "../RM-0001"},
+            checkpoint={"resume": {"prioridad": "alta"}},
+        )
+        workflow.write_text(json.dumps(payload), encoding="utf-8")
+        result = self.validate("--workflow", workflow)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("authorization inválida", result.stdout)
+        self.assertIn("ruta relativa segura", result.stdout)
+        self.assertIn("checkpoint/waitingOn contiene estado operativo", result.stdout)
+
+    def test_workflow_v2_accepts_stable_work_item_reference(self):
+        workflow = self.root / "workflow.json"
+        workflow.write_text(json.dumps(self.workflow(
+            phase="analysis",
+            workItemRef={
+                "id": "BUG-0001",
+                "path": "context/requirements/work-items/BUG-0001",
+            },
+            checkpoint={"lastEvidence": "reproduction-3"},
+        )), encoding="utf-8")
+        result = self.validate("--workflow", workflow)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_workflow_v2_accepts_structured_waiting_on_without_operational_state(self):
+        workflow = self.root / "workflow.json"
+        workflow.write_text(json.dumps(self.workflow(
+            waitingOn={"reason": "remote readback unavailable", "evidence": "request-17"},
+        )), encoding="utf-8")
+        result = self.validate("--workflow", workflow)
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+        payload = self.workflow(waitingOn={"remote": {"status": "DONE"}})
+        workflow.write_text(json.dumps(payload), encoding="utf-8")
+        result = self.validate("--workflow", workflow)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("waitingOn", result.stdout)
+        self.assertIn("estado operativo", result.stdout)
+
+    def test_workflow_v2_requires_zoned_timestamp_and_specialist_route(self):
+        workflow = self.root / "workflow.json"
+        workflow.write_text(json.dumps(self.workflow(
+            updatedAt="2026-11-17T12:00:00",
+            nextRoute="azure-devops-rest-v7",
+        )), encoding="utf-8")
+        result = self.validate("--workflow", workflow)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("ISO-8601 con zona", result.stdout)
+        self.assertIn("no una nextRoute directa", result.stdout)
+
+    def test_workflow_symlink_is_rejected_without_following_or_writing_it(self):
+        target = self.root / "outside-workflow.json"
+        target.write_text(json.dumps(self.workflow()), encoding="utf-8")
+        before = target.read_bytes()
+        workflow = self.root / "workflow.json"
+        try:
+            workflow.symlink_to(target)
+        except (OSError, NotImplementedError):
+            self.skipTest("symlinks unavailable")
+        result = self.validate("--workflow", workflow)
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("no un symlink", result.stdout)
+        self.assertEqual(target.read_bytes(), before)
 
 
 class UpdateIntegrationTests(unittest.TestCase):
@@ -149,10 +293,18 @@ class UpdateIntegrationTests(unittest.TestCase):
             "stats.json": "context/stats.json",
             "context-README.md": "context/README.md",
             "project-profile.md": "context/requirements/project-profile.md",
+            "requirements-catalog.md": "context/requirements/requirements-catalog.md",
+            "functional-documents-catalog.md": "context/requirements/functional-documents-catalog.md",
         }.items():
             path = self.workspace / destination
             path.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(self.suite / "templates" / source, path)
+        for relative in ("context/requirements/functional", "context/requirements/work-items"):
+            (self.workspace / relative).mkdir(parents=True, exist_ok=True)
+        stats_path = self.workspace / "context/stats.json"
+        stats = json.loads(stats_path.read_text(encoding="utf-8"))
+        stats["updatedAt"] = "2026-11-17T12:00:00Z"
+        stats_path.write_text(json.dumps(stats, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
     def run_script(self, relative, *arguments):
         return subprocess.run(
@@ -163,7 +315,19 @@ class UpdateIntegrationTests(unittest.TestCase):
 
     def test_doctor_blocks_stale_route_and_preserves_entire_workspace(self):
         workflow = self.workspace / "context/workflow.json"
-        workflow.write_text(json.dumps({"nextRoute": "faro-req-implementacion", "authorization": {"status": "approved", "artifactVersion": "1"}}))
+        workflow.write_text(json.dumps({
+            "schemaVersion": 2,
+            "updatedAt": "2026-11-17T12:00:00-03:00",
+            "phase": "development",
+            "authorization": {
+                "status": "approved", "source": "human", "artifactVersion": "1", "scope": "fixture",
+            },
+            "workItemRef": None,
+            "waitingOn": None,
+            "nextRoute": "faro-req-implementacion",
+            "checkpoint": None,
+            "notes": [],
+        }))
         before = {path.relative_to(self.root): path.read_bytes() for path in self.root.rglob("*") if path.is_file()}
         result = self.run_script("faro/faro-doctor/scripts/doctor.py", "--root", self.workspace, "--strict")
         self.assertEqual(result.returncode, 1, result.stdout + result.stderr)
@@ -207,6 +371,32 @@ class UpdateIntegrationTests(unittest.TestCase):
         self.assertFalse((installed / "faro-req-implementacion").exists())
         result = self.run_script("installed/faro/faro-doctor/scripts/doctor.py", "--root", self.workspace, "--strict")
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+
+    def test_verify_routing_accepts_the_complete_v2_contract(self):
+        result = self.run_script("faro/scripts/verify-routing.py")
+        self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+        self.assertIn("contrato 2.0.0", result.stdout)
+
+    def test_verify_routing_rejects_v1_workflow_and_missing_catalog(self):
+        workflow_path = self.suite / "templates/workflow.json"
+        workflow = json.loads(workflow_path.read_text(encoding="utf-8"))
+        workflow["schemaVersion"] = 1
+        workflow["active"] = "RM-0001"
+        workflow["currentUnit"] = {"status": "doing"}
+        workflow.pop("workItemRef")
+        workflow.pop("checkpoint")
+        workflow_path.write_text(json.dumps(workflow), encoding="utf-8")
+
+        config_path = self.suite / "templates/faro-workspace-config.json"
+        config = json.loads(config_path.read_text(encoding="utf-8"))
+        config["requiredFiles"].remove("context/requirements/requirements-catalog.md")
+        config_path.write_text(json.dumps(config), encoding="utf-8")
+
+        result = self.run_script("faro/scripts/verify-routing.py")
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("siete archivos obligatorios", result.stdout)
+        self.assertIn("workflow template no contiene exactamente los campos v2", result.stdout)
+        self.assertIn("estado operativo prohibido", result.stdout)
 
     def test_release_normalization_generates_portable_checksums(self):
         path = self.suite / "faro-req-desarrollo/SKILL.md"

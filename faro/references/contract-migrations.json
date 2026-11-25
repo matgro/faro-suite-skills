@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "migrations": [
+    {
+      "fromContract": "1.13.0",
+      "toContract": "2.0.0",
+      "script": "faro/scripts/migrate_workspace_v2.py",
+      "authorization": "EXPLICIT_APPLY",
+      "readCompatibility": "DIAGNOSTIC_ONLY",
+      "writeCompatibility": "V2_ONLY",
+      "description": "Separa documentación funcional duradera de expedientes RM/BUG/TEC, crea catálogos canónicos y conserva los expedientes en rutas estables."
+    }
+  ]
+}

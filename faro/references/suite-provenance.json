@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "repository": "https://github.com/matgro/faro-suite-skills",
-  "ref": "refs/tags/v1.8.1",
-  "packageVersion": "1.8.1",
+  "ref": "refs/tags/v2.0.0",
+  "packageVersion": "2.0.0",
   "integrityFile": "checksums.sha256"
 }

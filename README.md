@@ -9,7 +9,7 @@
 </p>
 
 <p align="center">
-  <strong>23 skills</strong> · Complete lifecycle · Integrity checked · Agent-portable
+  <strong>24 skills</strong> · Complete lifecycle · Integrity checked · Agent-portable
 </p>
 
 ---
@@ -31,10 +31,16 @@ It is designed for teams that want an agent to move autonomously without losing 
 ## The path
 
 ```text
-Request → Context → Requirements → Technical plan → Build → QA → Validation → Delivery
+Request → Context → Work item → Technical plan → Build → QA → Validation → Closure
 ```
 
 FARO does not collapse those stages into paperwork. Each specialist skill exists to make one transition clear, evidence-based, and reversible when the facts do not support moving forward.
+
+### Durable knowledge and stable work-item dossiers
+
+Workspace contract `2.0.0` separates the current, durable description of the product from the evidence of a particular change. Functional baselines live under `context/requirements/functional/DF-ID/`; RM, BUG and TEC dossiers live under `context/requirements/work-items/ID/` and keep that path after completion. Jira or Azure DevOps owns operational status, priority and assignment. Local catalogs locate/reserve artifacts, while `context/workflow.json` is only a temporary resume pointer.
+
+A conforming validation does not silently close work. `faro-cierre` first reconciles durable product, architecture, operations and reference knowledge, verifies any required external delivery, transitions and rereads the remote item, then freezes the dossier with a checksum manifest. Later changes create a linked successor instead of reopening history. See [the work-item lifecycle contract](faro/references/work-item-lifecycle.md).
 
 ### Readable functional visuals
 
@@ -114,6 +120,7 @@ faro/                         Runtime suite
 ├── faro-arq-*/               Evidence-based architecture routes
 ├── faro-req-*/               Requirements, analysis, implementation, validation
 ├── faro-qa-ejecucion/        QA cases and evidence
+├── faro-cierre/              Knowledge promotion, remote closure and dossier freeze
 ├── faro-incidentes/          Incident intake, governed investigation and disposition
 ├── faro-ux/                  Visible-flow and interface design
 ├── faro-entrega/             Explicit commit, PR, release, and deployment handoff
@@ -126,6 +133,7 @@ manifest.json                 Suite contract and complete skill inventory
 checksums.sha256              SHA-256 integrity inventory for the runtime tree
 CHANGELOG.md                  Release changes and safe update instructions
 faro/references/suite-changelog.json  Distributed rename history for diagnostics
+faro/references/contract-migrations.json  Supported workspace-contract migrations
 tests/validate_package.py     Dependency-free package validator
 ```
 
@@ -149,7 +157,7 @@ The validator checks the runtime skills, package manifest, bootstrap contract, f
 
 Read [CHANGELOG.md](CHANGELOG.md) before replacing a suite. The incoming `faro/references/suite-changelog.json` travels with the installation and records renamed skills for tooling. Bootstrap must report the affected changes, compare the complete trees and obtain explicit replacement confirmation; it must not overlay new files onto the old installation or migrate project files implicitly.
 
-The pending package `1.3.0` renames the development route to `faro-req-desarrollo`. Its workspace contract remains `1.13.0`: package updates do not require reinitializing projects. After refreshing the runtime, run doctor on each workspace you resume. A retired `nextRoute` is reported with the current destination and requires an explicitly authorized, targeted correction that preserves requirement versions, scope, approvals and history.
+FARO `2.0.0` changes the workspace contract from `1.13.0` to `2.0.0`. Installing the runtime does not migrate projects. Run doctor first: a clean legacy workspace is reported as migratable, while mixed, corrupt and future layouts remain blocked. Review the dry-run from `faro/scripts/migrate_workspace_v2.py --root <workspace>` and use `--apply` only after explicit authorization. The migrator does not create remote items or perform global replacements inside historical documents.
 
 Before publishing a new release, synchronize package version, provenance tag and changelog, then regenerate the inventory with `python tools/update_checksums.py` and run:
 

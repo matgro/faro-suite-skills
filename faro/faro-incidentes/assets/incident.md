@@ -1,13 +1,15 @@
 # <INC-ID> — <Título del síntoma>
 
-## Control
+## Control y seguimiento
 
-- Estado: <ABIERTO | EN_INVESTIGACION | CERRADO>.
 - Versión del registro: <versión>.
 - Solicitud y autorización de investigación: <fuente, alcance y límites>.
 - Proyecto, entorno y servicios afectados: <confirmados o pendientes>.
-- Seguimiento: <OFF o proveedor, ID y URL verificados>.
-- Relacionados: <INC/BUG/RM/TEC o ninguno>.
+- Seguimiento: <OFF o proveedor, ID, URL y tipo verificados>.
+- Último readback remoto: <fecha/zona, estado y relaciones observados, o no aplica>. Es evidencia fechada, no una fuente local alternativa del estado operativo.
+- Relacionados: <INC/BUG/RM/TEC, expedientes e items remotos independientes, o ninguno>.
+
+Con seguimiento `REQUIRED`, consultar el estado operativo vigente en el gestor; no mantener aquí una copia mutable de estado, prioridad o asignación. Con `OFF`, indicar que no existe estado remoto.
 
 ## Reporte e impacto
 
@@ -51,8 +53,8 @@ No inventar horas ni completar huecos por inferencia. Mantener zona de origen y 
 
 ## Decisión y acciones derivadas
 
-| Acción propuesta | Decisión / autorización | INC/BUG/RM/TEC o seguimiento externo | Verificación / pendiente |
-| --- | --- | --- | --- |
+| Acción propuesta | Decisión / autorización | Expediente derivado | Item remoto y relación bidireccional | Verificación / pendiente |
+| --- | --- | --- | --- | --- |
 
 Investigar no autoriza corregir. No inventar IDs, responsables ni fechas; registrar compromisos sólo si se confirmaron. El BUG referencia esta investigación sin duplicarla.
 
@@ -64,8 +66,9 @@ Investigar no autoriza corregir. No inventar IDs, responsables ni fechas; regist
 - Decisión humana de archivo no concluyente, si aplica: <fuente o no autorizado>.
 - Acciones abiertas y siguiente paso: <referencias y pendientes>.
 - Condición de reapertura: <nueva evidencia o recurrencia del mismo caso>.
+- Cierre remoto, si `REQUIRED`: <operación explícita, estado leído antes/después y evidencia; no inferir por entrega o cierre de un derivado>.
 
-## Historial
+## Historial de eventos del expediente
 
-| Versión / fecha con zona | Cambio y motivo | Evidencia / autorización |
-| --- | --- | --- |
+| Versión / fecha con zona | Evento: apertura, investigación, conclusión, cierre evidenciado o reapertura | Cambio y motivo | Evidencia / autorización |
+| --- | --- | --- | --- |
