@@ -212,6 +212,14 @@ Every release carries `faro/references/suite-provenance.json`, which names the s
 
 Do not add API keys, tokens, passwords, private certificates, cookies, `.env` files, client data, or production exports. See [SECURITY.md](SECURITY.md) for the full policy.
 
+## Support FARO
+
+If FARO saves you time, an optional contribution helps maintain the suite, improve examples, and publish new skills. All skills are free to use.
+
+[Support FARO on GitHub Sponsors](https://github.com/sponsors/matgro)
+
+<!-- Once the Cafecito profile is confirmed, add a link here labeled “Invitame un cafecito (Argentina)” and enable the custom URL in .github/FUNDING.yml. -->
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
