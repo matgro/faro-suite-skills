@@ -1,6 +1,6 @@
 {
-  "schemaVersion": 1,
-  "contractVersion": "1.13.0",
+  "schemaVersion": 2,
+  "contractVersion": "2.0.0",
   "managedBy": "FARO",
   "authority": {
     "globalPolicy": "faro/SKILL.md y skills faro-*",
@@ -14,17 +14,30 @@
     "statePath": "context/stats.json",
     "indexPath": "context/README.md",
     "profilePath": "context/requirements/project-profile.md",
+    "requirementsRoot": "context/requirements",
+    "requirementsCatalogPath": "context/requirements/requirements-catalog.md",
+    "functionalRoot": "context/requirements/functional",
+    "functionalCatalogPath": "context/requirements/functional-documents-catalog.md",
+    "workItemsRoot": "context/requirements/work-items",
     "workflowPath": "context/workflow.json",
     "glossaryPath": "context/glossary.md",
+    "migrationRecordPath": "context/faro-migration-v2.json",
     "agentsPath": "AGENTS.md"
   },
-  "requiredDirectories": ["context", "context/requirements"],
+  "requiredDirectories": [
+    "context",
+    "context/requirements",
+    "context/requirements/functional",
+    "context/requirements/work-items"
+  ],
   "requiredFiles": [
     "AGENTS.md",
     "context/faro-workspace.json",
     "context/stats.json",
     "context/README.md",
-    "context/requirements/project-profile.md"
+    "context/requirements/project-profile.md",
+    "context/requirements/requirements-catalog.md",
+    "context/requirements/functional-documents-catalog.md"
   ],
   "conditionalFiles": [
     {
@@ -34,6 +47,10 @@
     {
       "path": "context/glossary.md",
       "when": "Hay vocabulario de dominio sustentado que conservar y la interacción permite escritura documental; su ausencia no invalida el workspace."
+    },
+    {
+      "path": "context/faro-migration-v2.json",
+      "when": "El workspace fue migrado explícitamente desde un contrato anterior; registra el mapa y evidencia de la migración."
     }
   ],
   "templateSources": {
@@ -42,10 +59,32 @@
     "stats": "faro/templates/stats.json",
     "index": "faro/templates/context-README.md",
     "projectProfile": "faro/templates/project-profile.md",
+    "requirementsCatalog": "faro/templates/requirements-catalog.md",
+    "functionalCatalog": "faro/templates/functional-documents-catalog.md",
+    "workItemClosure": "faro/templates/work-item-closure.json",
     "workflow": "faro/templates/workflow.json",
     "glossary": "faro/templates/glossary.md"
   },
   "supportedStates": ["new", "initializing", "available", "disabled"],
+  "compatibility": {
+    "diagnosticReadContracts": ["1.13.0", "2.0.0"],
+    "writeContract": "2.0.0",
+    "migrationCatalog": "faro/references/contract-migrations.json"
+  },
+  "workItems": {
+    "supportedKinds": ["RM", "BUG", "TEC"],
+    "idPattern": "^(RM|BUG|TEC)-[0-9]{4}$",
+    "directoryPattern": "context/requirements/work-items/<ID>",
+    "primaryDocumentPattern": "<ID>.md",
+    "closurePattern": "<ID>-cierre.json",
+    "operationalStateAuthority": "EXTERNAL_WORK_TRACKER",
+    "catalogMustNotContain": ["estado", "prioridad", "asignado", "assignee", "status", "priority", "sprint", "iteración", "iteration", "área", "area", "backlog"]
+  },
+  "functionalDocuments": {
+    "idPattern": "^DF-[0-9]{3}$",
+    "directoryPattern": "context/requirements/functional/<ID>",
+    "primaryDocumentPattern": "<ID>.md"
+  },
   "initialization": {
     "requiresProjectIdentity": true,
     "requiresProjectKind": true,

@@ -1,8 +1,17 @@
+---
+schema_version: "1.0"
+work_item_id: "<RM-ID / BUG-ID / TEC-ID>"
+artifact_type: "TECHNICAL_PLAN"
+canonical_path: "context/requirements/work-items/<ID>/<ID>-plan-tecnico.md"
+document_version: "0.1"
+plan_readiness: PRELIMINAR
+---
 # Plan técnico — <RM-ID / BUG-ID / TEC-ID>
 
 ## Control
-- Versión: 0.1. Estado: PRELIMINAR / BLOQUEADO / LISTO_PARA_DESARROLLO.
+- Versión: 0.1. Preparación técnica: PRELIMINAR / BLOQUEADO / LISTO_PARA_DESARROLLO.
 - Entrada/version/baseline/autorización/repositorio/revisión/fecha: NO DEFINIDO.
+- La preparación técnica es un gate del plan; estado, prioridad y asignación operativos se consultan en el gestor remoto cuando aplica.
 
 ## Evidencia y diseño
 | Componente observado | Hecho | Revisión/localizador | Elemento funcional |

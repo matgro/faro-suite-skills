@@ -1,7 +1,7 @@
 ---
 name: faro-ux
 description: Use when FARO defines screens and frontend catalogue fit.
-version: 1.2.0
+version: 2.0.0
 author: Hermes Agent
 license: MIT
 metadata:
@@ -14,11 +14,14 @@ metadata:
 
 En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase, sin alterar alcance ni autorizaciones.
 
+Leer también [Expedientes y conocimiento duradero](../references/work-item-lifecycle.md). UX trabaja sobre el mismo expediente estable que las demás fases; no crea documentos planos, no resuelve IDs por glob y no usa el workflow como catálogo.
+
 ## Rol
-Define la solución visible de un RM: pantallas, navegación, contenido, estados y uso del catálogo local. No crea reglas de negocio, no decide arquitectura técnica y no implementa producto.
+Define la solución visible de un RM, BUG o TEC: pantallas, navegación, contenido, estados y uso del catálogo local. No crea reglas de negocio, no decide arquitectura técnica y no implementa producto.
 
 ## Precondiciones
 - Se conoce RM/BUG, versión y RF/CA visibles.
+- `work_item_contract.py resolve --root <root> --id <ID> --json` localiza un expediente mutable; catálogo, `workflow.workItemRef` y primario coinciden. Un expediente congelado requiere un sucesor, no una edición de UX.
 - Se leyó arquitectura e instrucciones locales.
 - Para Laravel/Blade, se revisaron `/template`, `resources/views/template/components` y pantallas del mismo dominio.
 
@@ -26,9 +29,9 @@ Define la solución visible de un RM: pantallas, navegación, contenido, estados
 1. Mapear cada elemento visible a RF/CA. Lo no definido se registra como PD y vuelve a `faro-req-ingenieria`. **Completo:** nada visible inventa comportamiento.
 2. Inventariar patrones del catálogo, componentes de dominio, pantallas análogas y restricciones responsive/accesibles. **Completo:** se reutiliza patrón o se justifica excepción.
 3. Definir tarea principal, navegación, jerarquía, datos y estados de carga, vacío, error, permiso, éxito y extremos relevantes. Para navegación, decisiones visibles o estados que no se comprendan en tabla, usar un bloque Markdown/Mermaid (`flowchart` o `stateDiagram-v2`) dentro del DF o RM existente; debe ser legible sin renderizado y trazar RF/CA/PD ya definidos. **Completo:** cada estado aplica o se descarta con motivo y ningún visual inventa comportamiento.
-4. Registrar diseño proporcional en el artefacto FARO existente; el Mermaid está permitido como visual editable y legible en README. Mockup sólo si el usuario lo pidió. **Completo:** no se crean documentos visuales paralelos sin valor de revisión.
+4. Registrar diseño proporcional en el artefacto FARO existente dentro de la ruta devuelta por el resolver; el Mermaid está permitido como visual editable y legible en README. Mockup sólo si el usuario lo pidió. **Completo:** no se crean documentos visuales planos o paralelos sin valor de revisión.
 5. Si seguimiento está `REQUIRED`, publicar el cierre o bloqueo de UX conforme a `../references/comment-format.md`, con enlace al artefacto cuando exista, manteniendo el estado remoto de trabajo; si la sincronización falla, bloquear el flujo.
-6. Actualizar workflow y volver a `faro-req-desarrollo` cuando esté listo. **Completo:** desarrollo recibe decisiones concretas.
+6. Actualizar sólo el puntero/checkpoint permitido del workflow, conservando `workItemRef` y sin copiar estado, prioridad, asignación o backlog; volver a `faro-req-desarrollo` cuando esté listo. **Completo:** desarrollo recibe decisiones concretas sobre el mismo expediente.
 
 ## Invariantes
 - El catálogo guía el markup; detalles de dominio viven en el proyecto.

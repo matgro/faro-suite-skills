@@ -1,12 +1,14 @@
 {
-  "schemaVersion": 1,
-  "contractVersion": "1.13.0",
+  "schemaVersion": 2,
+  "contractVersion": "2.0.0",
   "contractSource": "faro/templates/faro-workspace-config.json",
   "managedArtifacts": [
     "AGENTS.md",
     "context/faro-workspace.json",
     "context/stats.json",
     "context/README.md",
-    "context/requirements/project-profile.md"
+    "context/requirements/project-profile.md",
+    "context/requirements/requirements-catalog.md",
+    "context/requirements/functional-documents-catalog.md"
   ]
 }

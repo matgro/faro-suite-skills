@@ -16,9 +16,9 @@ Esta página describe instrucciones para el agente contenidas en Markdown y cat�
 | --- | --- | --- | --- |
 | Inicialización con `REQUIRED` y proveedor confirmado | Decisión ya recogida por inicialización; contrato, perfil, estado y fuentes | Adaptador del proveedor y metadatos no sensibles en `context/requirements/project-profile.md` | No repetir la consulta de bootstrap ni recibir solicitudes antes de `available` |
 | Proyecto `available` sin integración o con cambio de política | Petición explícita de agregar/configurar y autorización humana | Registrar modo, proveedor, alcance permitido y fuente de autorización | Una URL recibida no autoriza por sí sola cambiar política |
-| Jira `REQUIRED` | URL base y clave del proyecto confirmadas | Acceso al proyecto, credenciales y workflow real | URL/clave obligatorias antes de crear/importar solicitudes |
-| Azure DevOps `REQUIRED` | URL de organización, proyecto, área, equipo y configuración aplicable | Lectura autenticada, tipos, campos, áreas, iteraciones y estados reales | Valores globales son propuestas hasta confirmación y verificación |
-| `OFF` | Perfil y alcance del pedido | Continuidad sin alta de tickets por el seguimiento FARO | No convertir `OFF` en `REQUIRED` por inferencia |
+| Jira `REQUIRED` | URL base y clave del proyecto confirmadas | Acceso, credenciales, tipos, workflows y relaciones reales para RM/BUG/TEC/INC/TASK | URL/clave obligatorias antes de crear/importar solicitudes; no asumir un workflow global |
+| Azure DevOps `REQUIRED` | URL de organización, proyecto, área, equipo y configuración aplicable | Lectura autenticada de tipos, workflows por tipo, relaciones, campos, áreas e iteraciones reales | Valores globales son propuestas hasta confirmación y verificación |
+| `OFF` | Perfil y alcance del pedido | Consulta, arquitectura y documentación sin unidad gobernada | No crear RM/BUG/TEC Markdown como gestor local ni convertir `OFF` en `REQUIRED` por inferencia |
 
 `*.visualstudio.com` y `dev.azure.com` se tratan como el mismo proveedor `AZURE_DEVOPS`; se conserva la URL confirmada, no se transforma automáticamente. La URL de proyecto puede descomponerse como propuesta en organización/proyecto, pero esos valores se confirman. No trasladar los valores ilustrativos o predeterminados del repositorio a otro proyecto como hechos.
 
@@ -33,7 +33,7 @@ flowchart TD
     K5 --> K6
     K6 --> K7{"Credenciales y capability disponibles para lectura autenticada"}
     K7 -->|"No"| K8["Registrar bloqueo sin llamadas remotas"]
-    K7 -->|"Sí"| K9["Descubrir proyecto, campos y workflow reales"]
+    K7 -->|"Sí"| K9["Descubrir tipos, workflows por clase, campos y relaciones reales"]
     K9 --> K10["Persistir sólo metadatos verificados y permisos en perfil"]
 ```
 
@@ -43,7 +43,7 @@ flowchart TD
 
 Los adaptadores permiten usar el entorno ya inyectado o un `.env` **global de un agente**, incluso de otro agente, en sus directorios de configuración fuera del workspace y de repositorios indexados. Prohíben buscar o leer `.env` del workspace, de una aplicación o de un repositorio. No reutilizar credenciales de la aplicación. Usar valores sólo para la llamada autenticada, sin imprimirlos, exportarlos ni persistirlos en perfil, evidencia o comentarios.
 
-- **Jira:** localizar y verificar credenciales disponibles sin revelar valores. El adaptador no fija aquí una lista canónica de nombres de variables: no inventarla. Si faltan, pedir configuración segura fuera del repositorio; una URL, exportación o texto manual sólo sustituye la fuente remota si la política **no** es `REQUIRED`.
+- **Jira:** para el readback de cierre, `JIRA_BASE_URL`, `JIRA_EMAIL` y `JIRA_API_TOKEN` permanecen fuera del workspace. La raíz global debe coincidir exactamente con `jira.base_url` y la URL catalogada antes de enviar el token. Si falta alguna, bloquear; una URL, exportación o texto manual no sustituye la fuente remota bajo política `REQUIRED`.
 - **Azure DevOps:** `AZDO_PAT` permanece fuera del workspace. La capability requiere `AZDO_ORGANIZATION_URL` y `AZDO_PAT`; contempla valores opcionales de proyecto, área, equipo, iteración, asignado y timeout. Los metadatos globales sólo se aceptan si coinciden con el perfil ya confirmado; si se proponen durante inicialización, exigen confirmación y lectura remota antes de persistirlos. Sin PAT, no consultar ni modificar el servicio.
 
 **Fuentes:** [fuentes de credenciales Jira](../../faro/faro-int-jira/SKILL.md), [fuentes globales Azure DevOps](../../faro/faro-int-azure-devops/SKILL.md), [variables y seguridad de la capability](../../faro/azure-devops-rest-v7/SKILL.md).
@@ -52,36 +52,42 @@ Los adaptadores permiten usar el entorno ya inyectado o un `.env` **global de un
 
 | Capa | Lee / verifica | Escribe dentro del alcance autorizado | Lo que no acredita |
 | --- | --- | --- | --- |
-| `faro-int-jira` → `jira-rest-v3` | Perfil, URL/clave, acceso autenticado, estados/transiciones de la issue/proyecto | Issue/SRC, ID/URL en RM, referencias disponibles y comentarios/transiciones permitidos | Jira no aprueba el RM, QA ni validación |
-| `faro-int-azure-devops` → `azure-devops-rest-v7` | Organización/proyecto, tipos y campos, áreas, iteraciones del proyecto/equipo, estados y valores configurados | Work item/SRC, ID/URL/organización/proyecto/área en RM, referencias y comentarios/transiciones permitidos | Azure DevOps no aprueba funcionalidad ni implementación |
-| Capability `azure-devops-rest-v7` | Conectividad/identidad, configuración real y item actual antes de modificarlo; identidades accesibles si hace falta validar asignado | Llamadas reales autenticadas con `curl`, JSON/JSON Patch según operación y lectura posterior | No interpreta ni modifica el contrato FARO; no es ruta de ciclo de vida |
+| `faro-int-jira` → `jira-rest-v3` | Perfil, URL/clave, acceso, mapeo RM/BUG/TEC/INC/TASK, workflow de cada tipo y relaciones padre/hijo y origen/derivado | Items propios, SRC, referencia remota en catálogo/expediente y comentarios, vínculos o transiciones permitidos | Jira no aprueba definición, QA, validación, entrega ni cierre |
+| `faro-int-azure-devops` → `azure-devops-rest-v7` | Organización/proyecto, mapeos y estados por tipo, relaciones, campos, áreas, iteraciones y valores configurados | Items propios, SRC, referencia remota en catálogo/expediente y comentarios, vínculos o transiciones permitidos | Azure DevOps no aprueba funcionalidad, implementación, entrega ni cierre |
+| Capability `azure-devops-rest-v7` | Conectividad/identidad, tipos, estados por tipo, relaciones e item actual antes de modificarlo; identidades accesibles si hace falta validar asignado | Llamadas reales autenticadas con `curl`, JSON/JSON Patch según operación y readback del recurso afectado | No clasifica trabajo ni modifica el contrato FARO; no es ruta de ciclo de vida |
 
 `azure-devops-rest-v7` está distribuida en el árbol y declarada en el manifest; eso no prueba descubrimiento, credenciales o permisos del runtime de destino. `jira-rest-v3` es una capability **externa**: no se distribuye aquí su implementación ni se puede afirmar su instalación o detallar una API no contenida en estas fuentes. Una capability ausente no se sustituye por una sincronización simulada.
 
-La capability Azure DevOps prescribe descubrir conexión, tipos, campos del tipo, áreas, iteraciones de proyecto/equipo y estados antes de registrar valores definitivos o crear items. Para actualizar se lee primero el item y su campo/estado real; cada mutación requiere lectura posterior del objetivo. En comentarios y vínculos, verificar también esos recursos afectados, no sólo que el item siga existiendo.
+El perfil registra un mapeo por clase local —RM, BUG, TEC, INC y TASK—, nunca un tipo o workflow global supuesto. Cada clase apunta a un tipo remoto confirmado y a sus equivalencias de estado; distintos tipos del mismo proyecto pueden usar workflows diferentes. También se verifican por separado las relaciones padre/hijo para TASK y origen/derivado para INC y su corrección.
+
+La capability Azure DevOps prescribe descubrir conexión, tipos, campos del tipo, relaciones, áreas, iteraciones de proyecto/equipo y estados de cada tipo mapeado antes de registrar valores definitivos o crear items. Antes de responder por estado o decidir una transición se releen item, tipo, estado y relaciones pertinentes. Después de crear, actualizar, comentar, transicionar o vincular, se relee exactamente el recurso afectado; una respuesta HTTP exitosa ni comprobar solamente que el item existe acreditan el efecto solicitado.
+
+Jira o Azure DevOps conserva la autoridad de estado operativo, prioridad, asignación, área/iteración y cola. Catálogo, expediente y workflow sólo guardan proveedor, key/ID, URL, tipo observado, fecha y relaciones necesarias para localizar el trabajo. Un último readback puede quedar como evidencia fechada no canónica, nunca como segundo estado local.
 
 **Fuentes:** [adaptador Jira](../../faro/faro-int-jira/SKILL.md), [adaptador Azure DevOps](../../faro/faro-int-azure-devops/SKILL.md), [capability técnica y operaciones](../../faro/azure-devops-rest-v7/SKILL.md), [inventario distribuido](../../manifest.json), [verificación de escrituras de INC](../../faro/faro-incidentes/SKILL.md).
 
 ### Estados operacionales, estimación y permisos
 
-| Regla | Comportamiento codificado | Bloqueo / autorización independiente |
+| Regla | Contrato exigido | Bloqueo / autorización independiente |
 | --- | --- | --- |
-| Mapeo remoto | `PENDING`, `DOING`, `DONE` y `CANCELLED` cuando existe; nombres reales del proyecto | No asumir nombres de Jira en Azure DevOps ni de otro proceso |
-| Jira sin equivalencias | `PENDING`, `DOING` y `DONE` son obligatorias | Si falta alguna, bloquear sincronización; si sólo falta `CANCELLED`, bloquear únicamente cancelaciones |
+| Tipo por clase | RM, BUG, TEC, INC y TASK se mapean individualmente a tipos remotos confirmados; un INC nuevo usa tipo neutral y TASK uno compatible con padre/hijo | No reutilizar otro tipo por conveniencia ni tomar el tipo recibido como clasificación funcional |
+| Workflow por tipo | Cada tipo usado mapea sus equivalentes reales `PENDING`, `DOING`, `DONE` y, si existe, `CANCELLED`; los workflows pueden diferir dentro del mismo proyecto | Si falta tipo, relación o transición, bloquear sólo la operación afectada y pedir configuración; no asumir nombres de otro proceso o proveedor |
 | Inicio y trabajo | Iniciar en equivalente de `PENDING` o `DOING`; mantener trabajo durante definición, análisis, UX, desarrollo, QA, validación y entrega | El estado remoto no reemplaza autorización de fase/versionado FARO |
-| Fin o cancelación | `DONE` al completar alcance autorizado; `CANCELLED` sólo tras cancelación humana explícita | Concluir que no hay defecto no equivale a cancelar el INC |
+| Fin o cancelación | `DONE` sólo se solicita mediante la operación explícita de cierre aplicable: `faro-cierre` para RM/BUG/TEC, cierre del incidente para INC y cierre explícito de la unidad para TASK; siempre con lectura previa y readback. `CANCELLED` exige cancelación humana explícita | Una fase o tarea local `COMPLETADA`, commit, push, PR, merge, tag, release o deploy no cierra ningún item; concluir que no hay defecto no cancela INC |
 | Alta de `Task` en Azure DevOps | Campo de estimación configurado, editable y compatible; si se omite estimación, usar el valor numérico `1` | No crear si el campo no acepta el valor; no reemplazar estimación explícita ni aplicar `1` a otros tipos sin instrucción |
 | Vincular una `Task` recibida | Preservar item y su información | Vincular no autoriza modificar su estimación |
 | Actividad, iteración o asignado no validados | Consultar campos/valores, iteraciones del equipo e identidades accesibles según corresponda | No adivinar, sustituir silenciosamente ni aplicar porque existe un default |
 | Mutaciones fuera del seguimiento básico | Asignación, prioridad, adjuntos, borrado, tiempos y sprints requieren autorización específica | En Azure DevOps también cambiar área, iteración, actividad o estimación exige autorización independiente, aunque haya defaults |
 
-`REQUIRED` permite crear el item del RM o del INC solicitado, mantener vínculos configurados, publicar hitos relevantes y transicionar según el mapeo verificado. No habilita modificar esquemas/procesos remotos, ampliar campos por conveniencia ni crear un BUG derivado sin decisión explícita. La regla de estimación de alta de `Task` no es un permiso para reestimar items existentes. Los payloads ilustrativos tampoco autorizan sus campos por el mero hecho de mostrarlos.
+`REQUIRED` permite crear items RM, BUG, TEC, INC o TASK conforme al mapeo de clase verificado, mantener vínculos configurados, publicar hitos relevantes y transicionar según el mapeo. Cada RM/BUG/TEC/INC tiene item propio; cada TASK remota tiene padre verificado. Un BUG directo, derivado de QA o derivado de INC conserva esa relación tanto en el expediente como en el item y no se crea sin expected/reproducción y autorización aplicables. INC y derivado nunca se convierten entre sí ni comparten cierre. `REQUIRED` no habilita modificar esquemas/procesos remotos ni ampliar campos por conveniencia.
 
 **Fuentes:** [estados y límites Jira](../../faro/faro-int-jira/SKILL.md), [estimación y límites Azure DevOps](../../faro/faro-int-azure-devops/SKILL.md), [validación de valores y mutaciones](../../faro/azure-devops-rest-v7/SKILL.md), [defaults del perfil](../../faro/templates/project-profile.md).
 
 ## 3. Recepción, trazabilidad, comentarios y fallo de sincronización
 
-Una issue recibida genera fuente `SRC-JIRA-<KEY>`; un work item, `SRC-AZDO-<ID>`. Se entregan a `faro-req-ingenieria`, salvo síntoma/causa desconocida que requiere `faro-incidentes`. Para solicitudes externas sin item recibido, el alta acompaña la creación del RM. Conservar trazabilidad bidireccional del RM y las referencias disponibles a repositorio, plan, rama, PR, QA o entrega; no copiar adjuntos ni información sensible sin autorización.
+Una issue recibida genera fuente `SRC-JIRA-<KEY>`; un work item, `SRC-AZDO-<ID>`. Se entregan a la ruta que corresponda por evidencia —no por el nombre del tipo remoto—; un síntoma o causa desconocida requiere `faro-incidentes`. Para solicitudes externas sin item recibido, el alta acompaña la creación del expediente. Conservar trazabilidad bidireccional y las referencias disponibles a repositorio, plan, rama, PR, QA o entrega; catálogo y expediente guardan proveedor, key/ID, URL, tipo observado y fecha de lectura, nunca una copia canónica de estado, prioridad, asignado, área, iteración o sprint.
+
+La migración de un workspace no crea items remotos. Si un expediente migrado conserva vacíos proveedor, ID y URL, el adaptador crea o importa y relee el mismo item; después `work_item_contract.py link-external` completa ese triple de forma atómica. El comando no sobreescribe referencias parciales o distintas. Hasta reconciliarla, la unidad permanece diagnosticable pero no avanza ni se congela; crear un segundo item para eludir el conflicto está prohibido.
 
 En INC, un item recibido de tipo Bug conserva ID/tipo/contenido y workflow verificado: no prueba defecto y no obliga a crear un neutral adicional. **Sólo las altas nuevas** del INC exigen tipo neutral autorizado; si falta, pedir decisión sin inventar Incident ni usar Bug por defecto. Un neutral separado del recibido necesita decisión explícita y enlace al original. INC y corrección mantienen IDs/vínculos independientes y criterios de cierre distintos; véase [incidentes](04-incidentes.md).
 
@@ -90,9 +96,9 @@ flowchart TD
     S0["Solicitud o INC con política REQUIRED"] --> S1{"Item recibido"}
     S1 -->|"Sí"| S2["Leer, preservar ID y tipo; registrar SRC y decidir ruta"]
     S1 -->|"No"| S3["Confirmar tipo y alta autorizada; neutral si INC"]
-    S2 --> S4["Sincronizar hito, vínculos o transición del alcance"]
+    S2 --> S4["Releer item, tipo, estado y relaciones; ejecutar sólo la mutación autorizada"]
     S3 --> S4
-    S4 --> S5{"Lectura posterior confirma el objetivo solicitado"}
+    S4 --> S5{"Readback del recurso afectado confirma exactamente el efecto"}
     S5 -->|"Sí"| S6["Registrar evidencia y continuar fase permitida"]
     S5 -->|"No"| S7["Conservar trabajo local y error real en waitingOn"]
     S7 --> S8["No avanzar fase ni declarar cierre remoto"]
@@ -115,17 +121,17 @@ No prefijo `FARO`, autor, fecha, repetición de estado remoto, comandos, hashes,
 
 ### Fallos reales y recuperación del flujo
 
-Si falla una sincronización obligatoria, guardar el error real sin secretos en `waitingOn` y **no pasar a la siguiente fase**. Una respuesta de escritura exitosa no basta: releer item, comentario o vínculos afectados antes de afirmar éxito. En entrega, el fallo de seguimiento impide declararla cerrada aunque la operación Git o el despliegue sí hayan sucedido; reportar ambos resultados sin inventar reversión automática.
+Si falla una sincronización obligatoria, guardar el error real sin secretos en `waitingOn` y **no pasar a la siguiente fase dependiente**. Una respuesta de escritura exitosa no basta: releer item, comentario o vínculos afectados antes de afirmar éxito. En entrega, reportar por separado la operación Git/deploy y la sincronización; la primera puede haber ocurrido, pero el cierre queda bloqueado sin readback y nunca se inventa una reversión automática.
 
 La capability Azure DevOps distingue `401` (PAT ausente/vencido/inválido), `403` (permisos/scope), `404` (confirmar configuración y referencia), `400` (payload/campo/estado no permitido) y `429` (respetar `Retry-After`, reintento acotado). La respuesta no autoriza ampliar permisos, cambiar el proceso ni omitir el seguimiento.
 
-**Fuentes:** [trazabilidad y fallos Jira](../../faro/faro-int-jira/SKILL.md), [trazabilidad y fallos Azure DevOps](../../faro/faro-int-azure-devops/SKILL.md), [seguimiento INC](../../faro/faro-incidentes/SKILL.md), [plantilla y frecuencia de comentarios](../../faro/references/comment-format.md), [fallos de la capability](../../faro/azure-devops-rest-v7/SKILL.md), [cierre de entrega](../../faro/faro-entrega/SKILL.md).
+**Fuentes:** [trazabilidad y fallos Jira](../../faro/faro-int-jira/SKILL.md), [trazabilidad y fallos Azure DevOps](../../faro/faro-int-azure-devops/SKILL.md), [seguimiento INC](../../faro/faro-incidentes/SKILL.md), [plantilla y frecuencia de comentarios](../../faro/references/comment-format.md), [fallos de la capability](../../faro/azure-devops-rest-v7/SKILL.md), [ciclo de expedientes](../../faro/references/work-item-lifecycle.md).
 
 ## 4. Entrega: cada acción necesita su alcance autorizado
 
 | Acción / entrada | Preparación y ejecución permitida | Evidencia de salida / bloqueo |
 | --- | --- | --- |
-| Crear rama para incremento funcional RM | Base autorizada y convención `feature/<RM-ID>-<descripcion-kebab-case>`, no `feat/` | No pisar cambios ajenos; crear rama no autoriza publicar |
+| Crear rama para RM/BUG/TEC | Base autorizada y convención observada del repositorio; si no existe una, usar `feature/<ID>-<descripcion-kebab-case>` | No imponer el fallback sobre una regla real, usar `feat/` por inferencia, pisar cambios ajenos ni confundir creación con publicación |
 | Commit | RM/BUG/TEC, versión, validación, reglas del repositorio, Git y diff revisados | Sólo archivos del alcance; sin secretos/configuración local/generados indebidos |
 | Push | Rama, remoto y referencias autorizadas; decisión de versión/tag resuelta | Verificar referencia remota; push no crea PR, release ni deploy |
 | PR | Título y descripción funcional, tareas verificadas, diff y checks | Registrar referencia real; abrir PR no prueba merge |
@@ -133,7 +139,7 @@ La capability Azure DevOps distingue `401` (PAT ausente/vencido/inválido), `403
 | Deploy | Ambiente nombrado, artefacto identificado, migraciones, health checks, observabilidad y rollback conocidos | Producción no se infiere; no reconstruir una versión distinta |
 | Rollback | Acción y ambiente autorizados, reglas y riesgos revisados | Rollback de código no autoriza rollback destructivo de datos |
 
-La skill lee reglas de repositorio, CI, despliegue, rollback y estado Git; declara huecos, checks, migraciones, configuración/secretos **por clave**, riesgos y evidencia de validación. Ejecuta sólo la operación solicitada, registra comando/referencia/resultado y evidencia del ambiente, actualiza workflow y documentación operacional afectada. Con seguimiento `REQUIRED`, comenta cada operación externa autorizada con su referencia durable y verifica la sincronización.
+La skill lee reglas de repositorio, CI, despliegue, rollback y estado Git; declara huecos, checks, migraciones, configuración/secretos **por clave**, riesgos y evidencia de validación. Ejecuta sólo la operación solicitada y registra referencia/resultado/evidencia en `<ID>-entrega.md` del expediente estable. Con seguimiento `REQUIRED`, comenta o vincula la operación externa y relee tanto ese recurso como el item. No modifica el estado remoto a `DONE`, no genera `<ID>-cierre.json`, no congela el expediente y no limpia workflow: esas acciones pertenecen a `faro-cierre`.
 
 ```mermaid
 flowchart TD
@@ -147,12 +153,15 @@ flowchart TD
     T6 --> T7
     T7 --> T8["Ejecutar sólo acción autorizada"]
     T8 --> T9["Verificar efecto y registrar resultado real"]
-    T9 --> T10["Sincronizar seguimiento si REQUIRED y actualizar continuidad"]
+    T9 --> T10["Sincronizar/readback si REQUIRED y actualizar evidencia de entrega"]
+    T10 --> T11["Volver a la fase pendiente; cierre sólo por faro-cierre"]
 ```
 
 **No auto-fix durante deploy:** `faro-entrega` no implementa código. Un fallo de checks o de despliegue se registra con su resultado y límites; corregir vuelve a la fase correspondiente y a su autorización. No modificar aplicación, migraciones o configuración ni lanzar rollback no autorizado para conseguir un indicador verde. Validación no es aceptación productiva; aceptación no es deploy. Si hubo despliegue sin verificación posterior, reportarlo **desplegado, no validado**.
 
-**Fuentes:** [rol, precondiciones, procedimiento e invariantes de entrega](../../faro/faro-entrega/SKILL.md), [límites de desarrollo](../../faro/faro-req-desarrollo/SKILL.md), [ruteo de salida](../../faro/SKILL.md).
+**Entrega no es cierre:** crear rama o commit, hacer push, abrir o fusionar PR, crear tag, publicar release, desplegar o ejecutar rollback puede ser un paso requerido por el alcance, pero su éxito no incorpora por sí solo conocimiento vigente ni completa el item. La validación enumera todas las operaciones externas exigidas; `faro-cierre` exige igualdad exacta con las filas `SATISFIED` y evidencias locales de `<ID>-entrega.md`, junto con CA y promoción documental, antes de solicitar `DONE`. Sólo después genera mediante el CLI central `<ID>-cierre.json`, congela el expediente v2 y limpia su continuidad.
+
+**Fuentes:** [rol, precondiciones, procedimiento e invariantes de entrega](../../faro/faro-entrega/SKILL.md), [cierre explícito](../../faro/faro-cierre/SKILL.md), [ciclo de expedientes v2](../../faro/references/work-item-lifecycle.md), [límites de desarrollo](../../faro/faro-req-desarrollo/SKILL.md), [ruteo de salida](../../faro/SKILL.md).
 
 ### Mensajes de commit y PR
 
@@ -276,10 +285,10 @@ El catálogo Laravel usa `branch: main` y fuentes mutables; **no** ofrece el pin
 
 **Fuentes:** [bootstrap: pasos de capacidades externas](../../bootstrap/SKILL.md), [catálogo Laravel](../../faro/references/laravel-external-skills.json), [contrato externo de incidentes](../../faro/faro-incidentes/references/capacidades-externas.md).
 
-## Límites y discrepancias visibles en las fuentes
+## Límites visibles en las fuentes
 
 - `jira-rest-v3` se referencia pero no se distribuye; no hay implementación local que permita documentar o demostrar sus llamadas efectivas.
-- El fragmento de autenticación `AZDO_AUTH` de la capability contiene un marcador `***` y no constituye una receta ejecutable completa. Esta documentación no lo copia como comando utilizable ni corrige el runtime; las llamadas deben construirse y comprobarse en el entorno autorizado. Los ejemplos REST no se ejercieron para producir esta guía.
+- La capability Azure DevOps documenta llamadas REST y construcción de autenticación, pero leer la guía no demuestra conectividad, credenciales, permisos ni que un ejemplo haya sido ejecutado contra el proyecto configurado.
 - Defaults y payloads ilustrativos Azure DevOps no anulan el requisito expreso de autorización independiente de campos. Se conserva esa puerta, no se presenta el ejemplo como permiso.
 - El router fija algunos callers Laravel, pero para Nightwatch/starter kit/Cloud remite a la fase aplicable: no hay una ruta nueva con permisos propios. El catálogo Laravel mutable y el de incidentes pinned tienen deliberadamente garantías distintas.
 - Checks del paquete o de contratos Markdown no prueban conexión real, publicación remota, deploy, disponibilidad externa ni ejecución correcta por un agente. Los diagramas no acreditan renderizado Mermaid validado.

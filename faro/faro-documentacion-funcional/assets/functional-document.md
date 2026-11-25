@@ -1,6 +1,8 @@
 ---
 schema_version: "1.0"
 df_id: "<ID reservado>"
+artifact_type: "FUNCTIONAL_DOCUMENT"
+canonical_path: "context/requirements/functional/<DF-ID>/<DF-ID>.md"
 title: "<Dominio o proceso>"
 document_version: "0.1"
 document_status: DRAFT
@@ -70,6 +72,12 @@ stateDiagram-v2
 | ID | Pregunta | Impacto | Estado |
 |---|---|---|---|
 
-## 10. Control de versiones
+## 10. Cambios promovidos desde expedientes
+| Work item y versión | Ruta estable | Secciones/elementos | Impacto | Resultado de promoción | Evidencia |
+|---|---|---|---|---|---|
+
+Resultados válidos: `PENDIENTE`, `INCORPORADO`, `SIN_IMPACTO`. `PENDIENTE` nunca modifica la baseline vigente ni habilita el cierre del expediente.
+
+## 11. Control de versiones
 | Fecha | Versión | Estado | Cambio |
 |---|---|---|---|

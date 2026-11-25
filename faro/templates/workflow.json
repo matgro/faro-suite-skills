@@ -1,7 +1,6 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "updatedAt": "UPDATED_AT",
-  "active": null,
   "phase": null,
   "authorization": {
     "status": "none",
@@ -9,8 +8,9 @@
     "artifactVersion": null,
     "scope": null
   },
-  "currentUnit": null,
+  "workItemRef": null,
   "waitingOn": null,
   "nextRoute": null,
+  "checkpoint": null,
   "notes": []
 }

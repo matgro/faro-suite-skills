@@ -8,7 +8,9 @@ Un reporte no confirma un defecto. `faro` decide la ruta y `faro-incidentes` gob
 
 El registro INC, la conclusión causal, la recuperación del impacto y una eventual corrección son objetos distintos. `fix` describe una implementación o un commit; no introduce un tercer artefacto obligatorio entre INC y BUG.
 
-**Fuentes:** [router y prioridades](../../faro/SKILL.md), [skill de incidentes](../../faro/faro-incidentes/SKILL.md).
+En el contrato v2, el INC permanece en `context/incidents/` y cualquier RM/BUG/TEC derivado conserva un expediente estable propio en `context/requirements/work-items/<ID>/`; ninguno se mueve por estado ni comparte cierre por inferencia. Con seguimiento `REQUIRED`, Jira o Azure DevOps es la autoridad del estado operativo. El registro, el índice, el catálogo y `workflow.json` sólo conservan definición, evidencia, relaciones y continuidad; no mantienen un estado local paralelo.
+
+**Fuentes:** [router y prioridades](../../faro/SKILL.md), [skill de incidentes](../../faro/faro-incidentes/SKILL.md), [ciclo de expedientes v2](../../faro/references/work-item-lifecycle.md).
 
 ## 1. Entrada: investigar un síntoma o corregir un defecto probado
 
@@ -50,8 +52,8 @@ Si la corrección derivada incluye refactor, pasa por [integración, retiro y re
 
 1. Leer contrato, perfil, índice, workflow y registros relacionados. Confirmar root coordinador, fuentes, entorno, datos, efectos y alcance de investigación autorizado. No escribir artefactos FARO en repositorios externos indexados.
 2. Buscar el mismo caso por síntoma, entorno y evidencia. Si existe, vincularlo; nueva evidencia del mismo caso permite reabrir el mismo INC conservando historial. Una recurrencia distinta puede tener otro INC enlazado.
-3. Para un caso nuevo, reservar `INC-0001` —formato ilustrativo— mediante el mecanismo serializado del proyecto, considerando registros **y reservas**. No reutilizar IDs ni calcular máximo + 1 sin reserva serializada. Si no se garantiza exclusión, solicitar una reserva explícita y no simularla.
-4. Crear bajo demanda `context/incidents/README.md` y `context/incidents/INC-0001-<slug>.md` desde las plantillas. Agregar el índice a `context/README.md`. Los nombres no llevan versión: versión e historial se mantienen dentro del registro. La inicialización no crea estos archivos ni esta ruta exige migrar el contrato.
+3. Para un caso nuevo, previsualizar y luego aplicar la reserva con `faro/faro-incidentes/scripts/incident_registry.py reserve --root <root> --source <fuente> --scope <alcance> [--apply] --json`. El CLI considera registros y reservas bajo lock y devuelve el mismo `INC-0001` —formato ilustrativo— para la misma fuente; reutilizarla con otro alcance bloquea. No calcular máximo + 1 ni editar filas a mano.
+4. La reserva crea bajo demanda `context/incidents/README.md`. Crear `context/incidents/INC-0001-<slug>.md` desde la plantilla y consumir la reserva mediante el dry-run y posterior `register --id <INC-ID> --source <fuente> --path <ruta> --apply`; validar al final. Agregar el índice a `context/README.md`. Los nombres no llevan versión: versión e historial se mantienen dentro del registro. La inicialización no crea estos archivos ni esta ruta exige migrar el contrato.
 5. Preservar una unidad activa ajena: el INC no permite reemplazar `context/workflow.json` sin decisión humana sobre el cambio de foco. Registrar el caso no equivale a apropiarse de toda la continuidad del workspace.
 
 | Entradas leídas | Salidas persistentes | Bloqueos / decisión pendiente |
@@ -138,11 +140,11 @@ flowchart TD
     D2 -->|"No"| D3["Continuidad o cierre según impacto y evidencia"]
     D2 -->|"Sí"| D4{"Derivación de ese alcance autorizada explícitamente"}
     D4 -->|"No"| D5["Registrar propuesta sin reservar BUG ficticio"]
-    D4 -->|"Sí"| D6["Crear o vincular artefacto con referencia al INC"]
+    D4 -->|"Sí"| D6["Crear o vincular expediente e item propios; relacionar origen y derivado"]
     D6 --> D7["Handoff a ruta aplicable sin aprobación implícita de implementación"]
 ```
 
-La aprobación de investigación no aprueba la implementación. Crear/vincular BUG/RM/TEC exige autorización explícita del alcance; el BUG referencia la investigación, no la duplica. Mientras se investiga, `nextRoute` es `faro-incidentes`; un handoff autorizado conserva el INC como fuente y apunta a la ruta de corrección.
+La aprobación de investigación no aprueba la implementación. Crear/vincular BUG/RM/TEC exige autorización explícita del alcance; el derivado referencia la investigación, no la duplica ni convierte el INC. Con `REQUIRED`, ambos tienen item remoto propio y la relación origen/derivado se verifica en ambos sentidos, local y remotamente. Mientras se investiga, `nextRoute` es `faro-incidentes`; un handoff autorizado conserva el INC como fuente y apunta a la ruta de corrección.
 
 **Fuentes:** [conclusión, derivación y procedimiento](../../faro/faro-incidentes/SKILL.md), [análisis de BUG/TEC y estados del plan](../../faro/faro-req-analisis-tecnico/SKILL.md), [router funcional y técnico](../../faro/SKILL.md).
 
@@ -150,20 +152,20 @@ La aprobación de investigación no aprueba la implementación. Crear/vincular B
 
 | Situación | Qué se escribe / verifica | Límite o bloqueo |
 | --- | --- | --- |
-| `OFF` | Registro local | No crear tickets remotos |
+| `OFF` | Registro local de investigación e impacto, sin afirmar estado remoto | No crear tickets remotos; esta excepción de investigación no habilita RM/BUG/TEC locales gobernados |
 | `REQUIRED`, item recibido, incluso tipo Bug | Vincular ID/URL/tipo originales y verificar su workflow | El tipo no confirma defecto; no exigir item neutral adicional, duplicar ni reclasificar automáticamente |
 | `REQUIRED`, alta nueva del INC | Crear item con tipo neutral autorizado y workflow verificado | No inventar un tipo Incident ni usar Bug por defecto; si falta tipo neutral, pedir decisión y bloquear el alta |
 | Se propone neutral separado de un Bug recibido | Sólo tras decisión explícita y con vínculo al original | No es requisito para vincular el recibido |
 | BUG derivado autorizado | Mantener IDs/URLs y vínculos bidireccionales independientes del INC | `REQUIRED` no autoriza por sí solo ese BUG ni conversión silenciosa del INC |
-| Hito material, vínculo, comentario o transición | Adaptador configurado; comentario breve y lectura posterior del objetivo afectado | Si falla escritura obligatoria, evidencia local y `waitingOn`; no avanzar de fase ni declarar cierre remoto |
+| Hito material, vínculo, comentario o transición | Adaptador configurado; lectura previa del item/estado/relaciones pertinentes y readback exacto del recurso afectado | Si falla la escritura o el readback obligatorio, conservar evidencia local y `waitingOn`; no avanzar de fase ni declarar estado, vínculo o cierre remoto |
 
-`DONE` del item INC representa el cierre permitido del incidente, no el fin de todas las correcciones. Publicar el commit o cerrar el BUG derivado no cierra el INC. Una conclusión sin defecto tampoco es una cancelación: `CANCELLED` requiere cancelación humana explícita. Los detalles de conexión y comentarios están en [integraciones](05-integraciones-y-entrega.md).
+`DONE` del item INC sólo se solicita mediante la operación explícita de cierre del incidente, después de releer su estado y comprobar conclusión, impacto y acciones pendientes. La transición también se relee antes de afirmar cierre remoto. `DONE` no representa el fin de todas las correcciones: publicar una entrega o cerrar el BUG/RM/TEC derivado no cierra el INC. Una conclusión sin defecto tampoco es una cancelación; `CANCELLED` requiere cancelación humana explícita.
 
 **Fuentes:** [seguimiento del INC](../../faro/faro-incidentes/SKILL.md), [adaptador Jira](../../faro/faro-int-jira/SKILL.md), [adaptador Azure DevOps](../../faro/faro-int-azure-devops/SKILL.md), [formato de comentarios](../../faro/references/comment-format.md).
 
 ## 6. Cierre, impacto y reapertura
 
-Los únicos estados del registro son `ABIERTO`, `EN_INVESTIGACION` y `CERRADO`. Un bloqueo vive en pendientes y `waitingOn`, no crea otro estado ni inventa una causa.
+El registro conserva eventos fechados de apertura, inicio o reanudación de la investigación, conclusión, cierre evidenciado y reapertura. Son cronología, no un campo de estado local. Con seguimiento `REQUIRED`, el estado actual siempre se relee del gestor; un último readback fechado puede conservarse como evidencia no canónica. El índice tampoco replica estado, prioridad o asignación. Un bloqueo vive en pendientes y `waitingOn`, no inventa una causa.
 
 ```mermaid
 flowchart TD
@@ -174,7 +176,7 @@ flowchart TD
     C3 -->|"No"| C5{"Archivo no concluyente autorizado por decisión humana"}
     C5 -->|"No"| C6["Continuar investigación o registrar bloqueo"]
     C5 -->|"Sí"| C7["Archivar sin declarar ausencia de defecto y fijar reapertura"]
-    C4 --> C8["Actualizar registro, índice y continuidad propia; verificar remoto si REQUIRED"]
+    C4 --> C8["Registrar evento; si REQUIRED ejecutar cierre remoto explícito y readback"]
     C7 --> C8
     C8 --> C9{"Nueva evidencia del mismo caso"}
     C9 -->|"Sí"| C10["Reabrir mismo INC conservando historial"]
@@ -186,11 +188,12 @@ flowchart TD
 | Contención aplicada | Registrar qué contuvo y qué sigue pendiente | Confundir contención con corrección definitiva |
 | Investigación no concluyente | Archivo sólo con decisión humana explícita, ausencia de impacto activo pendiente, límites y condición de reapertura | No reproducir no prueba ausencia de defecto |
 | Corrección cerrada o publicada | Referencia independiente en el INC | Cierre automático por estado del BUG o commit |
+| Operación explícita de cierre del INC con `REQUIRED` | Transición remota a `DONE`, readback confirmatorio y evidencia fechada; después, evento local de cierre | Sustituir el readback con el índice, la cronología, una entrega o el cierre de un derivado |
 
 **Fuentes:** [criterios de cierre y reapertura](../../faro/faro-incidentes/SKILL.md), [cierre/continuidad e historial de la plantilla](../../faro/faro-incidentes/assets/incident.md).
 
 ## Límites de esta descripción
 
-El repositorio prescribe una reserva serializada, pero no aporta aquí un asignador ejecutable de INC: hay que verificar el mecanismo del proyecto o pedir reserva explícita. Los catálogos y hashes describen requisitos de disponibilidad; no demuestran skills instaladas, escaneo permitido ni investigaciones realizadas. Los diagramas explican decisiones del agente, no prueban una reproducción productiva ni su renderizado Mermaid.
+`incident_registry.py` asigna y valida identidad/rutas locales de INC; no crea el item remoto, no decide si dos síntomas son el mismo caso y no acredita una investigación o un cierre. Los catálogos y hashes describen requisitos de disponibilidad; no demuestran skills instaladas, escaneo permitido ni investigaciones realizadas. Los diagramas explican decisiones del agente, no prueban una reproducción productiva ni su renderizado Mermaid.
 
 **Fuentes:** [reservas](../../faro/faro-incidentes/assets/incident-index.md), [disponibilidad externa](../../faro/faro-incidentes/references/capacidades-externas.md), [pruebas offline y alcance declarado](../../tests/test_incidents.py).

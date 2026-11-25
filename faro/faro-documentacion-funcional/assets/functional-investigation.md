@@ -1,3 +1,9 @@
+---
+df_id: "<DF-ID>"
+artifact_type: "FUNCTIONAL_INVESTIGATION"
+canonical_path: "context/requirements/functional/<DF-ID>/<DF-ID>-investigacion-interna.md"
+document_version: "0.1"
+---
 # Investigación interna — <DF-ID> — <Dominio o proceso>
 
 > Uso interno de FARO. No es el Documento Funcional entregable.
@@ -17,3 +23,7 @@
 ## Trazabilidad DF ↔ investigación
 | Sección del DF | Fuentes / hallazgos internos | Estado |
 |---|---|---|
+
+## Expedientes relacionados
+| Work item | Ruta estable | Aporte confirmado | Promoción al DF |
+|---|---|---|---|

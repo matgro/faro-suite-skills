@@ -4,7 +4,7 @@
 
 ## Qué representa este flujo
 
-Son instrucciones que interpreta y ejecuta un agente, no un motor que dispare todas las ramas automáticamente. El router `faro` identifica el contexto y entrega una única ruta especialista; los handoffs siguientes son decisiones guiadas, no una cadena de scripts implícita. Esta página describe las fuentes del repositorio: paquete `1.8.1`, contrato canónico `1.13.0`. Son versiones independientes; tampoco se confunden con el `version` de cada skill.
+Son instrucciones que interpreta y ejecuta un agente, no un motor que dispare todas las ramas automáticamente. El router `faro` identifica el contexto y entrega una única ruta especialista; los handoffs siguientes son decisiones guiadas, no una cadena de scripts implícita. Esta página describe las fuentes del repositorio: paquete `2.0.0`, contrato canónico `2.0.0`. Son versiones independientes; tampoco se confunden con el `version` de cada skill.
 
 Hay tres operaciones distintas:
 
@@ -71,7 +71,7 @@ No copiar skills sueltas, superponer árboles ni dejar carpetas retiradas. Verif
 | Actualización Laravel | Primero `hermes skills check <name>`; sólo tras autorización explícita, `update` y después `audit`. | Doctor sólo comprueba; no instala ni actualiza. |
 | Incidentes | Proponer directorios fijados por commit, pedir autorización de instalación/reemplazo, conservar auxiliares y licencia mediante instalador documentado; comparar `requiredFiles`, hashes, origen y auditoría en destino. | No reemplazar una skill local homónima sin confirmación, instalar sólo el `SKILL.md`, cambiar el pin a main/latest ni eludir el escáner. Si el runtime no preserva el directorio completo, bloquear esa etapa externa sin deshacer el núcleo FARO ya verificado. |
 
-Instalar la suite **no migra ningún workspace**. Cada proyecto que se reanude debe diagnosticarse con doctor. Un renombre documentado no es un alias ejecutable ni permiso para editar `nextRoute`; se propone corrección puntual autorizada conservando IDs, versiones, aprobaciones e historia.
+Instalar la suite **no migra ningún workspace**. Cada proyecto que se reanude debe diagnosticarse con doctor. `contract-migrations.json` sólo declara rutas soportadas: para `1.13.0` → `2.0.0` se revisa primero el dry-run y `--apply` requiere autorización explícita del workspace. Un renombre documentado no es un alias ejecutable ni permiso para editar `nextRoute`; se propone corrección puntual autorizada conservando IDs, versiones, aprobaciones e historia.
 
 ## 2. Entrada al workspace: primero root y existencia
 
@@ -80,8 +80,10 @@ El root coordinador es el directorio de trabajo de la sesión. Sólo una instruc
 Antes de inspeccionar fuentes externas, comprobar `AGENTS.md`, delimitadores FARO, manifiesto, stats, índice, perfil y workflow opcional. Distinguir:
 
 - **Ausente:** no hay bloque ni artefactos FARO. Un `AGENTS.md` ajeno no autoriza borrar su contenido.
-- **Existente completo:** están los artefactos y son coherentes; no equivale por sí solo a `available`.
-- **Existente parcial:** basta cualquier bloque o artefacto FARO, aunque falten otros o el estado sea `new`/`initializing`. No volver a inicializar silenciosamente.
+- **Current:** contrato `2.0.0`, estructura/catálogos coherentes y sin mezcla; no equivale por sí solo a `available`.
+- **Legacy-migratable:** contrato `1.13.0` reconocible y sin colisiones con v2; sólo diagnóstico y plan de migración.
+- **Mixed-ambiguous / corrupt:** layouts duplicados, IDs/rutas ambiguos o artefactos inválidos; no escribir hasta decisión/reparación explícita.
+- **Future-unsupported:** contrato posterior al soportado; nunca degradar.
 
 ```mermaid
 flowchart TD
@@ -144,12 +146,14 @@ Si se declara Laravel nuevo sin `composer.json`, o .NET nuevo sin `.sln`/`.cspro
 | --- | --- | --- |
 | `AGENTS.md` | `templates/AGENTS.md` | Sólo administrar bloque FARO estándar; preservar contenido externo. |
 | `context/faro-workspace.json` | `templates/faro-workspace-manifest.json` | Versión, `contractSource` y `managedArtifacts`; no copia ni redefine la política central. |
-| `context/stats.json` | `templates/stats.json` | Identidad, repositorios, `faro.version` y `contractVersion` canónicos; pasar de plantilla `new` a `initializing`, salvo desactivación explícita. |
+| `context/stats.json` | `templates/stats.json` | Identidad, repositorios, `contractVersion` estructural y `faro.version` del paquete que materializa el workspace; pasar de plantilla `new` a `initializing`, salvo desactivación explícita. |
 | `context/README.md` | `templates/context-README.md` | Ubicación, descripción y propósito del código, docs y fuentes. Mantener sección de fuentes incluso si no hay registradas. |
 | `context/requirements/project-profile.md` | `templates/project-profile.md` | Seguimiento, proveedor, metadatos confirmados y DF; nunca secretos. |
+| `context/requirements/requirements-catalog.md` | `templates/requirements-catalog.md` | Reservas, localización, relaciones y referencia remota de RM/BUG/TEC; sin estado operativo. |
+| `context/requirements/functional-documents-catalog.md` | `templates/functional-documents-catalog.md` | Reservas y localización de DF duraderos; no contiene expedientes. |
 | `context/workflow.json`, **condicional** | `templates/workflow.json` | Sólo unidad activa que requiere continuidad; no se crea por defecto. |
 
-Crear también los directorios obligatorios `context/` y `context/requirements/`. No crear por inicialización carpetas ADR/RFC, incidentes, RM o DF ficticios. Sustituir marcadores por hechos o respuestas; no convertir valores de plantilla en hechos remotos. La norma central es `faro/templates/faro-workspace-config.json`, no el manifiesto local.
+Crear también `context/requirements/functional/` y `context/requirements/work-items/`, vacíos de unidades. No crear por inicialización carpetas ADR/RFC, incidentes ni expedientes RM/BUG/TEC/DF ficticios. Sustituir marcadores por hechos o respuestas; no convertir valores de plantilla en hechos remotos. La norma central es `faro/templates/faro-workspace-config.json`, no el manifiesto local.
 
 ### Handoff y cierre de inicialización
 
@@ -173,9 +177,9 @@ flowchart TD
     I11 -->|Sí| I13['Reportar creados, preservados, pendientes y único handoff']
 ```
 
-La rama no `REQUIRED` incluye `OFF` o seguimiento pendiente: puede seleccionarse arquitectura si hay evidencia, pero no inventar una política ni declarar disponibilidad como sustituto de decisiones pendientes. Las integraciones no repiten la consulta agrupada: verifican credenciales globales del agente, acceso y mapeos reales. Sin credenciales no consultan ni modifican el servicio; con `REQUIRED` no simulan seguimiento manual. Jira exige PENDING/DOING/DONE; ausencia de CANCELLED bloquea sólo cancelaciones. Azure DevOps verifica tipos, áreas, equipo/iteraciones y campos configurados. Esos chequeos remotos de seguimiento son del adaptador, **no de `doctor.py`**.
+La rama no `REQUIRED` incluye `OFF` o seguimiento pendiente: puede seleccionar arquitectura y documentación sin unidad, pero no crear RM/BUG/TEC ni simular un gestor Markdown. Las integraciones no repiten la consulta agrupada: verifican credenciales globales del agente, acceso y mapeos por clase/tipo. Sin credenciales no consultan ni modifican el servicio; con `REQUIRED` no simulan seguimiento manual. Esos chequeos remotos son del adaptador, no de doctor salvo una lectura opt-in explícita.
 
-Antes de cerrar la inicialización ejecutar doctor con `--root <root> --strict` y exigir 0. Es un control local, no acredita origen remoto. La transición a `available` corresponde a arquitectura, con índice/proyecto/repositorios/arquitectura verificables. El workflow conserva unidad, fase, autorización exacta, `waitingOn` y `nextRoute`; no reemplaza RM, plan ni tareas y sólo puede haber una unidad `doing`.
+Antes de cerrar la inicialización ejecutar doctor con `--root <root> --strict` y exigir 0. Es un control local, no acredita origen remoto. La transición a `available` corresponde a arquitectura, con índice/proyecto/repositorios/arquitectura verificables. El workflow conserva sólo ID/ruta activa, fase/checkpoint, autorización exacta, `waitingOn` y `nextRoute`; no conserva backlog, terminadas ni estado operativo.
 
 ## 4. Doctor: política, implementación y resultado
 
@@ -193,9 +197,10 @@ Usar el intérprete disponible. La skill muestra `python3`; no asumir que ese al
 
 | Nivel | Qué hace realmente |
 | --- | --- |
-| Local de suite | `validate_suite`: inventario de SKILL, nombre/carpeta, duplicados, catálogo del router, referencias internas reconocidas y enlaces `references/`, changelog/provenance, renombres y destinos. Si existe `faro-incidentes`, valida estructura del catálogo externo de incidentes, pins, rutas seguras, roles, licencia y formato de hashes; **no** acredita instalación externa ni seguridad upstream. |
-| Local de continuidad | `validate_workflow`: ausencia aceptada, JSON objeto y `nextRoute` null o nombre vigente; detecta renombres y propone destino, sin escribir. No valida todo el esquema/semántica del workflow. |
-| Local de workspace | Recorre `requiredFiles`, parsea JSON, cuenta delimitadores FARO, compara versión/origen/lista exacta y ordenada de artefactos del manifiesto, compara `stats.contractVersion`; imprime estado/proyecto/versión FARO y valores de perfil por regex. |
+| Local de suite | `validate_suite`: inventario de skills, nombre/carpeta, duplicados, catálogo del router, referencias internas, changelog/provenance, renombres y catálogo de migraciones. Si existe `faro-incidentes`, valida la estructura declarativa de sus capacidades externas, pins, rutas seguras, roles, licencia y formato de hashes; **no** acredita instalación externa ni seguridad upstream. |
+| Clasificación local | Fija el root sin seguir symlinks y distingue exactamente `absent`, `current`, `legacy-migratable`, `mixed-ambiguous`, `future-unsupported` o `corrupt`. Un `AGENTS.md` ajeno sin bloque ni otros artefactos FARO sigue siendo `absent`; un marcador parcial es corrupción. |
+| Contrato v2 actual | Exige cuatro directorios y siete archivos regulares, bloque FARO equivalente a la plantilla, schemas/versiones, manifiesto y stats completos, perfil v2, metadatos y tablas de ambos catálogos, layout validado por el helper central y workflow v2 exacto si existe. Comprueba `updatedAt`, tipos, autorización, referencia al expediente o INC registrado, checkpoint/espera y ausencia de estado operativo incluso en claves anidadas. |
+| Contrato legado | Reconoce sólo contratos origen declarados en `contract-migrations.json`, valida su forma en lectura y muestra el comando dry-run. Una mezcla de layouts/versiones bloquea; doctor nunca ejecuta `--apply`. |
 | Remoto de origen, opt-in | Resuelve tag de provenance y peeled commit mediante Git, obtiene commit en checkout temporal con conversión desactivada, lee checksums publicados y compara conjunto de archivos y SHA-256 instalado. Informa verificado, no verificable o no coincide. No escribe en el workspace, aunque sí usa staging temporal y red. |
 | Externas Laravel, opt-in | Por nombre del catálogo, ejecuta `hermes skills check`; salida con `up_to_date` → actual; fallo/ausencia reconocida → no verificable; otras salidas exitosas → actualización disponible. No instala, actualiza ni audita. |
 
@@ -203,41 +208,41 @@ Usar el intérprete disponible. La skill muestra `python3`; no asumir que ese al
 
 ```mermaid
 flowchart TD
-    D0['Leer configuración canónica'] --> D1{'Carga de configuración correcta'}
+    D0['Leer política v2 y catálogo de migraciones'] --> D1{'Carga central correcta'}
     D1 -->|No| D2['ERROR; código 2']
-    D1 -->|Sí| D3['Comprobar suite, workflow y archivos; checks remotos si se pidieron']
-    D3 --> D4{'Estado disabled'}
-    D4 -->|Sí| D5['Recomendar detener FARO']
-    D4 -->|No| D6{'Problema de suite u origen solicitado'}
-    D6 -->|Sí| D7['Recomendar bootstrap completo con comparación y confirmación']
-    D6 -->|No| D8{'Problema de workflow'}
-    D8 -->|Sí| D9['Recomendar corrección puntual autorizada; conservar aprobaciones']
-    D8 -->|No| D10{'Script considera espacio existente'}
-    D10 -->|No| D11['Recomendar faro-inicializacion']
-    D10 -->|Sí| D12{'Otros problemas acumulados'}
-    D12 -->|Sí| D13['Recomendar reparación explícitamente autorizada']
+    D1 -->|Sí| D3['Clasificar workspace y validar suite; origen/externas sólo si se pidieron']
+    D3 --> D4{'Suite u origen solicitado con problemas'}
+    D4 -->|Sí| D5['Recomendar bootstrap completo; no reinicializar workspace']
+    D4 -->|No| D6{'Clasificación'}
+    D6 -->|absent| D7['Recomendar faro-inicializacion']
+    D6 -->|legacy-migratable| D8['Mostrar dry-run; pedir autorización separada para apply']
+    D6 -->|mixed-ambiguous| D9['Reconciliación humana; no escribir']
+    D6 -->|future-unsupported| D10['Usar suite compatible; no degradar']
+    D6 -->|corrupt| D11['Reparación explícita basada en evidencia']
+    D6 -->|current| D12{'Estado disabled'}
+    D12 -->|Sí| D13['Detener FARO']
     D12 -->|No| D14{'Estado new o initializing'}
-    D14 -->|Sí| D15['Recomendar adaptador REQUIRED confirmado o arquitectura según evidencia']
-    D14 -->|No| D16['Recomendar ruta del pedido actual']
-    D3 --> D17['Imprimir faltantes y recomendación; no ejecutarla']
-    D17 --> D18{'Strict y problemas acumulados'}
+    D14 -->|Sí| D15['Adaptador REQUIRED o arquitectura según evidencia']
+    D14 -->|No| D16['Ruta FARO del pedido actual']
+    D3 --> D17['Imprimir clasificación, evidencia, bloqueos y una recomendación; no ejecutarla']
+    D17 --> D18{'Strict y no es current íntegro, o hay bloqueos'}
     D18 -->|Sí| D19['Código 1']
-    D18 -->|No| D20['Código 0; no garantiza diagnóstico completo']
+    D18 -->|No| D20['Código 0']
 ```
 
-El informe debe separar existencia, root, versión esperada/instalada/paquete, compatibilidad, coherencia local, procedencia, archivos, identidad/estado, arquitectura, perfil, workflow, bloqueos y recomendación. No afirmar que no existe en el proyecto lo que sólo está «no encontrado en el contrato» o «no indexado».
+El informe muestra una **matriz de versiones** antes de la recomendación: paquete de suite, skill principal, inventario de skills, contrato esperado/instalado, paquete que materializó el workspace y schema del workflow. La compatibilidad se evalúa sólo entre suite y contrato; el workflow es un checkpoint con schema, y las versiones de DF/RM/plan/QA/validación pertenecen a cada expediente. No afirmar que no existe en el proyecto lo que sólo está «no encontrado en el contrato» o «no indexado».
 
-### Límites y discrepancias observadas, no corregidas
+### Límites operativos reales
 
-Estas diferencias exigen interpretación del agente; no se presentan como capacidades que el script ya implemente:
+El doctor valida el contrato y la coherencia observable, pero conserva estos límites deliberados:
 
-1. **Detección de existencia más amplia:** `doctor.py` considera existente cualquier `AGENTS.md`, incluso ajeno sin bloque FARO, o archivos requeridos de contexto. El router distingue bloque/artefactos FARO; además un `context/` vacío no basta para la condición exacta del script. Informar evidencia, no borrar ni adoptar contenido ajeno.
-2. **Delimitadores no equivalen a plantilla:** el script cuenta un START y un END; no compara el bloque con la plantilla ni verifica su orden. La skill pide comprobar bloque estándar y preservar contenido externo.
-3. **Validación semántica limitada:** no comprueba `requiredDirectories` de forma independiente, esquema completo, identidad obligatoria, repositorios indexados, `supportedStates`, `schemaVersion`, validez de `updatedAt`, igualdad de `faro.version` o coherencia semántica del perfil. Imprimirlos o parsear JSON no los valida. Algunos tipos JSON inesperados pueden producir excepción; no prometer un informe estructurado para toda corrupción posible.
-4. **Omisión .NET:** la búsqueda de arquitectura sólo incluye Laravel, móvil y genérica; omite `context/architecture-dotnet.md`. La recomendación textual de arquitectura también omite `faro-arq-dotnet`. El router y la skill .NET sí la reconocen: no redirigir un .NET a genérica por esa omisión.
-5. **Provenance no es comprobar novedades de la suite:** `--verify-suite-origin` coteja el tag declarado, no busca el estable más nuevo. `--check-external-skills` no audita seguridad ni pins, no prueba directorios externos de incidentes y clasifica por texto del CLI. Sus problemas se agregan al grupo general: pueden acabar en recomendación genérica de reparación del workspace, aunque la política indica mantenimiento externo autorizado vía bootstrap.
-6. **Strict no certifica disponibilidad:** un estado desconocido, identidad pendiente, arquitectura ausente o seguimiento no verificado pueden no agregar problemas. El código 0 local no habilita `available`, no acredita QA ni verifica servicios Jira/Azure DevOps. Sin flags remotos, tampoco acredita procedencia o externas.
-7. **Redacción de inicialización ambigua:** su apartado «Cuándo usar» menciona `new`/`initializing`, pero el límite explícito y el router envían una inicialización repetida con cualquier artefacto existente a doctor. Reparación sólo después del diagnóstico y autorización específica; no reutilizar esa frase para sobrescribir.
+1. **No verifica Jira/Azure DevOps:** no prueba credenciales, tipos, estados ni permisos del proveedor. Esa verificación pertenece al adaptador configurado y sus lecturas remotas; doctor sólo valida que el perfil tenga la estructura local exigida.
+2. **`current` no significa `available`:** un contrato íntegro no certifica arquitectura, reglas de negocio, QA, aceptación productiva ni capacidad de entrega. La transición de estado sigue perteneciendo al flujo que reúne esa evidencia.
+3. **Paquete y contrato evolucionan por separado:** `stats.faro.version` debe ser semver y registra qué paquete materializó o actualizó explícitamente el workspace. Si difiere del paquete instalado, doctor lo informa como advertencia histórica; no corrompe el contrato ni dispara una migración automática.
+4. **La procedencia no busca actualizaciones:** `--verify-suite-origin` coteja el tag declarado y sus bytes, pero no descubre si existe una release posterior. Esa comparación corresponde al bootstrap.
+5. **Las capacidades externas siguen siendo declarativas:** `--check-external-skills` consulta el CLI de Hermes para Laravel; no audita seguridad upstream, no instala ni actualiza y no acredita capacidades externas de incidentes en el runtime.
+6. **Contenido semántico fuera del schema:** el helper comprueba identidad, rutas, catálogos, referencias, front matter y hashes de cierre; no decide si una especificación es correcta para el negocio ni si una evidencia humana es suficiente.
+7. **Sólo lectura:** doctor no corrige un rename, no crea locks/caches/directorios, no migra, no actualiza `stats.faro.version` y no cambia `new`, `initializing`, `available` o `disabled`.
 
 Doctor nunca repara, migra, cambia estado ni ejecuta su siguiente ruta. No borrar JSON malformado, recrear workflows, leer `.env` ni revelar secretos. Una reparación o migración posterior es otra acción autorizada; un renombre autorizado cambia sólo `nextRoute`, preserva el resto y vuelve a verificar.
 
@@ -250,7 +255,9 @@ Doctor nunca repara, migra, cambia estado ni ejecuta su siguiente ruta. No borra
 | Inicialización y consulta agrupada | [Skill de inicialización](../../faro/faro-inicializacion/SKILL.md) |
 | Política doctor y ejecución real completa | [Skill doctor](../../faro/faro-doctor/SKILL.md), [doctor.py](../../faro/faro-doctor/scripts/doctor.py), [suite_validation.py](../../faro/scripts/suite_validation.py) |
 | Política canónica | [Configuración](../../faro/templates/faro-workspace-config.json) |
-| Plantillas de contrato | [AGENTS](../../faro/templates/AGENTS.md), [manifiesto](../../faro/templates/faro-workspace-manifest.json), [stats](../../faro/templates/stats.json), [índice](../../faro/templates/context-README.md), [perfil](../../faro/templates/project-profile.md), [workflow](../../faro/templates/workflow.json) |
+| Layout, catálogos, reservas y congelado | [Helper central](../../faro/scripts/work_item_contract.py), [ciclo documental](../../faro/references/work-item-lifecycle.md) |
+| Migración explícita 1.13 → 2.0 | [Catálogo de migraciones](../../faro/references/contract-migrations.json), [migrador](../../faro/scripts/migrate_workspace_v2.py) |
+| Plantillas de contrato | [AGENTS](../../faro/templates/AGENTS.md), [manifiesto](../../faro/templates/faro-workspace-manifest.json), [stats](../../faro/templates/stats.json), [índice](../../faro/templates/context-README.md), [perfil](../../faro/templates/project-profile.md), [catálogo de expedientes](../../faro/templates/requirements-catalog.md), [catálogo funcional](../../faro/templates/functional-documents-catalog.md), [workflow](../../faro/templates/workflow.json) |
 | Seguimiento inicial | [Jira](../../faro/faro-int-jira/SKILL.md), [Azure DevOps](../../faro/faro-int-azure-devops/SKILL.md) |
 | Versiones y procedencia | [Provenance](../../faro/references/suite-provenance.json), [changelog](../../faro/references/suite-changelog.json) |
 | Capabilities auxiliares | [Catálogo Laravel](../../faro/references/laravel-external-skills.json), [catálogo incidentes](../../faro/references/incident-external-skills.json), [restricciones y disponibilidad](../../faro/faro-incidentes/references/capacidades-externas.md) |

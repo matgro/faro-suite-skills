@@ -1,33 +1,38 @@
 ---
 name: faro-req-desarrollo
 description: Use when FARO develops an approved requirement plan.
-version: 1.3.1
+version: 2.0.0
 author: Hermes Agent
 license: MIT
 metadata:
   hermes:
     tags: [faro, development, requirements, code, verification]
-    related_skills: [faro, faro-req-analisis-tecnico, faro-qa-ejecucion, faro-req-validacion, faro-ux]
+    related_skills: [faro, faro-req-analisis-tecnico, faro-qa-ejecucion, faro-req-validacion, faro-ux, faro-cierre]
 ---
 
 # FARO — Desarrollo de requerimientos
 
 En cada interacción, antes de interpretar términos del pedido, leer y aplicar [Glosario de dominio](../references/domain-glossary.md): consultar `context/glossary.md` si existe y evaluar actualizaciones sustentadas dentro de los límites de escritura de esta fase, sin alterar alcance ni autorizaciones.
 
+Leer y aplicar [Expedientes y conocimiento duradero](../references/work-item-lifecycle.md) antes de resolver la unidad o registrar evidencia.
+
 ## Rol
 Implementa una unidad autorizada de un RM, BUG o TEC con plan técnico `LISTO_PARA_DESARROLLO`. No redefine comportamiento funcional, no acepta la entrega, no realiza QA de aplicación ni hace commit, PR o despliegue sin la ruta `faro-entrega`.
 
 ## Precondiciones
 - FARO está `available`.
+- Seguimiento está `REQUIRED`, proveedor/capacidades están verificados y el expediente posee referencia remota reconciliada.
 - La entrada identifica ID, versión, alcance y autorización humana vigente.
+- El ID resuelve por `context/requirements/requirements-catalog.md` a `context/requirements/work-items/<ID>/`; `workflow.workItemRef`, primario, plan y tareas coinciden con esa ruta.
+- Se ejecutó `python -B <skills-root>/faro/scripts/work_item_contract.py resolve --root <root> --id <ID> --json`; no existe `<ID>-cierre.json` y el expediente es mutable.
 - Plan y tareas pertenecen a la misma versión y están `LISTO_PARA_DESARROLLO`.
 - Se leyeron `AGENTS.md`, arquitectura, instrucciones del repositorio, Git y tarea activa.
 - Se revisó `context/decisions/adr/README.md` si existe y los ADRs relevantes a la tarea; sus IDs o la ausencia del catálogo quedarán en la evidencia.
 - Se identificó la tecnología del componente y se leyeron los archivos de lineamientos aplicables, según la sección siguiente.
 - No hay RFC abierto cuya decisión afecte la tarea; si existe, `waitingOn` identifica el RFC y su bloqueo.
-- Antes de editar código, inspeccionar Git y atribuir los cambios existentes. Si hay cambios no atribuibles a la unidad o cuya atribución sea incierta, detenerse y esperar validación humana explícita antes de cambiar de rama o implementar; aplicar el control siguiente. Una vez resuelto ese control, la rama activa debe cumplir `feature/<RM-ID>-<descripcion-kebab-case>`; si no existe, crearla desde la base autorizada en el mismo repositorio antes de modificar archivos, preservando los cambios existentes.
+- Antes de editar código, inspeccionar Git y atribuir los cambios existentes. Si hay cambios no atribuibles a la unidad o cuya atribución sea incierta, detenerse y esperar validación humana explícita antes de cambiar de rama o implementar; aplicar el control siguiente. Una vez resuelto ese control, respetar primero la convención explícita del repositorio; si no existe, la rama activa debe cumplir `feature/<ID>-<descripcion-kebab-case>`, donde `<ID>` conserva el prefijo RM, BUG o TEC. Si no existe, crearla desde la base autorizada en el mismo repositorio antes de modificar archivos, preservando los cambios existentes.
 
-Si una precondición falla, actualizar `context/workflow.json` con `waitingOn`, no modificar código y devolver la ruta a `faro`, `faro-req-ingenieria` o `faro-req-analisis-tecnico`.
+Si una precondición falla, actualizar `context/workflow.json` con `waitingOn` y el mismo `workItemRef`, no modificar código y devolver la ruta a `faro`, `faro-req-ingenieria` o `faro-req-analisis-tecnico`. Un expediente congelado nunca se reabre: reservar un sucesor si hay trabajo nuevo autorizado.
 
 ## Cambios existentes y validación humana
 
@@ -58,16 +63,16 @@ El usuario puede editar las reglas directamente en esos archivos sin tocar `SKIL
 
 ## Cierre de refactorizaciones
 
-Si se extrae, mueve o sustituye lógica, leer y ejecutar [Cierre verificable de refactorizaciones](../references/refactoring-completion.md). Antes del paso 6, demostrar consumidores reales conectados, retiro o delegación de la implementación anterior, ausencia de código nuevo sin uso y pruebas desde las entradas afectadas. Solicitar revisión independiente del diff final; usar las capabilities externas aprobadas en esa referencia cuando estén disponibles y auditadas, sin delegarles autoridad de ciclo de vida. Un método nuevo no llamado o una copia vieja todavía activa sin justificación es trabajo incompleto: no marcar `done` ni anunciar cierre. Registrar evidencia y limitaciones en la tarea existente.
+Si se extrae, mueve o sustituye lógica, leer y ejecutar [Cierre verificable de refactorizaciones](../references/refactoring-completion.md). Antes del paso 6, demostrar consumidores reales conectados, retiro o delegación de la implementación anterior, ausencia de código nuevo sin uso y pruebas desde las entradas afectadas. Solicitar revisión independiente del diff final; usar las capabilities externas aprobadas en esa referencia cuando estén disponibles y auditadas, sin delegarles autoridad de ciclo de vida. Un método nuevo no llamado o una copia vieja todavía activa sin justificación es trabajo incompleto: no marcar `done`, no registrar `COMPLETADO` ni anunciar cierre. Registrar evidencia y limitaciones en `<ID>-tareas.md`.
 
 ## Procedimiento
-1. Confirmar la unidad en el plan y marcarla `doing` en workflow. Si seguimiento está `REQUIRED`, transicionar el item al estado remoto de trabajo y registrar una actualización concisa conforme a `../references/comment-format.md` cuando la unidad permanezca abierta entre sesiones; si falla, bloquear antes de editar código. **Completo:** unidad, versión, autorización y seguimiento trazables.
+1. Confirmar la unidad en el plan y reflejar sólo el punto de reanudación en `workflow.checkpoint`; no mantener estados históricos de tareas en workflow. Si seguimiento está `REQUIRED`, transicionar el item o subitem remoto al estado de trabajo y registrar una actualización concisa conforme a `../references/comment-format.md` cuando la unidad permanezca abierta entre sesiones; si falla, bloquear antes de editar código. **Completo:** unidad, versión, autorización y autoridad remota trazables.
 2. Inspeccionar implementaciones, consumidores, pruebas, convenciones locales y ADRs relevantes; comparar el cambio propuesto con decisiones `accepted`, `deprecated` o `superseded` que puedan afectarlo. Registrar los ADRs revisados en la evidencia. Si el cambio contradice un ADR aceptado, no editar: volver a `faro-req-analisis-tecnico` para justificar un nuevo ADR o superceder el existente. **Completo:** fuentes de reglas explícitas, memoria arquitectónica revisada y reutilización o ruta nueva justificada.
 3. Si existe interfaz, cargar `faro-ux` antes de modificar pantallas y aplicar la guía tecnológica correspondiente. **Completo:** catálogo, dominio y markup único respetados.
 4. Implementar sólo el alcance de la tarea, siguiendo las reglas de código y la disciplina de pruebas definidas en los archivos leídos. Mantener contratos salvo orden explícita del RM; acordar y registrar las excepciones que esos lineamientos requieran. **Completo:** no hay alcance adicional ni rutas paralelas y la evidencia demuestra la disciplina aplicada o su excepción autorizada.
 5. Ejecutar las pruebas relevantes y los checks existentes, revisando el diff contra los lineamientos seleccionados. **Completo:** resultados reales, excepciones o bloqueo registrados; no se confunden compilación y pruebas.
-6. Actualizar tareas, fuentes técnicas afectadas y workflow: `done`, evidencia y `nextRoute`. Si seguimiento está `REQUIRED`, publicar una actualización por cada unidad material completada o bloqueada, usando `../references/comment-format.md`; no comentar comandos, archivos, intentos ni pruebas intermedias. **Completo:** reanudable sin chat y con trazabilidad remota útil.
-7. Detenerse y reportar cambios, comprobaciones, límites y siguiente ruta. QA de aplicación se enruta a `faro-qa-ejecucion`.
+6. Actualizar `<ID>-tareas.md` con resultado verificable `COMPLETADO`, `PENDIENTE` o `NO_EJECUTADO`, evidencia y fuentes técnicas; actualizar workflow con el mismo `workItemRef` y `nextRoute`. Estos resultados no copian el estado remoto. Si seguimiento está `REQUIRED`, publicar una actualización por cada unidad material completada o bloqueada, usando `../references/comment-format.md`. **Completo:** reanudable sin chat y con trazabilidad remota útil.
+7. Ejecutar `python -B <skills-root>/faro/scripts/work_item_contract.py validate --root <root> --strict`, detenerse y reportar cambios, comprobaciones, límites y siguiente ruta. QA de aplicación se enruta a `faro-qa-ejecucion`; desarrollo nunca congela el expediente.
 
 ## Invariantes
 - El plan técnico guía el cómo; el RM autorizado guía el qué.
@@ -77,6 +82,8 @@ Si se extrae, mueve o sustituye lógica, leer y ejecutar [Cierre verificable de 
 - No contradecir un ADR aceptado ni reabrir una alternativa descartada sin análisis y ADR sucesor explícitos.
 - No tratar compilación o inspección como prueba ejecutada.
 - No exponer secretos ni usar producción sin autorización.
+- Estado, prioridad y asignación se leen del gestor remoto; evidencia local no los reemplaza.
+- Ningún archivo de un expediente congelado puede modificarse, aunque el código requiera otro cambio.
 
 ## Verificación
 - [ ] ID, versión, autorización y tarea coinciden.
@@ -86,4 +93,5 @@ Si se extrae, mueve o sustituye lógica, leer y ejecutar [Cierre verificable de 
 - [ ] UI revisó catálogo local cuando aplica.
 - [ ] Pruebas ejecutadas o bloqueo evidenciado.
 - [ ] Tarea/workflow registran resultado y siguiente ruta.
+- [ ] Primario, plan y tareas pertenecen al expediente resuelto; el contrato de work item validó antes del handoff.
 - [ ] No hubo entrega ni aceptación implícitas.
